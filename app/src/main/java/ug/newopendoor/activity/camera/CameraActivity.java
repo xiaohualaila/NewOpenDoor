@@ -1,4 +1,4 @@
-package ug.newopendoor.activity;
+package ug.newopendoor.activity.camera;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.decard.NDKMethod.BasicOper;
 import com.decard.entitys.IDCard;
-import org.json.JSONObject;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,20 +33,11 @@ import java.security.InvalidParameterException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.cmm.rkadcreader.adcNative;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import ug.newopendoor.R;
-import ug.newopendoor.retrofit.Api;
-import ug.newopendoor.retrofit.ConnectUrl;
 import ug.newopendoor.service.CommonService;
 import ug.newopendoor.usbtest.ComBean;
 import ug.newopendoor.usbtest.SPUtils;
@@ -61,8 +51,8 @@ import ug.newopendoor.util.MyUtil;
  * Created by dhht on 16/9/29.
  */
 
-public class CameraActivity2 extends Activity implements SurfaceHolder.Callback {
-
+public class CameraActivity extends Activity implements SurfaceHolder.Callback,CameraContract.View  {
+    private CameraContract.Presenter presenter;
     @BindView(R.id.camera_sf)
     SurfaceView camera_sf;
     @BindView(R.id.text_card)
@@ -92,7 +82,7 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback 
     private boolean uitralight = true;
     private boolean scan = true;
     private boolean idcard = false;
-    private boolean isHaveThree = false;
+    private boolean isHaveThree = true;
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
@@ -131,25 +121,16 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback 
                 }
 
                 @Override
-                public void onUltralightCardMsg(final String result) {
-                     BasicOper.dc_beep(5);
-                    if(!isReading){
-                            isReading = true;
-                            type = 1;
-                            ticketNum = result.trim() + "00";
-                            Log.i("xxx","芯片的ticketNum》》  " + ticketNum);
-                            takePhoto();
-                    }
-                }
-
-                @Override
-                public void onM1CardMsg(final String code) {
+                public void onBackMsg(int mType, String result) {
                     BasicOper.dc_beep(5);
                     if(!isReading){
                         isReading = true;
-                        type = 4;
-                        ticketNum = code.trim();
-                        Log.i("xxx","M1 ticketNum  》》》" + ticketNum);
+                        type = mType;
+                        if(mType == 1){
+                            ticketNum = result.trim() + "00";
+                        }else {
+                            ticketNum = result.trim();
+                        }
                         takePhoto();
 
                     }
@@ -164,6 +145,7 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback 
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_camera2);
         ButterKnife.bind(this);
+        new CameraPressenter(this);
         holder = camera_sf.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -173,13 +155,10 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback 
         uitralight = intent.getBooleanExtra("uitralight",true);
         scan = intent.getBooleanExtra("scan",true);
         idcard = intent.getBooleanExtra("idcard",false);
-        isHaveThree = intent.getBooleanExtra("isHaveThree",false);
+        isHaveThree = intent.getBooleanExtra("isHaveThree",true);
         Utils.init(getApplicationContext());
         settingSp = new SPUtils(getString(R.string.settingSp));
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
-        if(isHaveThree){
-            onOpenConnectPort();
-        }
         rkGpioControlNative.init();
         //串口
         ComA = new SerialControl();
@@ -261,8 +240,8 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback 
                 bm1.recycle();
                 startPreview();
 
-                Glide.with(CameraActivity2.this).load(filePath).error(R.drawable.left_img).into(img1);
-                uploadPhoto();
+                Glide.with(CameraActivity.this).load(filePath).error(R.drawable.left_img).into(img1);
+                upload();
             }
         }
     };
@@ -270,59 +249,15 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback 
     /**
      * 上传信息
      */
-    private void uploadPhoto() {
-        //Log.i("xxx",">>>>>>>>>>>>>>>>>>>>>>>>>请求服务器");
+    private void  upload(){
+       // Log.i("xxxx","type >>" + type +"" +" ticketNum>>" + ticketNum);
+        boolean isNetAble = MyUtil.isNetworkAvailable(this);
         File  file = new File(filePath);
         if(!file.exists()){
             uploadFinish();
             return;
         }
-        MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        builder.addFormDataPart("photoImgFiles", file.getName(), requestBody);
-        Api.getBaseApiWithOutFormat(ConnectUrl.URL)
-                .uploadPhotoBase(device_id,ticketNum,type,builder.build().parts())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JSONObject>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        //Log.i("xxx",e.toString());
-                        text_card.setText("请求失败！");
-                        flag_tag.setImageResource(R.drawable.not_pass);
-                        uploadFinish();
-                    }
-
-                    @Override
-                    public void onNext(JSONObject jsonObject) {
-                        //Log.i("xxx",jsonObject.toString());
-                            try {
-                                if(jsonObject != null) {
-
-                                    String result = jsonObject.optString("Result");
-                                    if (result.equals("1")) {
-                                        String Face_path = jsonObject.optString("Face_path");
-                                        if(!TextUtils.isEmpty(Face_path)){
-                                            Glide.with(CameraActivity2.this).load(Face_path).error(R.drawable.left_img).into(img_server);
-                                        }
-                                        isOpenDoor = true;
-                                        rkGpioControlNative.ControlGpio(1, 0);//开门
-                                        flag_tag.setImageResource(R.drawable.pass);
-                                    }  else{
-                                        flag_tag.setImageResource(R.drawable.not_pass);
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }finally {
-                                uploadFinish();
-                            }
-                    }
-                });
+        presenter.load(isNetAble,device_id,type,ticketNum,file);
     }
 
     /**
@@ -370,6 +305,18 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback 
     protected void onResume() {
         super.onResume();
         camera = openCamera();
+        if(isHaveThree){
+            Log.i("sss","isHaveThree" +isHaveThree);
+            onOpenConnectPort();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(isHaveThree){
+            onDisConnectPort();
+        }
     }
 
     @Override
@@ -383,9 +330,6 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback 
         adcNative.close(0);
         adcNative.close(2);
         rkGpioControlNative.close();
-        if(isHaveThree){
-            onDisConnectPort();
-        }
         closeErWeiMa();
     }
 
@@ -535,6 +479,29 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback 
             ComPort.stopSend();
             ComPort.close();
         }
+    }
+
+    @Override
+    public void setPresenter(CameraContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void doError() {
+        text_card.setText("请求失败！");
+        flag_tag.setImageResource(R.drawable.not_pass);
+        uploadFinish();
+    }
+
+    @Override
+    public void doSuccess(String Face_path) {
+        if(!TextUtils.isEmpty(Face_path)){
+            Glide.with(CameraActivity.this).load(Face_path).error(R.drawable.left_img).into(img_server);
+        }
+        isOpenDoor = true;
+        rkGpioControlNative.ControlGpio(1, 0);//开门
+        flag_tag.setImageResource(R.drawable.pass);
+        uploadFinish();
     }
 
     private class SerialControl extends SerialHelper{
