@@ -116,7 +116,7 @@ public class CommonService extends Service implements UltralightCardListener,M1C
         if(!result.equals("1003|无卡或无法寻到卡片")){
             if(!result.equals("0001|操作失败")){
                 if(!result.equals("FFFF|操作失败")){
-                    onDataListener.onUltralightCardMsg(result);
+                    onDataListener.onBackMsg(1,result);
                 }
             }
         }
@@ -149,7 +149,7 @@ public class CommonService extends Service implements UltralightCardListener,M1C
 
         if (b){
             String string = sectorDataBean.pieceZero.substring(0,8);
-            onDataListener.onM1CardMsg(string);
+            onDataListener.onBackMsg(4,string);
             b = false;
         }
 
@@ -173,8 +173,7 @@ public class CommonService extends Service implements UltralightCardListener,M1C
 
     public interface OnDataListener {
         void onIDCardMsg(com.decard.entitys.IDCard data);
-        void onUltralightCardMsg(String result);
-        void onM1CardMsg(String result);
+        void onBackMsg(int type,String result);
     }
 
     @Nullable
