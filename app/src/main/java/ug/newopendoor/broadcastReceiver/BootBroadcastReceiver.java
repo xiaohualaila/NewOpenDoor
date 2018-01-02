@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import ug.newopendoor.activity.CameraActivity2;
+import ug.newopendoor.activity.camera.CameraActivity;
 
 
 /**
@@ -16,7 +16,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
           if(intent.getAction().equals(ACTION)){
-			  Intent in  = new Intent(context,CameraActivity2.class);
+			  Intent in  = new Intent(context,CameraActivity.class);
 			  in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			  context.startActivity(in);
 		  }
