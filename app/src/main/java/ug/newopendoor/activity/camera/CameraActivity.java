@@ -64,6 +64,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
 
     @BindView(R.id.flag_tag)
     ImageView flag_tag;
+    @BindView(R.id.ticket_no)
+    TextView ticket_no;
     private Camera camera;
     private String filePath;
     private SurfaceHolder holder;
@@ -113,6 +115,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                             type = 3;
                             ticketNum = idCardData.getId().trim();
                             Log.i("xxx"," 身份证 ticketNum 》》》   " + ticketNum);
+                            showTicket();
                             isReading = true;
                              takePhoto();
 
@@ -131,6 +134,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                         }else {
                             ticketNum = result.trim();
                         }
+                        Log.i("xxx","ticketNum 》》》   " + ticketNum);
+                        showTicket();
                         takePhoto();
 
                     }
@@ -138,6 +143,15 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
             });
         }
     };
+
+    private void showTicket(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ticket_no.setText(ticketNum);
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

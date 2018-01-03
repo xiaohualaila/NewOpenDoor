@@ -44,7 +44,7 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
     private boolean isUitralight = true;
     private boolean isScan = true;
     private boolean isIdcard = false;
-    private boolean isHaveThree = false;
+    private boolean isHaveThree = true;
 
     private String path;
     @Override
@@ -57,7 +57,7 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
         scan_switch.setOnCheckedChangeListener(this);
         choose_switch.setOnCheckedChangeListener(this);
         FileUtil.getPath();
-        getExcel();
+        //getExcel();
     }
 
 
