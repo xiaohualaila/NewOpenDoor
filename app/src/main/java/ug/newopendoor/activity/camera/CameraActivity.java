@@ -251,7 +251,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                 bm.recycle();
                 bm1.recycle();
                 startPreview();
-
                 Glide.with(CameraActivity.this).load(filePath).error(R.drawable.left_img).into(img1);
                 upload();
             }
