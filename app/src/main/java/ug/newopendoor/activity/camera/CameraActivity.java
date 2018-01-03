@@ -114,7 +114,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                         if(!isReading){
                             type = 3;
                             ticketNum = idCardData.getId().trim();
-                            Log.i("xxx"," 身份证 ticketNum 》》》   " + ticketNum);
                             showTicket();
                             isReading = true;
                              takePhoto();
@@ -134,7 +133,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                         }else {
                             ticketNum = result.trim();
                         }
-                        Log.i("xxx","ticketNum 》》》   " + ticketNum);
                         showTicket();
                         takePhoto();
 
@@ -545,14 +543,12 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                                 isReading =true;
                                 try {
                                     ticketNum = new String(ComData.bRec).trim();
-                                    //ticketNum = new String(ComData.bRec,"GBK").trim();
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-
+                                showTicket();
                                 type = 2;
                                 takePhoto();
-                               // Log.i("xxx", "二维码》》》》  " + ticketNum);
                             }
                         }
                     });
