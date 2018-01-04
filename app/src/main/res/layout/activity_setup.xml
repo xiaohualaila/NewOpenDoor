@@ -45,14 +45,13 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="30dp"
                 android:textSize="28sp"
-                android:text="是否开启三合一"/>
+                android:text="芯片或M1读卡"/>
             <Switch
                 android:id="@+id/choose_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/choose_3"
                 android:layout_centerVertical="true"
-                android:checked="true"
                 android:layout_marginLeft="20dp"/>
 
         </RelativeLayout>
@@ -117,7 +116,6 @@
                 android:layout_toRightOf="@+id/read_idcard_text"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"/>
-
         </RelativeLayout>
 
     </LinearLayout>
@@ -132,6 +130,7 @@
         android:textStyle="bold"
         android:gravity="center"
         android:layout_margin="20dp"
+        android:visibility="gone"
         android:text="脱机请点击加载excel文件"/>
     <TextView
         android:id="@+id/finish"

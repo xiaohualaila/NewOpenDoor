@@ -17,7 +17,7 @@ public interface CameraContract {
     }
 
     interface Presenter extends IBasePresenter {
-       void load(boolean isNetAble, String device_id, int type, String ticketNum, File newFile);
+       void load( String device_id, int type, String ticketNum, File newFile);
 
     }
 }

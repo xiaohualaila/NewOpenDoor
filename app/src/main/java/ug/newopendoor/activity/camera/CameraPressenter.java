@@ -35,37 +35,36 @@ public class CameraPressenter extends BasePresenter implements CameraContract.Pr
     }
 
     @Override
-    public void load(boolean isNetAble, String device_id, int type, String ticketNum, File newFile) {
-        if (isNetAble) {
-                MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), newFile);
-                builder.addFormDataPart("photoImgFiles", newFile.getName(), requestBody);
-                Api.getBaseApiWithOutFormat(ConnectUrl.URL)
-                        .uploadPhotoBase(device_id,ticketNum,type,builder.build().parts())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<JSONObject>() {
-                               @Override
-                               public void call(JSONObject jsonObject) {
-                                   jsonObjectResult(jsonObject);
-                               }
-                           }, new Action1<Throwable>() {
-                               @Override
-                               public void call(Throwable throwable) {
-                                   Log.i("sss",throwable.toString());
-                                   view.doError();
-                               }
+    public void load( String device_id, int type, String ticketNum, File newFile) {
+            MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), newFile);
+            builder.addFormDataPart("photoImgFiles", newFile.getName(), requestBody);
+            Api.getBaseApiWithOutFormat(ConnectUrl.URL)
+                    .uploadPhotoBase(device_id,ticketNum,type,builder.build().parts())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<JSONObject>() {
+                           @Override
+                           public void call(JSONObject jsonObject) {
+                               jsonObjectResult(jsonObject);
                            }
-                        );
-        } else {//不联网
-            String sStr = ticketNum.toUpperCase().trim();
-            WhiteList whiteList =  GetDataUtil.getDataBooean(sStr);
-            if(whiteList != null){
-                view.doSuccess("");
-            }else {
-                view.doError();
-            }
-        }
+                       }, new Action1<Throwable>() {
+                           @Override
+                           public void call(Throwable throwable) {
+                               Log.i("sss",throwable.toString());
+                               view.doError();
+                           }
+                       }
+                    );
+//        else {//不联网
+//            String sStr = ticketNum.toUpperCase().trim();
+//            WhiteList whiteList =  GetDataUtil.getDataBooean(sStr);
+//            if(whiteList != null){
+//                view.doSuccess("");
+//            }else {
+//                view.doError();
+//            }
+//        }
 
     }
 

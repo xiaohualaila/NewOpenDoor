@@ -64,8 +64,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
 
     @BindView(R.id.flag_tag)
     ImageView flag_tag;
-    @BindView(R.id.ticket_no)
-    TextView ticket_no;
+
     private Camera camera;
     private String filePath;
     private SurfaceHolder holder;
@@ -84,7 +83,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     private boolean uitralight = true;
     private boolean scan = true;
     private boolean idcard = false;
-    private boolean isHaveThree = true;
+    private boolean isHaveThree = false;
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
@@ -105,21 +104,20 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         public void onServiceConnected(ComponentName name, IBinder service) {
             myBinder = (CommonService.MyBinder) service;
             myService = myBinder.getService();
-            myBinder.setIntentData(uitralight,idcard);
+            myBinder.setIntentData(isHaveThree,uitralight,idcard);
             myService.setOnProgressListener(new CommonService.OnDataListener() {
                 @Override
                 public void onIDCardMsg(IDCard idCardData) {//身份证
-                    if (idCardData != null) {
-                          BasicOper.dc_beep(5);
-                        if(!isReading){
-                            type = 3;
-                            ticketNum = idCardData.getId().trim();
-                            showTicket();
-                            isReading = true;
-                             takePhoto();
-
-                        }
+                  //  Log.i("sss","  isReading>>>>"+isReading);
+                    BasicOper.dc_beep(5);
+                    if(!isReading){
+                        type = 3;
+                        ticketNum = idCardData.getId().trim();
+                    //    Log.i("sss",">>>>>>>>>>>>"+ticketNum);
+                        isReading = true;
+                         takePhoto();
                     }
+
                 }
 
                 @Override
@@ -133,23 +131,14 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                         }else {
                             ticketNum = result.trim();
                         }
-                        showTicket();
                         takePhoto();
-
                     }
                 }
             });
         }
     };
 
-    private void showTicket(){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ticket_no.setText(ticketNum);
-            }
-        });
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,7 +156,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         uitralight = intent.getBooleanExtra("uitralight",true);
         scan = intent.getBooleanExtra("scan",true);
         idcard = intent.getBooleanExtra("idcard",false);
-        isHaveThree = intent.getBooleanExtra("isHaveThree",true);
+        isHaveThree = intent.getBooleanExtra("isHaveThree",false);
         Utils.init(getApplicationContext());
         settingSp = new SPUtils(getString(R.string.settingSp));
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
@@ -263,12 +252,17 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     private void  upload(){
        // Log.i("xxxx","type >>" + type +"" +" ticketNum>>" + ticketNum);
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
-        File  file = new File(filePath);
-        if(!file.exists()){
+        if(!isNetAble){
+            Toast.makeText(this,"网路无法连接！",Toast.LENGTH_LONG).show();
             uploadFinish();
             return;
         }
-        presenter.load(isNetAble,device_id,type,ticketNum,file);
+        File  file = new File(filePath);
+        if(!file.exists() ){
+            uploadFinish();
+            return;
+        }
+        presenter.load(device_id,type,ticketNum,file);
     }
 
     /**
@@ -316,8 +310,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     protected void onResume() {
         super.onResume();
         camera = openCamera();
-        if(isHaveThree){
-            Log.i("sss","isHaveThree" +isHaveThree);
+        if(isHaveThree || idcard){
             onOpenConnectPort();
         }
     }
@@ -325,7 +318,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     @Override
     protected void onPause() {
         super.onPause();
-        if(isHaveThree){
+        if(isHaveThree || idcard){
             onDisConnectPort();
         }
     }
@@ -545,7 +538,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                                showTicket();
                                 type = 2;
                                 takePhoto();
                             }

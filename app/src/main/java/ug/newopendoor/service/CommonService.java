@@ -42,7 +42,8 @@ public class CommonService extends Service implements UltralightCardListener,M1C
     private boolean isHaveOne = false;
 
     private boolean uitralight = true;
-    private boolean idcard = true;
+    private boolean idcard = false;
+    private boolean three = false;
 
     private OnDataListener onDataListener;
 
@@ -62,27 +63,36 @@ public class CommonService extends Service implements UltralightCardListener,M1C
         model2 = new M1CardModel(this);
     }
 
-     Runnable task = new Runnable() {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        thread.stop();
+        Log.i("sss","service onDestroy");
+    }
+
+    Runnable task = new Runnable() {
         @Override
         public void run() {
             while (isAuto) {
                 lock.lock();
                 try {
                     if(flag == 1){//UltralightCard
-                        if(uitralight){
-                            model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-                            Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
-                            Thread.sleep(TIME);
-                        }else {//M1
-                            if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
-                                final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
-                                isHaveOne = true;
-                                model2.bt_read_card(ConstUtils.BT_READ_CARD,keyType,0);
+                            if(uitralight){
+                                model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
+                                Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
+                                Thread.sleep(TIME);
+                            }else {//M1
+                                if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
+                                    final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
+                                    isHaveOne = true;
+                                    model2.bt_read_card(ConstUtils.BT_READ_CARD,keyType,0);
+                                }
+                                Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>M1");
+                                Thread.sleep(TIME);
                             }
-                            Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>M1");
-                            Thread.sleep(TIME);
-                        }
-                        flag = 2;
+                            if(idcard){
+                                flag = 2;
+                            }
                     }else if(flag == 2){//身份证
                         if(idcard){
                             Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>身份证");
@@ -90,7 +100,6 @@ public class CommonService extends Service implements UltralightCardListener,M1C
                             if (!choose) {
                                 //标准协议
                                 idCardData = BasicOper.dc_get_i_d_raw_info();
-
                             } else {
                                 //公安部协议
                                 idCardData = BasicOper.dc_SamAReadCardInfo(1);
@@ -100,7 +109,9 @@ public class CommonService extends Service implements UltralightCardListener,M1C
                             }
                             Thread.sleep(1000);
                         }
-                        flag = 1;
+                        if(three){
+                            flag = 1;
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -117,7 +128,6 @@ public class CommonService extends Service implements UltralightCardListener,M1C
             if(!result.equals("0001|操作失败")){
                 if(!result.equals("FFFF|操作失败")){
                     onDataListener.onBackMsg(1,result);
-                    Log.i("xxx","ticketNum 》》》   " + result);
                 }
             }
         }
@@ -162,7 +172,8 @@ public class CommonService extends Service implements UltralightCardListener,M1C
             return CommonService.this;
         }
 
-        public void setIntentData(boolean uitralight, boolean idcard) {
+        public void setIntentData(boolean three,boolean uitralight, boolean idcard) {
+            CommonService.this.three = three;
             CommonService.this.uitralight = uitralight;
             CommonService.this.idcard = idcard;
         }

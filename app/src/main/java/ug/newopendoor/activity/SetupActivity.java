@@ -44,7 +44,7 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
     private boolean isUitralight = true;
     private boolean isScan = true;
     private boolean isIdcard = false;
-    private boolean isHaveThree = true;
+    private boolean isHaveThree = false;
 
     private String path;
     @Override
@@ -52,6 +52,7 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
         ButterKnife.bind(this);
+        m1_ll.setVisibility(View.GONE);
         // 添加监听
         idcard_switch.setOnCheckedChangeListener(this);
         scan_switch.setOnCheckedChangeListener(this);
@@ -91,11 +92,11 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
             case R.id.choose_switch:
                 if(isChecked){
                     m1_ll.setVisibility(View.VISIBLE);
-                    idcard_ll.setVisibility(View.VISIBLE);
+                   // idcard_ll.setVisibility(View.VISIBLE);
                     isHaveThree = true;
                 }else {
                     m1_ll.setVisibility(View.GONE);
-                    idcard_ll.setVisibility(View.GONE);
+                  //  idcard_ll.setVisibility(View.GONE);
                     isHaveThree = false;
                 }
                 break;
