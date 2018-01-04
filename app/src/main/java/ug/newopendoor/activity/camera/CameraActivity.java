@@ -114,7 +114,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                         isReading = true;
                          takePhoto();
                     }
-
                 }
 
                 @Override
