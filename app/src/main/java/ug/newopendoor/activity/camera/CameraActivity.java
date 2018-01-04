@@ -69,7 +69,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     private String filePath;
     private SurfaceHolder holder;
     private boolean isFrontCamera = true;
-    private boolean safephoto  =true;
     private int width = 640;
     private int height = 480;
 
@@ -108,12 +107,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
             myService.setOnProgressListener(new CommonService.OnDataListener() {
                 @Override
                 public void onIDCardMsg(IDCard idCardData) {//身份证
-                  //  Log.i("sss","  isReading>>>>"+isReading);
                     BasicOper.dc_beep(5);
                     if(!isReading){
                         type = 3;
                         ticketNum = idCardData.getId().trim();
-                    //    Log.i("sss",">>>>>>>>>>>>"+ticketNum);
                         isReading = true;
                          takePhoto();
                     }
@@ -137,8 +134,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
             });
         }
     };
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,12 +191,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     }
 
     private void takePhoto(){
-           if(!isOpenDoor){
-                if (safephoto) {
-                    safephoto = false;
-                    camera.takePicture(null, null, jpeg);
-                }
-           }
+            camera.takePicture(null, null, jpeg);
     }
 
     private Camera.PictureCallback jpeg = new Camera.PictureCallback() {
@@ -241,6 +231,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                 bm1.recycle();
                 startPreview();
                 Glide.with(CameraActivity.this).load(filePath).error(R.drawable.left_img).into(img1);
+
                 upload();
             }
         }
@@ -269,7 +260,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
      * 0.5秒关门
      */
     private void uploadFinish() {
-        safephoto = true;
         isReading =false;
         ticketNum = "";
         File file = new File(filePath);

@@ -13,10 +13,11 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+
+
     }
     public static Context getContext() {
         return mContext;
     }
-
 
 }

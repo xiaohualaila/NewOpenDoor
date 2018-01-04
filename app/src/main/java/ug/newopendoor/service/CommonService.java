@@ -66,6 +66,7 @@ public class CommonService extends Service implements UltralightCardListener,M1C
     @Override
     public void onDestroy() {
         super.onDestroy();
+        isAuto =false;
         thread.stop();
         Log.i("sss","service onDestroy");
     }
