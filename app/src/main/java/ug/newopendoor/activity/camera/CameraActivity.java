@@ -45,6 +45,7 @@ import ug.newopendoor.usbtest.SerialHelper;
 import ug.newopendoor.usbtest.Utils;
 import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.MyUtil;
+import ug.newopendoor.util.SoundPoolUtil;
 
 
 /**
@@ -88,6 +89,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     DispQueueThread DispQueue;
     private boolean isReading = false;
     private String device_id;
+
+    private SoundPoolUtil soundPoolUtil;
     /**
      * 3 身份证,1 Ultralight,4 M1,2串口
      */
@@ -159,6 +162,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         ComA = new SerialControl();
         DispQueue = new DispQueueThread();
         DispQueue.start();
+
+        soundPoolUtil = SoundPoolUtil.getInstance(this);
         if(scan){
             openErWeiMa();
         }
@@ -230,7 +235,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                 bm1.recycle();
                 startPreview();
                 Glide.with(CameraActivity.this).load(filePath).error(R.drawable.left_img).into(img1);
-
                 upload();
             }
         }
@@ -483,6 +487,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     public void doError() {
         text_card.setText("请求失败！");
         flag_tag.setImageResource(R.drawable.not_pass);
+        soundPoolUtil.play(3);
         uploadFinish();
     }
 
@@ -493,6 +498,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         }
         isOpenDoor = true;
         rkGpioControlNative.ControlGpio(1, 0);//开门
+         soundPoolUtil.play(4);
         flag_tag.setImageResource(R.drawable.pass);
         uploadFinish();
     }
