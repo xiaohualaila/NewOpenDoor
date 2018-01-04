@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ug.newopendoor.R;
 import ug.newopendoor.activity.camera.CameraActivity;
+import ug.newopendoor.activity.camera2.CameraActivity2;
 import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.GetDataUtil;
 
@@ -158,7 +159,7 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
     }
     private void toActivity() {
         //Intent intent = new Intent(this,MainActivity.class);
-        Intent intent = new Intent(this,CameraActivity.class);
+        Intent intent = new Intent(this,CameraActivity2.class);
         intent.putExtra("uitralight",isUitralight);
         intent.putExtra("scan",isScan);
         intent.putExtra("idcard",isIdcard);
