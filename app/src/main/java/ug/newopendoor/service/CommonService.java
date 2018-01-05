@@ -6,14 +6,10 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.decard.NDKMethod.BasicOper;
-
-
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import ug.newopendoor.usbtest.ConstUtils;
 import ug.newopendoor.usbtest.M1CardListener;
 import ug.newopendoor.usbtest.M1CardModel;
