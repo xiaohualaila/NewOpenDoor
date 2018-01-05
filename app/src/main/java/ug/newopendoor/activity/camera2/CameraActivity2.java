@@ -58,6 +58,7 @@ import ug.newopendoor.usbtest.UltralightCardModel;
 import ug.newopendoor.usbtest.Utils;
 import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.MyUtil;
+import ug.newopendoor.util.RoundImageView;
 import ug.newopendoor.util.SoundPoolUtil;
 
 
@@ -72,9 +73,9 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     @BindView(R.id.text_card)
     TextView text_card;
     @BindView(R.id.img1)
-    ImageView img1;
+    RoundImageView img1;
     @BindView(R.id.img_server)
-    ImageView img_server;
+    RoundImageView img_server;
 
     @BindView(R.id.flag_tag)
     ImageView flag_tag;
@@ -168,6 +169,15 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
           /* 初始取得User可触碰屏幕的时间 */
         lastUpdateTime = new Date(System.currentTimeMillis());
 
+        onOpenConnectPort();
+        //身份证
+        isAuto = true;
+        thread = new Thread(task);
+        thread.start();
+        //UltralightCard
+        model = new UltralightCardModel(this);
+        //M1
+        model2 = new M1CardModel(this);
     }
 
     //打开设备
@@ -304,15 +314,6 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         ///////////////////////////////////
         mHandler01.postAtTime(mTask01, intervalKeypadeSaver);
 
-        onOpenConnectPort();
-        //身份证
-        isAuto = true;
-        thread = new Thread(task);
-        thread.start();
-        //UltralightCard
-        model = new UltralightCardModel(this);
-        //M1
-        model2 = new M1CardModel(this);
 
     }
 
@@ -325,9 +326,7 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
 
 
 
-        isAuto =false;
-        thread.interrupt();
-        onDisConnectPort();
+
     }
 
     @Override
@@ -341,7 +340,9 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         closeErWeiMa();
         stopService( new Intent(this, ScreenService.class));
 
-
+        // isAuto =false;
+        thread.interrupt();
+        onDisConnectPort();
     }
 
     @Override

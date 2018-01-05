@@ -45,6 +45,7 @@ import ug.newopendoor.usbtest.SerialHelper;
 import ug.newopendoor.usbtest.Utils;
 import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.MyUtil;
+import ug.newopendoor.util.RoundImageView;
 import ug.newopendoor.util.SoundPoolUtil;
 
 
@@ -59,9 +60,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     @BindView(R.id.text_card)
     TextView text_card;
     @BindView(R.id.img1)
-    ImageView img1;
+    RoundImageView img1;
     @BindView(R.id.img_server)
-    ImageView img_server;
+    RoundImageView img_server;
 
     @BindView(R.id.flag_tag)
     ImageView flag_tag;
@@ -247,7 +248,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
      * 上传信息
      */
     private void  upload(){
-       // Log.i("xxxx","type >>" + type +"" +" ticketNum>>" + ticketNum);
+        Log.i("xxxx","type >>" + type +"" +" ticketNum>>" + ticketNum);
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if(!isNetAble){
             Toast.makeText(this,"网路无法连接！",Toast.LENGTH_LONG).show();
@@ -322,8 +323,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         if(myBinder!=null){
             myBinder.stopThread();
         }
-
-
         closeCamera();
         adcNative.close(0);
         adcNative.close(2);
