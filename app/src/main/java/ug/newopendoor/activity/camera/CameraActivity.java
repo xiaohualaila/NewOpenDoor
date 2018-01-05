@@ -177,7 +177,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         int portSate = BasicOper.dc_open(USB, this, "", 0);
         if (portSate >= 0) {
             BasicOper.dc_beep(5);
-            Log.d("sss", "portSate:" + portSate + "设备已连接");
+          //  Log.d("sss", "portSate:" + portSate + "设备已连接");
 
             Intent bindIntent1 = new Intent(this, CommonService.class);
             bindService(bindIntent1, connection, BIND_AUTO_CREATE);
@@ -237,7 +237,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                 bm.recycle();
                 bm1.recycle();
                 startPreview();
-                Log.i("sss",">>>>filePath"+filePath);
                 Glide.with(CameraActivity.this).load(filePath).error(R.drawable.left_img).into(img1);
                 upload();
             }
@@ -248,7 +247,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
      * 上传信息
      */
     private void  upload(){
-        Log.i("xxxx","type >>" + type +"" +" ticketNum>>" + ticketNum);
+      //  Log.i("xxxx","type >>" + type +"" +" ticketNum>>" + ticketNum);
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if(!isNetAble){
             Toast.makeText(this,"网路无法连接！",Toast.LENGTH_LONG).show();
@@ -539,7 +538,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                         }
                     });
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
