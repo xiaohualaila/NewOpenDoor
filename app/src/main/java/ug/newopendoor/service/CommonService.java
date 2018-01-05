@@ -23,7 +23,7 @@ import ug.newopendoor.usbtest.UltralightCardModel;
  */
 
 public class CommonService extends Service implements UltralightCardListener,M1CardListener {
-    private int flag = 1;
+    private int flag = 3;
     private final int TIME = 1000;
     //身份证
     private Thread thread;
@@ -63,60 +63,67 @@ public class CommonService extends Service implements UltralightCardListener,M1C
     public void onDestroy() {
         super.onDestroy();
         isAuto =false;
-        thread.stop();
         Log.i("sss","service onDestroy");
     }
 
     Runnable task = new Runnable() {
         @Override
         public void run() {
-            while (isAuto) {
-                lock.lock();
-                try {
-                    if(flag == 1){//UltralightCard
-                            if(uitralight){
-                                model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-                                Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
-                                Thread.sleep(TIME);
-                            }else {//M1
-                                if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
-                                    final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
-                                    isHaveOne = true;
-                                    model2.bt_read_card(ConstUtils.BT_READ_CARD,keyType,0);
+                while (isAuto) {
+                    lock.lock();
+                    try {
+                        if(flag == 1){//UltralightCard
+                                if(uitralight){
+                                    model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
+                                    Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
+                                    Thread.sleep(TIME);
+                                }else {//M1
+                                    if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
+                                        final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
+                                        isHaveOne = true;
+                                        model2.bt_read_card(ConstUtils.BT_READ_CARD,keyType,0);
+                                    }
+                                    Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>M1");
+                                    Thread.sleep(TIME);
                                 }
-                                Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>M1");
-                                Thread.sleep(TIME);
+                                if(idcard){
+                                    flag = 2;
+                                }
+                        }else if(flag == 2){//身份证
+                            if(idcard){
+                                Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>身份证");
+                                com.decard.entitys.IDCard idCardData;
+                                if (!choose) {
+                                    //标准协议
+                                    idCardData = BasicOper.dc_get_i_d_raw_info();
+                                } else {
+                                    //公安部协议
+                                    idCardData = BasicOper.dc_SamAReadCardInfo(1);
+                                }
+                                if(idCardData!= null){
+                                    onDataListener.onIDCardMsg(idCardData);
+                                }
+                                Thread.sleep(1000);
+                            }
+                            if(three){
+                                flag = 1;
+                            }
+                        }else if(flag == 3){
+                            if(three){
+                                flag = 1;
                             }
                             if(idcard){
                                 flag = 2;
                             }
-                    }else if(flag == 2){//身份证
-                        if(idcard){
-                            Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>身份证");
-                            com.decard.entitys.IDCard idCardData;
-                            if (!choose) {
-                                //标准协议
-                                idCardData = BasicOper.dc_get_i_d_raw_info();
-                            } else {
-                                //公安部协议
-                                idCardData = BasicOper.dc_SamAReadCardInfo(1);
-                            }
-                            if(idCardData!= null){
-                                onDataListener.onIDCardMsg(idCardData);
-                            }
-                            Thread.sleep(1000);
+                            Thread.sleep(2000);
                         }
-                        if(three){
-                            flag = 1;
-                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        lock.unlock();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    lock.unlock();
                 }
             }
-        }
     };
 
     @Override

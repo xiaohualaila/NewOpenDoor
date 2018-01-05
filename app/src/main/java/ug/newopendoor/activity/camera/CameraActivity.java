@@ -167,6 +167,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         if(scan){
             openErWeiMa();
         }
+
     }
 
     //打开设备
@@ -176,6 +177,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         if (portSate >= 0) {
             BasicOper.dc_beep(5);
             Log.d("sss", "portSate:" + portSate + "设备已连接");
+
             Intent bindIntent1 = new Intent(this, CommonService.class);
             bindService(bindIntent1, connection, BIND_AUTO_CREATE);
 
@@ -234,6 +236,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                 bm.recycle();
                 bm1.recycle();
                 startPreview();
+                Log.i("sss",">>>>filePath"+filePath);
                 Glide.with(CameraActivity.this).load(filePath).error(R.drawable.left_img).into(img1);
                 upload();
             }
@@ -303,17 +306,14 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     protected void onResume() {
         super.onResume();
         camera = openCamera();
-        if(isHaveThree || idcard){
-            onOpenConnectPort();
-        }
+        onOpenConnectPort();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(isHaveThree || idcard){
-            onDisConnectPort();
-        }
+        unbindService(connection);
+        onDisConnectPort();
     }
 
     @Override
@@ -322,8 +322,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         if(myBinder!=null){
             myBinder.stopThread();
         }
+
+
         closeCamera();
-        unbindService(connection);
         adcNative.close(0);
         adcNative.close(2);
         rkGpioControlNative.close();

@@ -21,13 +21,11 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.cmm.rkadcreader.adcNative;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
 import com.decard.entitys.IDCard;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,18 +36,25 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
-
 import ug.newopendoor.activity.MainActivity;
-import ug.newopendoor.activity.camera.CameraPressenter;
 import ug.newopendoor.service.CommonService;
 import ug.newopendoor.service.ScreenService;
 import ug.newopendoor.usbtest.ComBean;
+import ug.newopendoor.usbtest.ConstUtils;
+import ug.newopendoor.usbtest.M1CardListener;
+import ug.newopendoor.usbtest.M1CardModel;
+import ug.newopendoor.usbtest.MDSEUtils;
 import ug.newopendoor.usbtest.SPUtils;
+import ug.newopendoor.usbtest.SectorDataBean;
 import ug.newopendoor.usbtest.SerialHelper;
+import ug.newopendoor.usbtest.UltralightCardListener;
+import ug.newopendoor.usbtest.UltralightCardModel;
 import ug.newopendoor.usbtest.Utils;
 import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.MyUtil;
@@ -60,7 +65,7 @@ import ug.newopendoor.util.SoundPoolUtil;
  * Created by dhht on 16/9/29.
  */
 
-public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,CameraContract2.View  {
+public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,CameraContract2.View,UltralightCardListener,M1CardListener {
     private CameraContract2.Presenter presenter;
     @BindView(R.id.camera_sf)
     SurfaceView camera_sf;
@@ -123,49 +128,12 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
      */
     private int type;
     private String ticketNum;
-    private ServiceConnection connection = new ServiceConnection() {
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
 
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            myBinder = (CommonService.MyBinder) service;
-            myService = myBinder.getService();
-            myBinder.setIntentData(isHaveThree,uitralight,idcard);
-            myService.setOnProgressListener(new CommonService.OnDataListener() {
-                @Override
-                public void onIDCardMsg(IDCard idCardData) {//身份证
-                    updateUserActionTime();
-                    BasicOper.dc_beep(5);
-                    if(!isReading){
-                        type = 3;
-                        ticketNum = idCardData.getId().trim();
-                        isReading = true;
-                         takePhoto();
-                    }
-                }
-
-                @Override
-                public void onBackMsg(int mType, String result) {
-                    updateUserActionTime();
-                    BasicOper.dc_beep(5);
-                    if(!isReading){
-                        isReading = true;
-                        type = mType;
-                        if(mType == 1){
-                            ticketNum = result.trim() + "00";
-                        }else {
-                            ticketNum = result.trim();
-                        }
-                        takePhoto();
-                    }
-                }
-            });
-        }
-    };
-
+    ///
+     private boolean isAuto = true;
+    private static Lock lock = new ReentrantLock();
+    private Thread thread;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -199,6 +167,7 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
 
           /* 初始取得User可触碰屏幕的时间 */
         lastUpdateTime = new Date(System.currentTimeMillis());
+
     }
 
     //打开设备
@@ -208,9 +177,6 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         if (portSate >= 0) {
             BasicOper.dc_beep(5);
             Log.d("sss", "portSate:" + portSate + "设备已连接");
-            Intent bindIntent1 = new Intent(this, CommonService.class);
-            bindService(bindIntent1, connection, BIND_AUTO_CREATE);
-
         }else {
             Toast.makeText(this,"设备没有连接上！",Toast.LENGTH_LONG).show();
         }
@@ -335,37 +301,47 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     protected void onResume() {
         super.onResume();
         camera = openCamera();
-        if(isHaveThree || idcard){
-            onOpenConnectPort();
-        }
         ///////////////////////////////////
         mHandler01.postAtTime(mTask01, intervalKeypadeSaver);
+
+        onOpenConnectPort();
+        //身份证
+        isAuto = true;
+        thread = new Thread(task);
+        thread.start();
+        //UltralightCard
+        model = new UltralightCardModel(this);
+        //M1
+        model2 = new M1CardModel(this);
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(isHaveThree || idcard){
-            onDisConnectPort();
-        }
           /*activity不可见的时候取消线程*/
         mHandler01.removeCallbacks(mTask01);
         mHandler02.removeCallbacks(mTask02);
+
+
+
+        isAuto =false;
+        thread.interrupt();
+        onDisConnectPort();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(myBinder!=null){
-            myBinder.stopThread();
-        }
+
         closeCamera();
-        unbindService(connection);
         adcNative.close(0);
         adcNative.close(2);
         rkGpioControlNative.close();
         closeErWeiMa();
         stopService( new Intent(this, ScreenService.class));
+
+
     }
 
     @Override
@@ -541,6 +517,8 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         uploadFinish();
     }
 
+
+
     private class SerialControl extends SerialHelper{
 
         public SerialControl(){
@@ -661,5 +639,136 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         Date timeNow = new Date(System.currentTimeMillis());
         timePeriod = timeNow.getTime() - lastUpdateTime.getTime();
         lastUpdateTime.setTime(timeNow.getTime());
+    }
+
+    //三和一
+    private int flag = 3;
+    private final int TIME = 1000;
+    //UltralightCard读卡
+    private UltralightCardModel model;
+    private boolean isHaveOne = false;
+    //M1
+    private M1CardModel model2;
+
+    Runnable task = new Runnable() {
+        @Override
+        public void run() {
+            while (isAuto) {
+                lock.lock();
+                try {
+                    if(flag == 1){//UltralightCard
+                        if(uitralight){
+                            model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
+                            Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
+                            Thread.sleep(TIME);
+                        }else {//M1
+                            if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
+                                final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
+                                isHaveOne = true;
+                                model2.bt_read_card(ConstUtils.BT_READ_CARD,keyType,0);
+                            }
+                            Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>M1");
+                            Thread.sleep(TIME);
+                        }
+                        if(idcard){
+                            flag = 2;
+                        }
+                    }else if(flag == 2){//身份证
+                        if(idcard){
+                            Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>身份证");
+                            com.decard.entitys.IDCard idCardData;
+                                idCardData = BasicOper.dc_get_i_d_raw_info();
+                            if(idCardData!= null){
+                                updateUserActionTime();
+                                BasicOper.dc_beep(5);
+                                if(!isReading){
+                                    type = 3;
+                                    ticketNum = idCardData.getId().trim();
+                                    isReading = true;
+                                    takePhoto();
+                                }
+                            }
+                            Thread.sleep(1000);
+                        }
+                        if(isHaveThree){
+                            flag = 1;
+                        }
+                    }else if(flag == 3){
+                        if(isHaveThree){
+                            flag = 1;
+                        }
+                        if(idcard){
+                            flag = 2;
+                        }
+                        Thread.sleep(2000);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    lock.unlock();
+                }
+            }
+        }
+    };
+
+    @Override
+    public void getUltralightCardResult(String cmd, String result) {
+        if(!result.equals("1003|无卡或无法寻到卡片")){
+            if(!result.equals("0001|操作失败")){
+                if(!result.equals("FFFF|操作失败")){
+                   onBackMsg(1,result);
+                }
+            }
+        }
+    }
+
+    private void onBackMsg(int i, String result) {
+        updateUserActionTime();
+        BasicOper.dc_beep(5);
+        if(!isReading){
+            isReading = true;
+            type = i;
+            if(i == 1){
+                ticketNum = result.trim() + "00";
+            }else {
+                ticketNum = result.trim();
+            }
+            takePhoto();
+        }
+
+
+    }
+
+    @Override
+    public void getM1CardResult(String cmd, List<String> list, String result, String resultCode) {
+        if(isHaveOne){
+            isHaveOne = false;
+            if (list == null){
+                if (result.length() > 2){
+                    readSectorData(Integer.parseInt(resultCode));
+                }else {
+                    readSectorData(Integer.parseInt(result));
+                }
+            }
+        }
+    }
+
+    private void readSectorData(int currentSectors) {
+        boolean b = true;
+        int piece = (currentSectors + 1) * 4;
+        SectorDataBean sectorDataBean = new SectorDataBean();
+        String[] pieceDatas = new String[4];
+        for (int i = piece - 4, j = 0; i < piece; i++, j++) {
+            String pieceData = MDSEUtils.returnResult(BasicOper.dc_read_hex(i));
+            pieceDatas[j] = pieceData;
+        }
+        sectorDataBean.pieceZero = pieceDatas[0];
+
+        if (b){
+            String string = sectorDataBean.pieceZero.substring(0,8);
+            onBackMsg(4,string);
+            b = false;
+        }
+
     }
 }
