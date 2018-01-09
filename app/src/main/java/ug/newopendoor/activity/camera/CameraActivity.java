@@ -153,7 +153,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         Intent intent = getIntent();
         uitralight = intent.getBooleanExtra("uitralight",true);
         scan = intent.getBooleanExtra("scan",true);
-        idcard = intent.getBooleanExtra("idcard",true);
+        idcard = intent.getBooleanExtra("idcard",false);
         isHaveThree = intent.getBooleanExtra("isHaveThree",true);
         Utils.init(getApplicationContext());
         settingSp = new SPUtils(getString(R.string.settingSp));
@@ -166,7 +166,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         if(scan){
             openErWeiMa();
         }
-        onOpenConnectPort();
+
         Intent bindIntent1 = new Intent(this, CommonService.class);
         bindService(bindIntent1, connection, BIND_AUTO_CREATE);
     }
@@ -241,7 +241,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
      * 上传信息
      */
     private void  upload(){
-        Log.i("xxxx","type >>" + type +"" +" ticketNum>>" + ticketNum);
+        Log.i("sss","type >>" + type +"" +" ticketNum>>" + ticketNum);
         File  file = new File(filePath);
         if(!file.exists() ){
             uploadFinish();
@@ -303,11 +303,13 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     protected void onResume() {
         super.onResume();
         camera = openCamera();
+        onOpenConnectPort();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        onDisConnectPort();
     }
 
     @Override
@@ -317,7 +319,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
             myBinder.stopThread();
         }
         unbindService(connection);
-        onDisConnectPort();
+
         closeCamera();
         adcNative.close(0);
         adcNative.close(2);
@@ -480,7 +482,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
 
     @Override
     public void doError() {
-        text_card.setText("请求失败！");
+      //  text_card.setText("请求失败！");
         flag_tag.setImageResource(R.drawable.not_pass);
         SoundPoolUtil.play(3);
         uploadFinish();

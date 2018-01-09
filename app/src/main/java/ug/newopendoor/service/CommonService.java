@@ -24,7 +24,7 @@ import ug.newopendoor.usbtest.UltralightCardModel;
 
 public class CommonService extends Service implements UltralightCardListener,M1CardListener {
     private int flag = 3;
-    private final int TIME = 800;
+    private final int TIME = 1000;
     //身份证
     private Thread thread;
     private boolean isAuto = true;

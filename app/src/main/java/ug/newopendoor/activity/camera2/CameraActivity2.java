@@ -1,6 +1,8 @@
 package ug.newopendoor.activity.camera2;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,11 +11,14 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,8 +44,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
 import ug.newopendoor.activity.MainActivity;
+import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.service.CommonService;
 
+import ug.newopendoor.service.ScreenService;
 import ug.newopendoor.usbtest.ComBean;
 import ug.newopendoor.usbtest.ConstUtils;
 import ug.newopendoor.usbtest.M1CardListener;
@@ -53,6 +60,7 @@ import ug.newopendoor.usbtest.UltralightCardListener;
 import ug.newopendoor.usbtest.UltralightCardModel;
 import ug.newopendoor.usbtest.Utils;
 import ug.newopendoor.util.FileUtil;
+import ug.newopendoor.util.MyMessage;
 import ug.newopendoor.util.MyUtil;
 import ug.newopendoor.util.RoundImageView;
 import ug.newopendoor.util.SoundPoolUtil;
@@ -124,11 +132,10 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     private int type;
     private String ticketNum;
 
-
-    ///
      private boolean isAuto = true;
     private static Lock lock = new ReentrantLock();
     private Thread thread;
+    private Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,7 +155,7 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         Utils.init(getApplicationContext());
         settingSp = new SPUtils(getString(R.string.settingSp));
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
-
+        rkGpioControlNative.init();
         //串口
         ComA = new SerialControl();
         DispQueue = new DispQueueThread();
@@ -156,7 +163,21 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         if(scan){
             openErWeiMa();
         }
+        startService(new Intent(this, ScreenService.class));
+        RxBus.getDefault().toObserverable(MyMessage.class).subscribe(myMessage -> {
+            int num = myMessage.getNum();
+            if(num == 0){
+                Log.i("sss","dalogDismiss");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                        isAuto = true;
+                    }
+                });
 
+            }
+        });
           /* 初始取得User可触碰屏幕的时间 */
         lastUpdateTime = new Date(System.currentTimeMillis());
 
@@ -322,11 +343,11 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         super.onDestroy();
         isAuto =false;
         closeCamera();
-//        adcNative.close(0);
-//        adcNative.close(2);
-//        rkGpioControlNative.close();
+        adcNative.close(0);
+        adcNative.close(2);
+        rkGpioControlNative.close();
         closeErWeiMa();
-
+        stopService( new Intent(this, ScreenService.class));
     }
 
     @Override
@@ -616,9 +637,17 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
      * 显示屏保
      */
     private void showScreenSaver(){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+//        Intent intent = new Intent(this, MainActivity.class);
+//        startActivity(intent);
+//        finish();
+        showDialog();
+    }
+
+    private void showDialog() {
+        dialog =  new Dialog(this,R.style.Dialog_Fullscreen);
+        dialog.setContentView(R.layout.activity_main);
+        dialog.show();
+        isAuto = false;
     }
 
     /*用户有操作的时候不断重置静止时间和上次操作的时间*/

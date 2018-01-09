@@ -23,8 +23,6 @@ public class ScreenService extends Service {
     private final int TIME =1000;
     private boolean isAuto = true;
     private Thread thread;
-
-    private boolean isFirst = true;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -36,6 +34,7 @@ public class ScreenService extends Service {
         @Override
         public void run() {
                 while (isAuto) {
+                    try {
                     // TODO: 2018/1/4 添加哪个IO口
                     int val = rkGpioControlNative.ReadGpio(4);
                     Log.i("sss",">>>>" + val);
@@ -49,13 +48,12 @@ public class ScreenService extends Service {
 //                            startActivity(intent);
 //                        }
                      //   onDataListener.onChangeMsg();
-                        if(isFirst){
                             MyMessage message = new MyMessage(val);
                             RxBus.getDefault().post(message);
-                            isFirst = false;
-                        }
+                            Thread.sleep(2000);
+
                     }
-                    try {
+
                         Thread.sleep(TIME);
                     } catch (InterruptedException e) {
                         e.printStackTrace();

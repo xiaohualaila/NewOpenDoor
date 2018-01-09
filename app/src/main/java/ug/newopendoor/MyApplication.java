@@ -19,7 +19,7 @@ public class MyApplication extends Application {
         super.onCreate();
         mContext = getApplicationContext();
         soundPoolUtil = SoundPoolUtil.getInstance(this);
-        rkGpioControlNative.init();
+
     }
     public static Context getContext() {
         return mContext;
