@@ -24,7 +24,7 @@ import ug.newopendoor.usbtest.UltralightCardModel;
 
 public class CommonService extends Service implements UltralightCardListener,M1CardListener {
     private int flag = 3;
-    private final int TIME = 1000;
+    private final int TIME = 800;
     //身份证
     private Thread thread;
     private boolean isAuto = true;
@@ -103,7 +103,7 @@ public class CommonService extends Service implements UltralightCardListener,M1C
                                 if(idCardData!= null){
                                     onDataListener.onIDCardMsg(idCardData);
                                 }
-                                Thread.sleep(1000);
+                                Thread.sleep(TIME);
                             }
                             if(three){
                                 flag = 1;
@@ -111,8 +111,7 @@ public class CommonService extends Service implements UltralightCardListener,M1C
                         }else if(flag == 3){
                             if(three){
                                 flag = 1;
-                            }
-                            if(idcard){
+                            }else {
                                 flag = 2;
                             }
                             Thread.sleep(2000);

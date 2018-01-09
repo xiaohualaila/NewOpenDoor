@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.decard.NDKMethod.BasicOper;
 import com.decard.entitys.IDCard;
 import java.io.BufferedOutputStream;
@@ -91,7 +92,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     private boolean isReading = false;
     private String device_id;
 
-    private SoundPoolUtil soundPoolUtil;
+
     /**
      * 3 身份证,1 Ultralight,4 M1,2串口
      */
@@ -148,13 +149,12 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         holder = camera_sf.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
         device_id = MyUtil.getDeviceID(this);//获取设备号
         Intent intent = getIntent();
         uitralight = intent.getBooleanExtra("uitralight",true);
         scan = intent.getBooleanExtra("scan",true);
-        idcard = intent.getBooleanExtra("idcard",false);
-        isHaveThree = intent.getBooleanExtra("isHaveThree",false);
+        idcard = intent.getBooleanExtra("idcard",true);
+        isHaveThree = intent.getBooleanExtra("isHaveThree",true);
         Utils.init(getApplicationContext());
         settingSp = new SPUtils(getString(R.string.settingSp));
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
@@ -163,12 +163,12 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         ComA = new SerialControl();
         DispQueue = new DispQueueThread();
         DispQueue.start();
-
-        soundPoolUtil = SoundPoolUtil.getInstance(this);
         if(scan){
             openErWeiMa();
         }
-
+        onOpenConnectPort();
+        Intent bindIntent1 = new Intent(this, CommonService.class);
+        bindService(bindIntent1, connection, BIND_AUTO_CREATE);
     }
 
     //打开设备
@@ -177,13 +177,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         int portSate = BasicOper.dc_open(USB, this, "", 0);
         if (portSate >= 0) {
             BasicOper.dc_beep(5);
-            Log.d("sss", "portSate:" + portSate + "设备已连接");
-
-            Intent bindIntent1 = new Intent(this, CommonService.class);
-            bindService(bindIntent1, connection, BIND_AUTO_CREATE);
 
         }else {
-            Toast.makeText(this,"设备没有连接上！",Toast.LENGTH_LONG).show();
+          //  Toast.makeText(this,"设备没有连接上！",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -215,10 +211,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
             Bitmap bm1 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
             BufferedOutputStream bos = null;
             try {
-                File file = new File(filePath);
-                if(!file.exists()){
-                    file.createNewFile();
-                }
                 bos = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
                 bm1.compress(Bitmap.CompressFormat.JPEG,30, bos);
                 bos.flush();
@@ -237,8 +229,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                 bm.recycle();
                 bm1.recycle();
                 startPreview();
-                Log.i("sss",">>>>filePath"+filePath);
-                Glide.with(CameraActivity.this).load(filePath).error(R.drawable.left_img).into(img1);
+                RequestOptions options = new RequestOptions()
+                        .error(R.drawable.left_img);
+                Glide.with(CameraActivity.this).load(filePath).apply(options).into(img1);
                 upload();
             }
         }
@@ -249,17 +242,18 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
      */
     private void  upload(){
         Log.i("xxxx","type >>" + type +"" +" ticketNum>>" + ticketNum);
+        File  file = new File(filePath);
+        if(!file.exists() ){
+            uploadFinish();
+            return;
+        }
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if(!isNetAble){
             Toast.makeText(this,"网路无法连接！",Toast.LENGTH_LONG).show();
             uploadFinish();
             return;
         }
-        File  file = new File(filePath);
-        if(!file.exists() ){
-            uploadFinish();
-            return;
-        }
+
         presenter.load(device_id,type,ticketNum,file);
     }
 
@@ -269,10 +263,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     private void uploadFinish() {
         isReading =false;
         ticketNum = "";
-        File file = new File(filePath);
-        if(file.exists()){
-            file.delete();
-        }
+
         if(isOpenDoor){
             isOpenDoor = false;
             handler.postDelayed(runnable,500);
@@ -283,6 +274,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                 text_card.setText("");
                 flag_tag.setImageResource(R.drawable.welcome);
                 img1.setImageResource(R.drawable.left_img);
+                File file = new File(filePath);
+                if(file.exists()){
+                    file.delete();
+                }
             }
         },1000);
     }
@@ -291,6 +286,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         @Override
         public void run() {
                 rkGpioControlNative.ControlGpio(1, 1);//关门
+                rkGpioControlNative.ControlGpio(4, 1);//变灯
         }
     };
 
@@ -307,14 +303,11 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     protected void onResume() {
         super.onResume();
         camera = openCamera();
-        onOpenConnectPort();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unbindService(connection);
-        onDisConnectPort();
     }
 
     @Override
@@ -323,6 +316,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         if(myBinder!=null){
             myBinder.stopThread();
         }
+        unbindService(connection);
+        onDisConnectPort();
         closeCamera();
         adcNative.close(0);
         adcNative.close(2);
@@ -487,18 +482,21 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     public void doError() {
         text_card.setText("请求失败！");
         flag_tag.setImageResource(R.drawable.not_pass);
-        soundPoolUtil.play(3);
+        SoundPoolUtil.play(3);
         uploadFinish();
     }
 
     @Override
     public void doSuccess(String Face_path) {
         if(!TextUtils.isEmpty(Face_path)){
-            Glide.with(CameraActivity.this).load(Face_path).error(R.drawable.left_img).into(img_server);
+            RequestOptions options = new RequestOptions()
+                    .error(R.drawable.left_img);
+            Glide.with(CameraActivity.this).load(Face_path).apply(options).into(img_server);
         }
         isOpenDoor = true;
         rkGpioControlNative.ControlGpio(1, 0);//开门
-         soundPoolUtil.play(4);
+        rkGpioControlNative.ControlGpio(4, 0);//亮灯
+        SoundPoolUtil.play(4);
         flag_tag.setImageResource(R.drawable.pass);
         uploadFinish();
     }
@@ -539,7 +537,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                         }
                     });
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(1000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

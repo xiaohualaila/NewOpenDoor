@@ -6,10 +6,13 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.cmm.rkadcreader.adcNative;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 
 import ug.newopendoor.activity.camera2.CameraActivity2;
+import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.util.CommonUtil;
+import ug.newopendoor.util.MyMessage;
 
 /**
  * Created by Administrator on 2017/11/24.
@@ -20,6 +23,8 @@ public class ScreenService extends Service {
     private final int TIME =1000;
     private boolean isAuto = true;
     private Thread thread;
+
+    private boolean isFirst = true;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -27,7 +32,7 @@ public class ScreenService extends Service {
         thread.start();
     }
 
-    Runnable runnable=new Runnable() {
+    Runnable runnable = new Runnable() {
         @Override
         public void run() {
                 while (isAuto) {
@@ -35,13 +40,19 @@ public class ScreenService extends Service {
                     int val = rkGpioControlNative.ReadGpio(4);
                     Log.i("sss",">>>>" + val);
                     if(val == 0){
-                        boolean isTop = CommonUtil.isForeground(ScreenService.this, CameraActivity2.class.getName());
-                        if(!isTop){
-                            Intent intent = new Intent(Intent.ACTION_MAIN);
-                            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                            intent.setClass(ScreenService.this,CameraActivity2.class);
-                            intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP|intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
+//                        boolean isTop = CommonUtil.isForeground(ScreenService.this, CameraActivity2.class.getName());
+//                        if(!isTop){
+//                            Intent intent = new Intent(Intent.ACTION_MAIN);
+//                            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+//                            intent.setClass(ScreenService.this,CameraActivity2.class);
+//                            intent.setFlags(intent.FLAG_ACTIVITY_CLEAR_TOP|intent.FLAG_ACTIVITY_NEW_TASK);
+//                            startActivity(intent);
+//                        }
+                     //   onDataListener.onChangeMsg();
+                        if(isFirst){
+                            MyMessage message = new MyMessage(val);
+                            RxBus.getDefault().post(message);
+                            isFirst = false;
                         }
                     }
                     try {

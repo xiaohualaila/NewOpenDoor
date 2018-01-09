@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'
 android {
     compileSdkVersion 26
     defaultConfig {
@@ -16,21 +15,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
-    }
-}
-greendao {
-    schemaVersion 1
-    daoPackage 'ug.newopendoor.greendaodemo.greendao.gen'//设置DaoMaster、DaoSession、Dao包名
-    targetGenDir 'src/main/java'//设置DaoMaster、DaoSession、Dao目录
-}
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -52,7 +42,9 @@ dependencies {
     compile 'com.trello:rxlifecycle:0.6.1'
     compile 'com.trello:rxlifecycle-components:0.6.1'
     compile 'com.jakewharton.rxbinding:rxbinding:1.0.1'
-    compile 'com.github.bumptech.glide:glide:3.5.2'
-    compile 'org.greenrobot:greendao:3.2.0'
+    implementation 'com.github.bumptech.glide:glide:4.4.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
+
     implementation files('libs/jxl.jar')
+
 }

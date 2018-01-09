@@ -14,7 +14,7 @@ import ug.newopendoor.R;
 
 public class SoundPoolUtil {
     private static SoundPoolUtil soundPoolUtil;
-    private SoundPool soundPool;
+    private static SoundPool soundPool;
 
 
     //单例模式
@@ -25,7 +25,7 @@ public class SoundPoolUtil {
     }
 
     private SoundPoolUtil(Context context) {
-        soundPool = new SoundPool(1, AudioManager.STREAM_SYSTEM, 0);
+        soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 10);
         //加载音频文件
         soundPool.load(context, R.raw.please_remake, 1);//4.请对准摄像头，再次拍照
         soundPool.load(context, R.raw.repeat_enter, 2);//3.重复刷卡，请退出通道
@@ -34,9 +34,9 @@ public class SoundPoolUtil {
 
     }
 
-    public void play(int number) {
+    public static void play(int number) {
         Log.d("tag", "number " + number);
         //播放音频
-        soundPool.play(number, 1, 1, 0, 0, 1);
+        soundPool.play(number, 0.9f, 0.9f, 0, 0, 1);
     }
 }

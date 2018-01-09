@@ -11,10 +11,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import ug.newopendoor.activity.base.BasePresenter;
-import ug.newopendoor.bean.WhiteList;
 import ug.newopendoor.retrofit.Api;
 import ug.newopendoor.retrofit.ConnectUrl;
-import ug.newopendoor.util.GetDataUtil;
 
 
 /**
@@ -56,16 +54,6 @@ public class CameraPressenter extends BasePresenter implements CameraContract.Pr
                            }
                        }
                     );
-//        else {//不联网
-//            String sStr = ticketNum.toUpperCase().trim();
-//            WhiteList whiteList =  GetDataUtil.getDataBooean(sStr);
-//            if(whiteList != null){
-//                view.doSuccess("");
-//            }else {
-//                view.doError();
-//            }
-//        }
-
     }
 
     private void jsonObjectResult(JSONObject jsonObject){

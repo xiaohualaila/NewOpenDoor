@@ -1,9 +1,7 @@
 package ug.newopendoor.activity.camera2;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -11,7 +9,6 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Surface;
@@ -22,10 +19,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.cmm.rkadcreader.adcNative;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
-import com.decard.entitys.IDCard;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,13 +35,12 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
 import ug.newopendoor.activity.MainActivity;
 import ug.newopendoor.service.CommonService;
-import ug.newopendoor.service.ScreenService;
+
 import ug.newopendoor.usbtest.ComBean;
 import ug.newopendoor.usbtest.ConstUtils;
 import ug.newopendoor.usbtest.M1CardListener;
@@ -90,8 +86,6 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     private SPUtils settingSp;
     private String USB="";
     private boolean isOpenDoor = false;
-    private CommonService myService;
-    private CommonService.MyBinder myBinder;
     private Handler handler = new Handler();
 
     private boolean uitralight = true;
@@ -104,7 +98,7 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     private boolean isReading = false;
     private String device_id;
 
-    private SoundPoolUtil soundPoolUtil;
+
 
     ////////////////////////////////////屏保部分代码
     private Handler mHandler01 = new Handler();
@@ -145,23 +139,20 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         holder = camera_sf.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        startService(new Intent(this, ScreenService.class));
         device_id = MyUtil.getDeviceID(this);//获取设备号
         Intent intent = getIntent();
         uitralight = intent.getBooleanExtra("uitralight",true);
         scan = intent.getBooleanExtra("scan",true);
-        idcard = intent.getBooleanExtra("idcard",false);
-        isHaveThree = intent.getBooleanExtra("isHaveThree",false);
+        idcard = intent.getBooleanExtra("idcard",true);
+        isHaveThree = intent.getBooleanExtra("isHaveThree",true);
         Utils.init(getApplicationContext());
         settingSp = new SPUtils(getString(R.string.settingSp));
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
-        rkGpioControlNative.init();
+
         //串口
         ComA = new SerialControl();
         DispQueue = new DispQueueThread();
         DispQueue.start();
-
-        soundPoolUtil = SoundPoolUtil.getInstance(this);
         if(scan){
             openErWeiMa();
         }
@@ -169,7 +160,6 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
           /* 初始取得User可触碰屏幕的时间 */
         lastUpdateTime = new Date(System.currentTimeMillis());
 
-        onOpenConnectPort();
         //身份证
         isAuto = true;
         thread = new Thread(task);
@@ -220,10 +210,6 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
             Bitmap bm1 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
             BufferedOutputStream bos = null;
             try {
-                File file = new File(filePath);
-                if(!file.exists()){
-                    file.createNewFile();
-                }
                 bos = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
                 bm1.compress(Bitmap.CompressFormat.JPEG,30, bos);
                 bos.flush();
@@ -242,7 +228,9 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
                 bm.recycle();
                 bm1.recycle();
                 startPreview();
-                Glide.with(CameraActivity2.this).load(filePath).error(R.drawable.left_img).into(img1);
+                RequestOptions options = new RequestOptions()
+                        .error(R.drawable.left_img);
+                Glide.with(CameraActivity2.this).load(filePath).apply(options).into(img1);
                 upload();
             }
         }
@@ -273,10 +261,7 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     private void uploadFinish() {
         isReading =false;
         ticketNum = "";
-        File file = new File(filePath);
-        if(file.exists()){
-            file.delete();
-        }
+
         if(isOpenDoor){
             isOpenDoor = false;
             handler.postDelayed(runnable,500);
@@ -287,6 +272,10 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
                 text_card.setText("");
                 flag_tag.setImageResource(R.drawable.welcome);
                 img1.setImageResource(R.drawable.left_img);
+                File file = new File(filePath);
+                if(file.exists()){
+                    file.delete();
+                }
             }
         },1000);
     }
@@ -294,7 +283,8 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
-                rkGpioControlNative.ControlGpio(1, 1);//关门
+            rkGpioControlNative.ControlGpio(1, 1);//关门
+            rkGpioControlNative.ControlGpio(4, 1);//亮灯
         }
     };
 
@@ -311,6 +301,7 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     protected void onResume() {
         super.onResume();
         camera = openCamera();
+        onOpenConnectPort();
         ///////////////////////////////////
         mHandler01.postAtTime(mTask01, intervalKeypadeSaver);
 
@@ -320,37 +311,30 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     @Override
     protected void onPause() {
         super.onPause();
+        onDisConnectPort();
           /*activity不可见的时候取消线程*/
         mHandler01.removeCallbacks(mTask01);
         mHandler02.removeCallbacks(mTask02);
-
-
-
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        isAuto =false;
         closeCamera();
-        adcNative.close(0);
-        adcNative.close(2);
-        rkGpioControlNative.close();
+//        adcNative.close(0);
+//        adcNative.close(2);
+//        rkGpioControlNative.close();
         closeErWeiMa();
-        stopService( new Intent(this, ScreenService.class));
 
-        // isAuto =false;
-        thread.interrupt();
-        onDisConnectPort();
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         try {
             camera.setPreviewDisplay(holder);
-        } catch (IOException exception) {
-
+        } catch (Exception exception) {
+            finish();
         }
     }
 
@@ -502,18 +486,21 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     public void doError() {
         text_card.setText("请求失败！");
         flag_tag.setImageResource(R.drawable.not_pass);
-        soundPoolUtil.play(3);
+        SoundPoolUtil.play(3);
         uploadFinish();
     }
 
     @Override
     public void doSuccess(String Face_path) {
         if(!TextUtils.isEmpty(Face_path)){
-            Glide.with(CameraActivity2.this).load(Face_path).error(R.drawable.left_img).into(img_server);
+            RequestOptions options = new RequestOptions()
+                    .error(R.drawable.left_img);
+            Glide.with(CameraActivity2.this).load(Face_path).apply(options).into(img_server);
         }
         isOpenDoor = true;
         rkGpioControlNative.ControlGpio(1, 0);//开门
-         soundPoolUtil.play(4);
+        rkGpioControlNative.ControlGpio(4, 0);//亮灯
+        SoundPoolUtil.play(4);
         flag_tag.setImageResource(R.drawable.pass);
         uploadFinish();
     }
@@ -629,10 +616,9 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
      * 显示屏保
      */
     private void showScreenSaver(){
-        Log.d("danxx", "显示屏保------>");
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
-
+        finish();
     }
 
     /*用户有操作的时候不断重置静止时间和上次操作的时间*/
