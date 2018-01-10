@@ -286,7 +286,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         @Override
         public void run() {
                 rkGpioControlNative.ControlGpio(1, 1);//关门
-                rkGpioControlNative.ControlGpio(4, 1);//变灯
+                rkGpioControlNative.ControlGpio(20, 1);//变灯
         }
     };
 
@@ -497,7 +497,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         }
         isOpenDoor = true;
         rkGpioControlNative.ControlGpio(1, 0);//开门
-        rkGpioControlNative.ControlGpio(4, 0);//亮灯
+        rkGpioControlNative.ControlGpio(20, 0);//亮灯
         SoundPoolUtil.play(4);
         flag_tag.setImageResource(R.drawable.pass);
         uploadFinish();
