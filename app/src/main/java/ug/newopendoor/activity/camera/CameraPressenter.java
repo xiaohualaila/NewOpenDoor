@@ -64,7 +64,9 @@ public class CameraPressenter extends BasePresenter implements CameraContract.Pr
                 if(result.equals("1")){
                        String imageStr = jsonObject.optString("Face_path");
                     view.doSuccess(imageStr);
-                }else{
+                }else if(result.equals("5")){
+                    view.doFaceError();
+                } else{
                     view.doError();
                 }
             }else {

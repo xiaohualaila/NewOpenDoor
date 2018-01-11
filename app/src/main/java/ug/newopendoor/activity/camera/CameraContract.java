@@ -13,6 +13,7 @@ import ug.newopendoor.activity.base.IBaseView;
 public interface CameraContract {
     interface View extends IBaseView<Presenter> {
         void doError();
+        void doFaceError();
         void doSuccess(String Face_path);
     }
 

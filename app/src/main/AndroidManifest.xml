@@ -34,8 +34,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-
         </activity>
         <activity android:name=".activity.camera2.CameraActivity2" >
 
@@ -47,8 +45,12 @@
         <activity android:name=".activity.SetupActivity">
 
         </activity>
+        <activity android:name=".activity.camera3.FragmentActivity">
+
+        </activity>
         <service android:name=".service.CommonService"/>
         <service android:name=".service.ScreenService"/>
+        <service android:name=".service.CommonThreeService"/>
         <receiver android:name=".broadcastReceiver.BootBroadcastReceiver"
             android:enabled="true"
             android:exported="true"

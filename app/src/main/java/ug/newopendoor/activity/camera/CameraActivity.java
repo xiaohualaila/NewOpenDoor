@@ -241,7 +241,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
      * 上传信息
      */
     private void  upload(){
-        Log.i("sss","type >>" + type +"" +" ticketNum>>" + ticketNum);
+       // Log.i("sss","type >>" + type +"" +" ticketNum>>" + ticketNum);
         File  file = new File(filePath);
         if(!file.exists() ){
             uploadFinish();
@@ -483,6 +483,14 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     @Override
     public void doError() {
       //  text_card.setText("请求失败！");
+        flag_tag.setImageResource(R.drawable.not_pass);
+        SoundPoolUtil.play(3);
+        uploadFinish();
+    }
+
+    @Override
+    public void doFaceError() {
+        // TODO: 2018/1/11 改成人脸验证失败
         flag_tag.setImageResource(R.drawable.not_pass);
         SoundPoolUtil.play(3);
         uploadFinish();

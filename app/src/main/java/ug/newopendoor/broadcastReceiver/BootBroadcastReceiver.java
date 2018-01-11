@@ -7,6 +7,7 @@ import android.content.Intent;
 import ug.newopendoor.activity.SetupActivity;
 import ug.newopendoor.activity.camera.CameraActivity;
 import ug.newopendoor.activity.camera2.CameraActivity2;
+import ug.newopendoor.activity.camera3.FragmentActivity;
 
 
 /**
