@@ -50,7 +50,7 @@ public class ScreenService extends Service {
                      //   onDataListener.onChangeMsg();
                             MyMessage message = new MyMessage(val);
                             RxBus.getDefault().post(message);
-                            Thread.sleep(2000);
+                            Thread.sleep(4000);
 
                     }
 

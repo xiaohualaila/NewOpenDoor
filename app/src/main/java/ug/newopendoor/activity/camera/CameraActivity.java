@@ -490,9 +490,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
 
     @Override
     public void doFaceError() {
-        // TODO: 2018/1/11 改成人脸验证失败
-        flag_tag.setImageResource(R.drawable.not_pass);
-        SoundPoolUtil.play(3);
+        flag_tag.setImageResource(R.drawable.face_error);
+        SoundPoolUtil.play(1);
         uploadFinish();
     }
 
@@ -501,7 +500,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         if(!TextUtils.isEmpty(Face_path)){
             RequestOptions options = new RequestOptions()
                     .error(R.drawable.left_img);
-            Glide.with(CameraActivity.this).load(Face_path).apply(options).into(img_server);
+            if(!TextUtils.isEmpty(Face_path)){
+                Glide.with(CameraActivity.this).load(Face_path).apply(options).into(img_server);
+            }
         }
         isOpenDoor = true;
         rkGpioControlNative.ControlGpio(1, 0);//开门

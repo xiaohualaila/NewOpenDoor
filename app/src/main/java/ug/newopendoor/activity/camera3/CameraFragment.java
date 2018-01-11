@@ -1,6 +1,7 @@
 package ug.newopendoor.activity.camera3;
 
 
+import android.arch.lifecycle.LifecycleOwner;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -96,11 +97,12 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(getActivity());//获取设备号
         RxBus.getDefault().toObserverable(Ticket.class).subscribe(myMessage -> {
-            type = myMessage.getType();
-            if(type != 2 ){
-                BasicOper.dc_beep(5);
-            }
+            Log.i("sss","isReading>>>>  " +isReading );
             if(!isReading){
+                type = myMessage.getType();
+                if(type != 2 ){
+                    BasicOper.dc_beep(5);
+                }
                 if(type==1){
                     ticketNum = myMessage.getNum().trim() + "00";
                 }else {
@@ -201,6 +203,8 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
                 if(result.equals("1")){
                     String imageStr = jsonObject.optString("Face_path");
                     doSuccess(imageStr);
+                }else if(result.equals("5")){
+                    doFaceError();
                 }else{
                     doError();
                 }
@@ -212,6 +216,12 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
         }
     }
 
+    public void doFaceError() {
+        flag_tag.setImageResource(R.drawable.face_error);
+        SoundPoolUtil.play(1);
+        uploadFinish();
+    }
+
     public void doError() {
         flag_tag.setImageResource(R.drawable.not_pass);
         SoundPoolUtil.play(3);
@@ -221,7 +231,9 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
         if(!TextUtils.isEmpty(Face_path)){
             RequestOptions options = new RequestOptions()
                     .error(R.drawable.left_img);
-            Glide.with(getActivity()).load(Face_path).apply(options).into(img_server);
+            if(!TextUtils.isEmpty(Face_path)){
+                Glide.with(getActivity()).load(Face_path).apply(options).into(img_server);
+            }
         }
         isOpenDoor = true;
         rkGpioControlNative.ControlGpio(1, 0);//开门
@@ -280,6 +292,16 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
     public void onDestroy() {
         super.onDestroy();
         closeCamera();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {
+            isReading = true;
+        } else {
+            isReading = false;
+        }
     }
 
     @Override

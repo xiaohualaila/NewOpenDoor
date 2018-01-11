@@ -88,9 +88,8 @@ public class FragmentActivity extends BaseAppCompatActivity {
             int num = myMessage.getNum();
             if(num == 0){
                 updateUserActionTime();
-                isScan = true;
                 switchContent(cameraFragment);
-               Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>>>");
+                isScan = true;
             }
         });
     }
@@ -242,7 +241,6 @@ public class FragmentActivity extends BaseAppCompatActivity {
                                         Ticket ticket = new Ticket(2,ticketNum);
                                         RxBus.getDefault().post(ticket);
                                         updateUserActionTime();
-                                        Log.i("sss",">>>>>>>>scan>>>>>>>>>" );
                                     }
                                 } catch (Exception e) {
                                     e.printStackTrace();
