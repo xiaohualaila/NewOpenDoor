@@ -2,11 +2,8 @@ package ug.newopendoor.activity.camera2;
 
 import android.text.TextUtils;
 import android.util.Log;
-
 import org.json.JSONObject;
-
 import java.io.File;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -57,15 +54,6 @@ public class CameraPressenter2 extends BasePresenter implements CameraContract2.
                            }
                        }
                     );
-//        else {//不联网
-//            String sStr = ticketNum.toUpperCase().trim();
-//            WhiteList whiteList =  GetDataUtil.getDataBooean(sStr);
-//            if(whiteList != null){
-//                view.doSuccess("");
-//            }else {
-//                view.doError();
-//            }
-//        }
 
     }
 

@@ -3,7 +3,6 @@ package ug.newopendoor.broadcastReceiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-
 import ug.newopendoor.activity.SetupActivity;
 import ug.newopendoor.activity.camera.CameraActivity;
 import ug.newopendoor.activity.camera2.CameraActivity2;

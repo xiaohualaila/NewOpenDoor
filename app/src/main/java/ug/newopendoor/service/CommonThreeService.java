@@ -2,17 +2,13 @@ package ug.newopendoor.service;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.decard.NDKMethod.BasicOper;
-
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.usbtest.ConstUtils;
 import ug.newopendoor.usbtest.M1CardListener;
@@ -21,7 +17,6 @@ import ug.newopendoor.usbtest.MDSEUtils;
 import ug.newopendoor.usbtest.SectorDataBean;
 import ug.newopendoor.usbtest.UltralightCardListener;
 import ug.newopendoor.usbtest.UltralightCardModel;
-import ug.newopendoor.util.MyMessage;
 import ug.newopendoor.util.Ticket;
 
 /**

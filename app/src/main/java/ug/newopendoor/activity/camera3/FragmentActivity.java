@@ -1,21 +1,15 @@
 package ug.newopendoor.activity.camera3;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Handler;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
 import com.cmm.rkadcreader.adcNative;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
-import com.decard.entitys.IDCard;
-
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Date;
@@ -24,7 +18,6 @@ import java.util.Queue;
 import butterknife.BindView;
 import ug.newopendoor.R;
 import ug.newopendoor.activity.base.BaseAppCompatActivity;
-import ug.newopendoor.activity.camera2.CameraActivity2;
 import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.service.CommonThreeService;
 import ug.newopendoor.service.ScreenService;

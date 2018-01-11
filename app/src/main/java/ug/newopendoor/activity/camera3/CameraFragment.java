@@ -1,8 +1,5 @@
 package ug.newopendoor.activity.camera3;
 
-
-import android.arch.lifecycle.LifecycleOwner;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -17,23 +14,17 @@ import android.view.SurfaceView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.cmm.rkadcreader.adcNative;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
-
 import org.json.JSONObject;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
-
 import butterknife.BindView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -43,13 +34,10 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import ug.newopendoor.R;
 import ug.newopendoor.activity.base.BaseFragment;
-import ug.newopendoor.activity.camera.CameraActivity;
-import ug.newopendoor.activity.camera2.CameraActivity2;
 import ug.newopendoor.retrofit.Api;
 import ug.newopendoor.retrofit.ConnectUrl;
 import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.util.FileUtil;
-import ug.newopendoor.util.MyMessage;
 import ug.newopendoor.util.MyUtil;
 import ug.newopendoor.util.RoundImageView;
 import ug.newopendoor.util.SoundPoolUtil;

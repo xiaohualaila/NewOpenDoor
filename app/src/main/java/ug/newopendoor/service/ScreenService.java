@@ -5,13 +5,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
-import com.cmm.rkadcreader.adcNative;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
-
-import ug.newopendoor.activity.camera2.CameraActivity2;
 import ug.newopendoor.rx.RxBus;
-import ug.newopendoor.util.CommonUtil;
 import ug.newopendoor.util.MyMessage;
 
 /**
@@ -51,9 +46,7 @@ public class ScreenService extends Service {
                             MyMessage message = new MyMessage(val);
                             RxBus.getDefault().post(message);
                             Thread.sleep(4000);
-
                     }
-
                         Thread.sleep(TIME);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
