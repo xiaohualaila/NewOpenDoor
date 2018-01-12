@@ -267,6 +267,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         if(isOpenDoor){
             isOpenDoor = false;
             handler.postDelayed(runnable,500);
+            handler.postDelayed(runnable1,1000);
         }
         handler.postDelayed(new Runnable() {
             @Override
@@ -280,13 +281,19 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                 }
             }
         },1000);
+
     }
 
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
                 rkGpioControlNative.ControlGpio(1, 1);//关门
-                rkGpioControlNative.ControlGpio(20, 1);//变灯
+        }
+    };
+    Runnable runnable1 = new Runnable() {
+        @Override
+        public void run() {
+            rkGpioControlNative.ControlGpio(20, 1);//变灯
         }
     };
 
@@ -484,6 +491,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     public void doError() {
       //  text_card.setText("请求失败！");
         flag_tag.setImageResource(R.drawable.not_pass);
+        rkGpioControlNative.ControlGpio(20, 0);//亮灯
         SoundPoolUtil.play(3);
         uploadFinish();
     }
@@ -491,6 +499,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     @Override
     public void doFaceError() {
         flag_tag.setImageResource(R.drawable.face_error);
+        rkGpioControlNative.ControlGpio(20, 0);//亮灯
         SoundPoolUtil.play(1);
         uploadFinish();
     }
@@ -506,7 +515,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         }
         isOpenDoor = true;
         rkGpioControlNative.ControlGpio(1, 0);//开门
-        rkGpioControlNative.ControlGpio(20, 0);//亮灯
         SoundPoolUtil.play(4);
         flag_tag.setImageResource(R.drawable.pass);
         uploadFinish();
