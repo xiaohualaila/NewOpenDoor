@@ -49,7 +49,7 @@ public class CameraPressenter extends BasePresenter implements CameraContract.Pr
                        }, new Action1<Throwable>() {
                            @Override
                            public void call(Throwable throwable) {
-                               Log.i("sss",throwable.toString());
+                             //  Log.i("sss",throwable.toString());
                                view.doError();
                            }
                        }

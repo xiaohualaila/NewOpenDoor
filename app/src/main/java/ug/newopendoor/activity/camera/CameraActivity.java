@@ -257,8 +257,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         presenter.load(device_id,type,ticketNum,file);
     }
 
-
-
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
         opts.inJustDecodeBounds = false;
         opts.inPurgeable = true;
@@ -269,15 +267,25 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        onOpenConnectPort();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         camera = openCamera();
-        onOpenConnectPort();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         onDisConnectPort();
     }
 
