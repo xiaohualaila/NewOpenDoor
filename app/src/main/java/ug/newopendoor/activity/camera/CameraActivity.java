@@ -92,6 +92,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     private boolean isReading = false;
     private String device_id;
 
+    private boolean isLight = false;
 
     /**
      * 3 身份证,1 Ultralight,4 M1,2串口
@@ -462,6 +463,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
       //  text_card.setText("请求失败！");
         flag_tag.setImageResource(R.drawable.not_pass);
         rkGpioControlNative.ControlGpio(20, 0);//亮灯
+        isLight = true;
         SoundPoolUtil.play(3);
         uploadFinish();
     }
@@ -470,6 +472,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     public void doFaceError() {
         flag_tag.setImageResource(R.drawable.face_error);
         rkGpioControlNative.ControlGpio(20, 0);//亮灯
+        isLight = true;
         SoundPoolUtil.play(1);
         uploadFinish();
     }
@@ -497,8 +500,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         if(isOpenDoor){
             isOpenDoor = false;
             handler.postDelayed(runnable,500);
-        }else {
-            rkGpioControlNative.ControlGpio(20, 1);//变灯
         }
 
         handler.postDelayed(new Runnable() {
@@ -512,6 +513,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                 if(file.exists()){
                     file.delete();
                 }
+              if(isLight){
+                  rkGpioControlNative.ControlGpio(20, 1);//变灯
+                  isLight = false;
+              }
             }
         },1000);
 
