@@ -83,7 +83,6 @@ public class CommonService extends Service implements UltralightCardListener,M1C
                                         isHaveOne = true;
                                         model2.bt_read_card(ConstUtils.BT_READ_CARD,keyType,0);
                                     }
-                                    Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>M1");
                                     Thread.sleep(TIME);
                                 }
                                 if(idcard){
@@ -114,7 +113,7 @@ public class CommonService extends Service implements UltralightCardListener,M1C
                             }else {
                                 flag = 2;
                             }
-                            Thread.sleep(2000);
+                            Thread.sleep(4000);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -130,7 +129,10 @@ public class CommonService extends Service implements UltralightCardListener,M1C
         if(!result.equals("1003|无卡或无法寻到卡片")){
             if(!result.equals("0001|操作失败")){
                 if(!result.equals("FFFF|操作失败")){
-                    onDataListener.onBackMsg(1,result);
+                    if(!result.equals("1001|设备未打开")){
+                        Log.i("sss",">>>>result"+result);
+                        onDataListener.onBackMsg(1,result);
+                    }
                 }
             }
         }

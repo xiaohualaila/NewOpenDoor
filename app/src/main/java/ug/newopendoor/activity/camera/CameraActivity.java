@@ -79,6 +79,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     private String USB="";
     private boolean isOpenDoor = false;
     private boolean isLight = false;
+
     private CommonService myService;
     private CommonService.MyBinder myBinder;
     private Handler handler = new Handler();
@@ -133,6 +134,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                             ticketNum = result.trim();
                         }
                         takePhoto();
+                        Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+ticketNum);
                     }
                 }
             });
@@ -166,7 +168,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         if(scan){
             openErWeiMa();
         }
-
         Intent bindIntent1 = new Intent(this, CommonService.class);
         bindService(bindIntent1, connection, BIND_AUTO_CREATE);
     }
@@ -179,7 +180,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
             BasicOper.dc_beep(5);
 
         }else {
-          //  Toast.makeText(this,"设备没有连接上！",Toast.LENGTH_LONG).show();
+           // Toast.makeText(this,"设备没有连接上！",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -286,7 +287,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
             myBinder.stopThread();
         }
         unbindService(connection);
-
         closeCamera();
         adcNative.close(0);
         adcNative.close(2);
