@@ -78,6 +78,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     private SPUtils settingSp;
     private String USB="";
     private boolean isOpenDoor = false;
+    private boolean isLight = false;
     private CommonService myService;
     private CommonService.MyBinder myBinder;
     private Handler handler = new Handler();
@@ -91,8 +92,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     DispQueueThread DispQueue;
     private boolean isReading = false;
     private String device_id;
-
-    private boolean isLight = false;
 
     /**
      * 3 身份证,1 Ultralight,4 M1,2串口

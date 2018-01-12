@@ -71,6 +71,7 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
     private String ticketNum;
     private int type;
     private boolean isOpenDoor = false;
+    private boolean isLight = false;
     private Handler handler = new Handler();
 
     @Override
@@ -207,6 +208,7 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
     public void doFaceError() {
         flag_tag.setImageResource(R.drawable.face_error);
         rkGpioControlNative.ControlGpio(20, 0);//亮灯
+        isLight = true;
         SoundPoolUtil.play(1);
         uploadFinish();
     }
@@ -214,6 +216,7 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
     public void doError() {
         flag_tag.setImageResource(R.drawable.not_pass);
         rkGpioControlNative.ControlGpio(20, 0);//亮灯
+        isLight = true;
         SoundPoolUtil.play(3);
         uploadFinish();
     }
@@ -255,7 +258,10 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
                 if(file.exists()){
                     file.delete();
                 }
-
+                if(isLight){
+                    rkGpioControlNative.ControlGpio(20, 1);//变灯
+                    isLight = false;
+                }
             }
         },1000);
     }
