@@ -257,45 +257,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         presenter.load(device_id,type,ticketNum,file);
     }
 
-    /**
-     * 0.5秒关门
-     */
-    private void uploadFinish() {
-        isReading =false;
-        ticketNum = "";
 
-        if(isOpenDoor){
-            isOpenDoor = false;
-            handler.postDelayed(runnable,500);
-            handler.postDelayed(runnable1,1000);
-        }
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                text_card.setText("");
-                flag_tag.setImageResource(R.drawable.welcome);
-                img1.setImageResource(R.drawable.left_img);
-                File file = new File(filePath);
-                if(file.exists()){
-                    file.delete();
-                }
-            }
-        },1000);
-
-    }
-
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-                rkGpioControlNative.ControlGpio(1, 1);//关门
-        }
-    };
-    Runnable runnable1 = new Runnable() {
-        @Override
-        public void run() {
-            rkGpioControlNative.ControlGpio(20, 1);//变灯
-        }
-    };
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
         opts.inJustDecodeBounds = false;
@@ -519,6 +481,40 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         flag_tag.setImageResource(R.drawable.pass);
         uploadFinish();
     }
+
+    private void uploadFinish() {
+        isReading =false;
+        ticketNum = "";
+
+        if(isOpenDoor){
+            isOpenDoor = false;
+            handler.postDelayed(runnable,500);
+        }else {
+            rkGpioControlNative.ControlGpio(20, 1);//变灯
+        }
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                text_card.setText("");
+                flag_tag.setImageResource(R.drawable.welcome);
+                img1.setImageResource(R.drawable.left_img);
+                File file = new File(filePath);
+                if(file.exists()){
+                    file.delete();
+                }
+            }
+        },1000);
+
+    }
+
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            rkGpioControlNative.ControlGpio(1, 1);//关门
+        }
+    };
+
 
     private class SerialControl extends SerialHelper{
 
