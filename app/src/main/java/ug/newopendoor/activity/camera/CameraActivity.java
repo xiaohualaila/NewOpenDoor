@@ -267,25 +267,15 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        onOpenConnectPort();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         camera = openCamera();
+        onOpenConnectPort();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
         onDisConnectPort();
     }
 
