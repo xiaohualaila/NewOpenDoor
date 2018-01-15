@@ -13,13 +13,11 @@ import ug.newopendoor.util.SoundPoolUtil;
  */
 public class MyApplication extends Application {
     private static Context mContext;
-    private SoundPoolUtil soundPoolUtil;
     @Override
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
-        soundPoolUtil = SoundPoolUtil.getInstance(this);
-
+       SoundPoolUtil.getInstance(this);
     }
     public static Context getContext() {
         return mContext;

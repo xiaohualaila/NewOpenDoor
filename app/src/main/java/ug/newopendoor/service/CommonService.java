@@ -37,9 +37,9 @@ public class CommonService extends Service implements UltralightCardListener,M1C
     private M1CardModel model2;
     private boolean isHaveOne = false;
 
-    private boolean uitralight = true;
-    private boolean idcard = false;
-    private boolean three = false;
+    public boolean uitralight = true;
+    public boolean idcard = false;
+    public boolean three = false;
 
     private OnDataListener onDataListener;
 
@@ -63,7 +63,6 @@ public class CommonService extends Service implements UltralightCardListener,M1C
     public void onDestroy() {
         super.onDestroy();
         isAuto =false;
-        Log.i("sss","service onDestroy");
     }
 
     Runnable task = new Runnable() {
@@ -72,48 +71,36 @@ public class CommonService extends Service implements UltralightCardListener,M1C
                 while (isAuto) {
                     lock.lock();
                     try {
-                        if(flag == 1){//UltralightCard
-                                if(uitralight){
-                                    model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-                                    Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
-                                    Thread.sleep(TIME);
-                                }else {//M1
-                                    if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
-                                        final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
-                                        isHaveOne = true;
-                                        model2.bt_read_card(ConstUtils.BT_READ_CARD,keyType,0);
-                                    }
-                                    Thread.sleep(TIME);
-                                }
-                                if(idcard){
-                                    flag = 2;
-                                }
-                        }else if(flag == 2){//身份证
-                            if(idcard){
-                                Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>身份证");
-                                com.decard.entitys.IDCard idCardData;
-                                if (!choose) {
-                                    //标准协议
-                                    idCardData = BasicOper.dc_get_i_d_raw_info();
-                                } else {
-                                    //公安部协议
-                                    idCardData = BasicOper.dc_SamAReadCardInfo(1);
-                                }
-                                if(idCardData!= null){
-                                    onDataListener.onIDCardMsg(idCardData);
+                        //UltralightCard
+                        if(three){
+                            if(uitralight){
+                                model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
+                                Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
+                                Thread.sleep(TIME);
+                            }else {//M1
+                                if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
+                                    final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
+                                    isHaveOne = true;
+                                    model2.bt_read_card(ConstUtils.BT_READ_CARD,keyType,0);
                                 }
                                 Thread.sleep(TIME);
                             }
-                            if(three){
-                                flag = 1;
+                        }
+                        //身份证
+                        if(idcard){
+                            Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>身份证");
+                            com.decard.entitys.IDCard idCardData;
+                            if (!choose) {
+                                //标准协议
+                                idCardData = BasicOper.dc_get_i_d_raw_info();
+                            } else {
+                                //公安部协议
+                                idCardData = BasicOper.dc_SamAReadCardInfo(1);
                             }
-                        }else if(flag == 3){
-                            if(three){
-                                flag = 1;
-                            }else {
-                                flag = 2;
+                            if(idCardData!= null){
+                                onDataListener.onIDCardMsg(idCardData);
                             }
-                            Thread.sleep(4000);
+                            Thread.sleep(TIME);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -130,7 +117,6 @@ public class CommonService extends Service implements UltralightCardListener,M1C
             if(!result.equals("0001|操作失败")){
                 if(!result.equals("FFFF|操作失败")){
                     if(!result.equals("1001|设备未打开")){
-                        Log.i("sss",">>>>result"+result);
                         onDataListener.onBackMsg(1,result);
                     }
                 }

@@ -87,7 +87,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     private boolean uitralight = true;
     private boolean scan = true;
     private boolean idcard = false;
-    private boolean isHaveThree = false;
+    private boolean isHaveThree = true;
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
@@ -134,7 +134,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                             ticketNum = result.trim();
                         }
                         takePhoto();
-                        Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+ticketNum);
                     }
                 }
             });
@@ -178,7 +177,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         int portSate = BasicOper.dc_open(USB, this, "", 0);
         if (portSate >= 0) {
             BasicOper.dc_beep(5);
-
         }else {
            // Toast.makeText(this,"设备没有连接上！",Toast.LENGTH_LONG).show();
         }
@@ -287,6 +285,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
             myBinder.stopThread();
         }
         unbindService(connection);
+
         closeCamera();
         adcNative.close(0);
         adcNative.close(2);
@@ -483,7 +482,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     }
 
     private void uploadFinish() {
-        isReading =false;
+        isReading = false;
         ticketNum = "";
 
         if(isOpenDoor){
@@ -502,10 +501,11 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                 if(file.exists()){
                     file.delete();
                 }
-              if(isLight){
-                  rkGpioControlNative.ControlGpio(20, 1);//变灯
-                  isLight = false;
-              }
+                //变灯
+                if(isLight){
+                    rkGpioControlNative.ControlGpio(20, 1);
+                    isLight = false;
+                }
             }
         },1000);
 
@@ -540,22 +540,19 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
             while (!isInterrupted()) {
                 final ComBean ComData;
                 while ((ComData = QueueList.poll()) != null) {
-                    runOnUiThread(new Runnable() {
-                        public void run() {
                             if(!isReading){
                                 isReading =true;
                                 try {
                                     ticketNum = new String(ComData.bRec).trim();
+                                    Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+ticketNum);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                                 type = 2;
                                 takePhoto();
                             }
-                        }
-                    });
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(800);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
