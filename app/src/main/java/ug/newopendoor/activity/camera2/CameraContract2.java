@@ -13,11 +13,12 @@ import ug.newopendoor.activity.base.IBaseView;
 public interface CameraContract2 {
     interface View extends IBaseView<Presenter> {
         void doError();
+
         void doSuccess(String Face_path);
     }
 
     interface Presenter extends IBasePresenter {
-       void load(String device_id, int type, String ticketNum, File newFile);
+        void load(String device_id, int type, String ticketNum, File newFile);
 
     }
 }

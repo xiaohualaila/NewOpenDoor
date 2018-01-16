@@ -9,7 +9,7 @@ import ug.newopendoor.activity.base.BaseFragment;
  * Created by dhht on 16/9/29.
  */
 
-public class MainFragment extends BaseFragment  {
+public class MainFragment extends BaseFragment {
 
 
     @Override

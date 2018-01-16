@@ -7,14 +7,17 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
 import com.cmm.rkadcreader.adcNative;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
+
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
+
 import butterknife.BindView;
 import ug.newopendoor.R;
 import ug.newopendoor.activity.base.BaseAppCompatActivity;
@@ -39,10 +42,10 @@ public class FragmentActivity extends BaseAppCompatActivity {
     private Fragment mCurrentFrag;
     private FragmentManager fm;
     private Fragment cameraFragment;
-    private Fragment  mainFragment;
+    private Fragment mainFragment;
 
     private SPUtils settingSp;
-    private String USB="";
+    private String USB = "";
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
@@ -79,7 +82,7 @@ public class FragmentActivity extends BaseAppCompatActivity {
         lastUpdateTime = new Date(System.currentTimeMillis());
         RxBus.getDefault().toObserverable(MyMessage.class).subscribe(myMessage -> {
             int num = myMessage.getNum();
-            if(num == 0){
+            if (num == 0) {
                 updateUserActionTime();
                 switchContent(cameraFragment);
                 isScan = true;
@@ -98,7 +101,7 @@ public class FragmentActivity extends BaseAppCompatActivity {
         DispQueue.start();
         openErWeiMa();
         onOpenConnectPort();
-        startService(new Intent(this,CommonThreeService.class));
+        startService(new Intent(this, CommonThreeService.class));
         startService(new Intent(this, ScreenService.class));
     }
 
@@ -140,12 +143,11 @@ public class FragmentActivity extends BaseAppCompatActivity {
     }
 
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopService(new Intent(this,CommonThreeService.class));
-        stopService( new Intent(this, ScreenService.class));
+        stopService(new Intent(this, CommonThreeService.class));
+        stopService(new Intent(this, ScreenService.class));
         onDisConnectPort();
 
         adcNative.close(0);
@@ -157,34 +159,36 @@ public class FragmentActivity extends BaseAppCompatActivity {
     public void closeErWeiMa() {
         CloseComPort(ComA);
     }
-    private void CloseComPort(SerialHelper ComPort){
-        if (ComPort!=null){
+
+    private void CloseComPort(SerialHelper ComPort) {
+        if (ComPort != null) {
             ComPort.stopSend();
             ComPort.close();
         }
     }
 
     //打开设备
-    public void onOpenConnectPort(){
+    public void onOpenConnectPort() {
         BasicOper.dc_AUSB_ReqPermission(this);
         int portSate = BasicOper.dc_open(USB, this, "", 0);
         if (portSate >= 0) {
             BasicOper.dc_beep(5);
 
-        }else {
-             Toast.makeText(this,"设备没有连接上！",Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "设备没有连接上！", Toast.LENGTH_LONG).show();
         }
     }
 
     //关闭设备
     public void onDisConnectPort() {
         int close_status = BasicOper.dc_exit();
-        if(close_status>=0){
+        if (close_status >= 0) {
             //   Log.i("sss","设备关闭");
-        }else {
+        } else {
             //  Log.i("sss","Port has closed");
         }
     }
+
     //打开串口
     public void openErWeiMa() {
         ComA.setPort("/dev/ttyS4");
@@ -192,27 +196,25 @@ public class FragmentActivity extends BaseAppCompatActivity {
         OpenComPort(ComA);
     }
 
-    private void OpenComPort(SerialHelper ComPort){
-        try
-        {
+    private void OpenComPort(SerialHelper ComPort) {
+        try {
             ComPort.open();
         } catch (SecurityException e) {
-            Log.i("xxx","SecurityException" + e.toString());
+            Log.i("xxx", "SecurityException" + e.toString());
         } catch (IOException e) {
-            Log.i("xxx","IOException" + e.toString());
+            Log.i("xxx", "IOException" + e.toString());
         } catch (InvalidParameterException e) {
-            Log.i("xxx","InvalidParameterException" + e.toString());
+            Log.i("xxx", "InvalidParameterException" + e.toString());
         }
     }
 
     private class SerialControl extends SerialHelper {
 
-        public SerialControl(){
+        public SerialControl() {
         }
 
         @Override
-        protected void onDataReceived(final ComBean ComRecData)
-        {
+        protected void onDataReceived(final ComBean ComRecData) {
             DispQueue.AddQueue(ComRecData);
         }
     }
@@ -228,16 +230,16 @@ public class FragmentActivity extends BaseAppCompatActivity {
                 while ((ComData = QueueList.poll()) != null) {
                     runOnUiThread(new Runnable() {
                         public void run() {
-                                try {
-                                    if(isScan){
-                                        String ticketNum = new String(ComData.bRec).trim();
-                                        Ticket ticket = new Ticket(2,ticketNum);
-                                        RxBus.getDefault().post(ticket);
-                                        updateUserActionTime();
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                            try {
+                                if (isScan) {
+                                    String ticketNum = new String(ComData.bRec).trim();
+                                    Ticket ticket = new Ticket(2, ticketNum);
+                                    RxBus.getDefault().post(ticket);
+                                    updateUserActionTime();
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
                     try {
@@ -273,16 +275,16 @@ public class FragmentActivity extends BaseAppCompatActivity {
             /*将静止时间毫秒换算成秒*/
             float timePeriodSecond = ((float) timePeriod / 1000);
 
-            if(timePeriodSecond > mHoldStillTime){
-                if(isRunScreenSaver == false){  //说明没有进入屏保
+            if (timePeriodSecond > mHoldStillTime) {
+                if (isRunScreenSaver == false) {  //说明没有进入屏保
                     /* 启动线程去显示屏保 */
                     mHandler02.postAtTime(mTask02, intervalScreenSaver);
                     /*显示屏保置为true*/
                     isRunScreenSaver = true;
-                }else{
+                } else {
                     /*屏保正在显示中*/
                 }
-            }else{
+            } else {
                 /*说明静止之间没有超过规定时长*/
                 isRunScreenSaver = false;
             }
@@ -312,7 +314,7 @@ public class FragmentActivity extends BaseAppCompatActivity {
     /**
      * 显示屏保
      */
-    private void showScreenSaver(){
+    private void showScreenSaver() {
         isScan = false;
         switchContent(mainFragment);
     }

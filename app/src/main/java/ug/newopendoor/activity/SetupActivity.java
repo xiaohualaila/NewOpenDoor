@@ -10,7 +10,9 @@ import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+
 import java.io.File;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -24,7 +26,7 @@ import ug.newopendoor.util.FileUtil;
  * Created by Administrator on 2017/12/11.
  */
 
-public class SetupActivity  extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener{
+public class SetupActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     @BindView(R.id.idcard_switch)
     Switch idcard_switch;
     @BindView(R.id.scan_switch)
@@ -43,6 +45,7 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
     private boolean isHaveThree = false;
 
     private String path;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +61,7 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
     }
 
 
-    @OnClick({R.id.rb_uitralight,R.id.rb_m1,R.id.finish,R.id.add_excel})
+    @OnClick({R.id.rb_uitralight, R.id.rb_m1, R.id.finish, R.id.add_excel})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rb_uitralight:
@@ -68,7 +71,7 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
                 isUitralight = false;
                 break;
             case R.id.finish:
-               toActivity();
+                toActivity();
                 break;
             case R.id.add_excel:
 
@@ -78,7 +81,7 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()){
+        switch (buttonView.getId()) {
             case R.id.idcard_switch:
                 isIdcard = isChecked;
                 break;
@@ -86,13 +89,13 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
                 isScan = isChecked;
                 break;
             case R.id.choose_switch:
-                if(isChecked){
+                if (isChecked) {
                     m1_ll.setVisibility(View.VISIBLE);
-                   // idcard_ll.setVisibility(View.VISIBLE);
+                    // idcard_ll.setVisibility(View.VISIBLE);
                     isHaveThree = true;
-                }else {
+                } else {
                     m1_ll.setVisibility(View.GONE);
-                  //  idcard_ll.setVisibility(View.GONE);
+                    //  idcard_ll.setVisibility(View.GONE);
                     isHaveThree = false;
                 }
                 break;
@@ -102,9 +105,9 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
 
     //判断Excel文件是否存在
     private void getExcel() {
-        path = FileUtil.getPath()+ File.separator +"door.xls";
+        path = FileUtil.getPath() + File.separator + "door.xls";
         File file = new File(path);
-        if(!file.exists()){
+        if (!file.exists()) {
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setMessage(R.string.dialog_msg)//dialog_msg
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -116,7 +119,7 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
                     .create();
             dialog.show();
             return;
-        }else {//存在
+        } else {//存在
             add_excel.setText("正在导入Excel表！");
             add_excel.setEnabled(false);
 
@@ -124,11 +127,11 @@ public class SetupActivity  extends AppCompatActivity implements CompoundButton.
     }
 
     private void toActivity() {
-        Intent intent = new Intent(this,CameraActivity2.class);
-        intent.putExtra("uitralight",isUitralight);
-        intent.putExtra("scan",isScan);
-        intent.putExtra("idcard",isIdcard);
-        intent.putExtra("isHaveThree",isHaveThree);
+        Intent intent = new Intent(this, CameraActivity2.class);
+        intent.putExtra("uitralight", isUitralight);
+        intent.putExtra("scan", isScan);
+        intent.putExtra("idcard", isIdcard);
+        intent.putExtra("isHaveThree", isHaveThree);
         startActivity(intent);
         finish();
     }

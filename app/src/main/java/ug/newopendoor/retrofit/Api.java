@@ -10,14 +10,15 @@ public class Api {
     private static BaseApi baseApi;
 
     public static BaseApi getBaseApi(String url) {
-            baseApi = RetrofitClient.createApi(BaseApi.class,
-                    RetrofitClient.getRxRetrofit(url));
+        baseApi = RetrofitClient.createApi(BaseApi.class,
+                RetrofitClient.getRxRetrofit(url));
         return baseApi;
     }
+
     //获取ObjectJson
     public static BaseApi getBaseApiWithOutFormat(String url) {
         baseApi = RetrofitClient.createApi(BaseApi.class,
-            //    RetrofitClient.getRxRetrofitWithoutFormat(ConnectUrl.BASE_URL));
+                //    RetrofitClient.getRxRetrofitWithoutFormat(ConnectUrl.BASE_URL));
                 RetrofitClient.getRxRetrofitWithoutFormat(url));
         return baseApi;
     }

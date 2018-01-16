@@ -245,8 +245,6 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
         if(isOpenDoor){
             isOpenDoor = false;
             handler.postDelayed(runnable,500);
-        }else {
-            rkGpioControlNative.ControlGpio(20, 1);//变灯
         }
         handler.postDelayed(new Runnable() {
             @Override

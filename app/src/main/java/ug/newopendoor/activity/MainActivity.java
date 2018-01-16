@@ -3,6 +3,7 @@ package ug.newopendoor.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
 import ug.newopendoor.R;
 import ug.newopendoor.activity.camera2.CameraActivity2;
 import ug.newopendoor.rx.RxBus;
@@ -21,18 +22,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         startService(new Intent(this, ScreenService.class));
         RxBus.getDefault().toObserverable(MyMessage.class).subscribe(myMessage -> {
-           int num = myMessage.getNum();
-           if(num == 0){
-            startActivity(new Intent(this, CameraActivity2.class));
-            finish();
-           }
+            int num = myMessage.getNum();
+            if (num == 0) {
+                startActivity(new Intent(this, CameraActivity2.class));
+                finish();
+            }
         });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        stopService( new Intent(this, ScreenService.class));
+        stopService(new Intent(this, ScreenService.class));
 
     }
 }

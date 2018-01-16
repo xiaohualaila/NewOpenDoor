@@ -21,10 +21,12 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.decard.NDKMethod.BasicOper;
 import com.decard.entitys.IDCard;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,10 +36,13 @@ import java.security.InvalidParameterException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 import com.cmm.rkadcreader.adcNative;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
+
 import ug.newopendoor.R;
 import ug.newopendoor.service.CommonService;
 import ug.newopendoor.usbtest.ComBean;
@@ -54,7 +59,7 @@ import ug.newopendoor.util.SoundPoolUtil;
  * Created by dhht on 16/9/29.
  */
 
-public class CameraActivity extends Activity implements SurfaceHolder.Callback,CameraContract.View  {
+public class CameraActivity extends Activity implements SurfaceHolder.Callback, CameraContract.View {
     private CameraContract.Presenter presenter;
     @BindView(R.id.camera_sf)
     SurfaceView camera_sf;
@@ -76,7 +81,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     private int height = 480;
 
     private SPUtils settingSp;
-    private String USB="";
+    private String USB = "";
     private boolean isOpenDoor = false;
     private boolean isLight = false;
 
@@ -109,28 +114,28 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         public void onServiceConnected(ComponentName name, IBinder service) {
             myBinder = (CommonService.MyBinder) service;
             myService = myBinder.getService();
-            myBinder.setIntentData(isHaveThree,uitralight,idcard);
+            myBinder.setIntentData(isHaveThree, uitralight, idcard);
             myService.setOnProgressListener(new CommonService.OnDataListener() {
                 @Override
                 public void onIDCardMsg(IDCard idCardData) {//身份证
                     BasicOper.dc_beep(5);
-                    if(!isReading){
+                    if (!isReading) {
                         type = 3;
                         ticketNum = idCardData.getId().trim();
                         isReading = true;
-                         takePhoto();
+                        takePhoto();
                     }
                 }
 
                 @Override
                 public void onBackMsg(int mType, String result) {
                     BasicOper.dc_beep(5);
-                    if(!isReading){
+                    if (!isReading) {
                         isReading = true;
                         type = mType;
-                        if(mType == 1){
+                        if (mType == 1) {
                             ticketNum = result.trim() + "00";
-                        }else {
+                        } else {
                             ticketNum = result.trim();
                         }
                         takePhoto();
@@ -152,10 +157,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
         Intent intent = getIntent();
-        uitralight = intent.getBooleanExtra("uitralight",true);
-        scan = intent.getBooleanExtra("scan",true);
-        idcard = intent.getBooleanExtra("idcard",false);
-        isHaveThree = intent.getBooleanExtra("isHaveThree",true);
+        uitralight = intent.getBooleanExtra("uitralight", true);
+        scan = intent.getBooleanExtra("scan", true);
+        idcard = intent.getBooleanExtra("idcard", false);
+        isHaveThree = intent.getBooleanExtra("isHaveThree", true);
         Utils.init(getApplicationContext());
         settingSp = new SPUtils(getString(R.string.settingSp));
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
@@ -164,36 +169,37 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         ComA = new SerialControl();
         DispQueue = new DispQueueThread();
         DispQueue.start();
-        if(scan){
+        if (scan) {
             openErWeiMa();
         }
+
         Intent bindIntent1 = new Intent(this, CommonService.class);
         bindService(bindIntent1, connection, BIND_AUTO_CREATE);
     }
 
     //打开设备
-    public void onOpenConnectPort(){
+    public void onOpenConnectPort() {
         BasicOper.dc_AUSB_ReqPermission(this);
         int portSate = BasicOper.dc_open(USB, this, "", 0);
         if (portSate >= 0) {
             BasicOper.dc_beep(5);
-        }else {
-           // Toast.makeText(this,"设备没有连接上！",Toast.LENGTH_LONG).show();
+        } else {
+            // Toast.makeText(this,"设备没有连接上！",Toast.LENGTH_LONG).show();
         }
     }
 
     //关闭设备
     public void onDisConnectPort() {
         int close_status = BasicOper.dc_exit();
-        if(close_status>=0){
-         //   Log.i("sss","设备关闭");
-        }else {
-          //  Log.i("sss","Port has closed");
+        if (close_status >= 0) {
+            //   Log.i("sss","设备关闭");
+        } else {
+            //  Log.i("sss","Port has closed");
         }
     }
 
-    private void takePhoto(){
-            camera.takePicture(null, null, jpeg);
+    private void takePhoto() {
+        camera.takePicture(null, null, jpeg);
     }
 
     private Camera.PictureCallback jpeg = new Camera.PictureCallback() {
@@ -206,19 +212,19 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
             matrix.postRotate(0);
             BitmapFactory.Options factory = new BitmapFactory.Options();
             factory = setOptions(factory);
-            Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length,factory);
+            Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length, factory);
             Bitmap bm1 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
             BufferedOutputStream bos = null;
             try {
                 bos = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
-                bm1.compress(Bitmap.CompressFormat.JPEG,30, bos);
+                bm1.compress(Bitmap.CompressFormat.JPEG, 30, bos);
                 bos.flush();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                if (bos != null){
+                if (bos != null) {
                     try {
                         bos.close();
                     } catch (IOException e) {
@@ -239,21 +245,21 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     /**
      * 上传信息
      */
-    private void  upload(){
-       // Log.i("sss","type >>" + type +"" +" ticketNum>>" + ticketNum);
-        File  file = new File(filePath);
-        if(!file.exists() ){
+    private void upload() {
+        // Log.i("sss","type >>" + type +"" +" ticketNum>>" + ticketNum);
+        File file = new File(filePath);
+        if (!file.exists()) {
             uploadFinish();
             return;
         }
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
-        if(!isNetAble){
-            Toast.makeText(this,"网路无法连接！",Toast.LENGTH_LONG).show();
+        if (!isNetAble) {
+            Toast.makeText(this, "网路无法连接！", Toast.LENGTH_LONG).show();
             uploadFinish();
             return;
         }
 
-        presenter.load(device_id,type,ticketNum,file);
+        presenter.load(device_id, type, ticketNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
@@ -281,11 +287,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(myBinder!=null){
+        if (myBinder != null) {
             myBinder.stopThread();
         }
         unbindService(connection);
-
         closeCamera();
         adcNative.close(0);
         adcNative.close(2);
@@ -323,6 +328,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         }
         return camera;
     }
+
     private void startPreview() {
         Camera.Parameters para;
         if (null != camera) {
@@ -331,7 +337,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
             return;
         }
         para.setPreviewSize(width, height);
-        setPictureSize(para,640 , 480);
+        setPictureSize(para, 640, 480);
         para.setPictureFormat(ImageFormat.JPEG);//设置图片格式
         setCameraDisplayOrientation(isFrontCamera ? 0 : 1, camera);
         camera.setParameters(para);
@@ -353,7 +359,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(cameraId, info);
         int rotation = this.getWindowManager().getDefaultDisplay().getRotation();
-         rotation = 0;
+        rotation = 0;
         int degrees = 0;
         switch (rotation) {
             case Surface.ROTATION_0:
@@ -391,7 +397,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                 absHeight = size.height;
             }
         }
-        para.setPictureSize(absWidth,absHeight);
+        para.setPictureSize(absWidth, absHeight);
     }
 
     private void closeCamera() {
@@ -417,16 +423,15 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         OpenComPort(ComA);
     }
 
-    private void OpenComPort(SerialHelper ComPort){
-        try
-        {
+    private void OpenComPort(SerialHelper ComPort) {
+        try {
             ComPort.open();
         } catch (SecurityException e) {
-            Log.i("xxx","SecurityException" + e.toString());
+            Log.i("xxx", "SecurityException" + e.toString());
         } catch (IOException e) {
-            Log.i("xxx","IOException" + e.toString());
+            Log.i("xxx", "IOException" + e.toString());
         } catch (InvalidParameterException e) {
-            Log.i("xxx","InvalidParameterException" + e.toString());
+            Log.i("xxx", "InvalidParameterException" + e.toString());
         }
     }
 
@@ -434,8 +439,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         CloseComPort(ComA);
     }
 
-    private void CloseComPort(SerialHelper ComPort){
-        if (ComPort!=null){
+    private void CloseComPort(SerialHelper ComPort) {
+        if (ComPort != null) {
             ComPort.stopSend();
             ComPort.close();
         }
@@ -448,7 +453,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
 
     @Override
     public void doError() {
-      //  text_card.setText("请求失败！");
+        //  text_card.setText("请求失败！");
         flag_tag.setImageResource(R.drawable.not_pass);
         rkGpioControlNative.ControlGpio(20, 0);//亮灯
         isLight = true;
@@ -467,10 +472,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
 
     @Override
     public void doSuccess(String Face_path) {
-        if(!TextUtils.isEmpty(Face_path)){
+        if (!TextUtils.isEmpty(Face_path)) {
             RequestOptions options = new RequestOptions()
                     .error(R.drawable.left_img);
-            if(!TextUtils.isEmpty(Face_path)){
+            if (!TextUtils.isEmpty(Face_path)) {
                 Glide.with(CameraActivity.this).load(Face_path).apply(options).into(img_server);
             }
         }
@@ -485,9 +490,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
         isReading = false;
         ticketNum = "";
 
-        if(isOpenDoor){
+        if (isOpenDoor) {
             isOpenDoor = false;
-            handler.postDelayed(runnable,500);
+            handler.postDelayed(runnable, 500);
         }
 
         handler.postDelayed(new Runnable() {
@@ -498,16 +503,16 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
                 img1.setImageResource(R.drawable.left_img);
                 img_server.setImageResource(R.drawable.left_img);
                 File file = new File(filePath);
-                if(file.exists()){
+                if (file.exists()) {
                     file.delete();
                 }
                 //变灯
-                if(isLight){
+                if (isLight) {
                     rkGpioControlNative.ControlGpio(20, 1);
                     isLight = false;
                 }
             }
-        },1000);
+        }, 1000);
 
     }
 
@@ -519,14 +524,13 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
     };
 
 
-    private class SerialControl extends SerialHelper{
+    private class SerialControl extends SerialHelper {
 
-        public SerialControl(){
+        public SerialControl() {
         }
 
         @Override
-        protected void onDataReceived(final ComBean ComRecData)
-        {
+        protected void onDataReceived(final ComBean ComRecData) {
             DispQueue.AddQueue(ComRecData);
         }
     }
@@ -540,17 +544,17 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback,C
             while (!isInterrupted()) {
                 final ComBean ComData;
                 while ((ComData = QueueList.poll()) != null) {
-                            if(!isReading){
-                                isReading =true;
-                                try {
-                                    ticketNum = new String(ComData.bRec).trim();
-                                    Log.i("sss",">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+ticketNum);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                type = 2;
-                                takePhoto();
-                            }
+                    if (!isReading) {
+                        isReading = true;
+                        try {
+                            ticketNum = new String(ComData.bRec).trim();
+                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + ticketNum);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        type = 2;
+                        takePhoto();
+                    }
                     try {
                         Thread.sleep(800);
                     } catch (Exception e) {
