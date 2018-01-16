@@ -252,6 +252,7 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
                 text_card.setText("");
                 flag_tag.setImageResource(R.drawable.welcome);
                 img1.setImageResource(R.drawable.left_img);
+                img_server.setImageResource(R.drawable.left_img);
                 File file = new File(filePath);
                 if(file.exists()){
                     file.delete();

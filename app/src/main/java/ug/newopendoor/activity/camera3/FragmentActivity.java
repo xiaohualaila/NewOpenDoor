@@ -100,7 +100,7 @@ public class FragmentActivity extends BaseAppCompatActivity {
         DispQueue = new DispQueueThread();
         DispQueue.start();
         openErWeiMa();
-        onOpenConnectPort();
+
         startService(new Intent(this, CommonThreeService.class));
         startService(new Intent(this, ScreenService.class));
     }
@@ -130,6 +130,7 @@ public class FragmentActivity extends BaseAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        onOpenConnectPort();
         ///////////////////////////////////
         mHandler01.postAtTime(mTask01, intervalKeypadeSaver);
     }
@@ -137,6 +138,7 @@ public class FragmentActivity extends BaseAppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        onDisConnectPort();
           /*activity不可见的时候取消线程*/
         mHandler01.removeCallbacks(mTask01);
         mHandler02.removeCallbacks(mTask02);
@@ -148,7 +150,7 @@ public class FragmentActivity extends BaseAppCompatActivity {
         super.onDestroy();
         stopService(new Intent(this, CommonThreeService.class));
         stopService(new Intent(this, ScreenService.class));
-        onDisConnectPort();
+
 
         adcNative.close(0);
         adcNative.close(2);
