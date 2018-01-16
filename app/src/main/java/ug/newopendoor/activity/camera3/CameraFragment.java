@@ -86,7 +86,6 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(getActivity());//获取设备号
         RxBus.getDefault().toObserverable(Ticket.class).subscribe(myMessage -> {
-            Log.i("sss","isReading>>>>  " +isReading );
             if(!isReading){
                 type = myMessage.getType();
                 if(type != 2 ){
@@ -424,7 +423,5 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
         opts.inSampleSize = 1;
         return opts;
     }
-
-
 
 }
