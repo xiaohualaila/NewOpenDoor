@@ -18,15 +18,14 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="10dp"
         android:orientation="horizontal">
         <SurfaceView
             android:id="@+id/camera_sf"
             android:layout_width="450dp"
             android:layout_height="450dp"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+           android:layout_gravity="center_vertical"
             android:layout_alignParentLeft="true"
             />
         <LinearLayout
@@ -51,14 +50,17 @@
         </LinearLayout>
 
     </LinearLayout>
-    <ImageView
-        android:id="@+id/flag_tag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/welcome"
-        android:layout_marginBottom="5dp"
-        />
+
+        <ImageView
+            android:id="@+id/flag_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/welcome" />
+
+
 </RelativeLayout>
 

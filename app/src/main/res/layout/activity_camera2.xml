@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg">
+    android:background="@drawable/bg1">
     <RelativeLayout
         android:id="@+id/top_ll"
         android:layout_width="match_parent"
@@ -36,13 +36,12 @@
     </RelativeLayout>
     <RelativeLayout
         android:layout_below="@+id/top_ll"
-        android:layout_above="@+id/flag_tag"
+        android:layout_above="@+id/rl_bottom"
         android:background="@drawable/bottom_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="25dp"
         android:gravity="center">
         <SurfaceView
             android:id="@+id/camera_sf"
@@ -54,24 +53,19 @@
             android:layout_marginBottom="10dp"
             />
     </RelativeLayout>
-    <!--<TextView-->
-        <!--android:id="@+id/ticket_no"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:textColor="@color/white"-->
-        <!--android:textSize="20sp"-->
-        <!--android:layout_above="@+id/flag_tag"-->
-        <!--android:text="票号"-->
-        <!--/>-->
-    <ImageView
-        android:id="@+id/flag_tag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/welcome"
-        android:layout_marginBottom="25dp"
-        />
+    <RelativeLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="148dp"
+        android:gravity="center"
+        android:layout_alignParentBottom="true">
+        <ImageView
+            android:id="@+id/flag_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/welcome1"
+            />
+    </RelativeLayout>
+
 </RelativeLayout>
 
