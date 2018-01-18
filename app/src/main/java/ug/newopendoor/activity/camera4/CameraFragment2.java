@@ -1,4 +1,4 @@
-package ug.newopendoor.activity.camera3;
+package ug.newopendoor.activity.camera4;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,17 +14,21 @@ import android.view.SurfaceView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
+
 import org.json.JSONObject;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+
 import butterknife.BindView;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -48,7 +52,7 @@ import ug.newopendoor.util.Ticket;
  * Created by dhht on 16/9/29.
  */
 
-public class CameraFragment extends BaseFragment implements SurfaceHolder.Callback {
+public class CameraFragment2 extends BaseFragment implements SurfaceHolder.Callback {
     @BindView(R.id.camera_sf)
     SurfaceView camera_sf;
     @BindView(R.id.text_card)
@@ -85,6 +89,7 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(getActivity());//获取设备号
+        initView();
         RxBus.getDefault().toObserverable(Ticket.class).subscribe(myMessage -> {
             if(!isReading){
                 type = myMessage.getType();
@@ -98,11 +103,18 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
                 }
                 isReading = true;
                 Log.i("sss","type >>" + type +"" +" ticketNum>>" + ticketNum);
-                FragmentActivity activity = (FragmentActivity ) getActivity();
+                FragmentActivity2 activity = (FragmentActivity2 ) getActivity();
                 activity.updateUserActionTime();
                 takePhoto();
             }
         });
+    }
+
+    private void initView() {
+
+
+
+
     }
 
     private void takePhoto(){
@@ -179,7 +191,7 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
                            }, new Action1<Throwable>() {
                                @Override
                                public void call(Throwable throwable) {
-                                   doError();
+                                   doFaceError();
                                }
                            }
                 );

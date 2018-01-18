@@ -17,7 +17,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ug.newopendoor.R;
-import ug.newopendoor.activity.camera.CameraActivity;
 import ug.newopendoor.activity.camera2.CameraActivity2;
 import ug.newopendoor.util.FileUtil;
 

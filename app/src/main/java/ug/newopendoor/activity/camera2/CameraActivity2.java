@@ -1,26 +1,26 @@
 package ug.newopendoor.activity.camera2;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.DialogInterface;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AlertDialog;
+import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +29,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.cmm.rkadcreader.adcNative;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
+import com.decard.entitys.IDCard;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -36,34 +37,21 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.InvalidParameterException;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
-import ug.newopendoor.activity.MainActivity;
-import ug.newopendoor.rx.RxBus;
+import ug.newopendoor.activity.camera.CameraContract;
+import ug.newopendoor.activity.camera.CameraPressenter;
 import ug.newopendoor.service.CommonService;
-
-import ug.newopendoor.service.ScreenService;
 import ug.newopendoor.usbtest.ComBean;
-import ug.newopendoor.usbtest.ConstUtils;
-import ug.newopendoor.usbtest.M1CardListener;
-import ug.newopendoor.usbtest.M1CardModel;
-import ug.newopendoor.usbtest.MDSEUtils;
 import ug.newopendoor.usbtest.SPUtils;
-import ug.newopendoor.usbtest.SectorDataBean;
 import ug.newopendoor.usbtest.SerialHelper;
-import ug.newopendoor.usbtest.UltralightCardListener;
-import ug.newopendoor.usbtest.UltralightCardModel;
 import ug.newopendoor.usbtest.Utils;
 import ug.newopendoor.util.FileUtil;
-import ug.newopendoor.util.MyMessage;
 import ug.newopendoor.util.MyUtil;
 import ug.newopendoor.util.RoundImageView;
 import ug.newopendoor.util.SoundPoolUtil;
@@ -73,20 +61,20 @@ import ug.newopendoor.util.SoundPoolUtil;
  * Created by dhht on 16/9/29.
  */
 
-public class CameraActivity2 extends Activity implements SurfaceHolder.Callback, CameraContract2.View, UltralightCardListener, M1CardListener {
+public class CameraActivity2 extends Activity implements SurfaceHolder.Callback, CameraContract2.View {
     private CameraContract2.Presenter presenter;
     @BindView(R.id.camera_sf)
     SurfaceView camera_sf;
-    @BindView(R.id.text_card)
-    TextView text_card;
-    @BindView(R.id.img1)
-    RoundImageView img1;
+//    @BindView(R.id.img1)
+//    RoundImageView img1;
     @BindView(R.id.img_server)
     RoundImageView img_server;
 
-    @BindView(R.id.flag_tag)
+    @BindView(R.id.state_pass)
     ImageView flag_tag;
 
+    @BindView(R.id.bg)
+    RelativeLayout re_bg;
     private Camera camera;
     private String filePath;
     private SurfaceHolder holder;
@@ -97,54 +85,75 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     private SPUtils settingSp;
     private String USB = "";
     private boolean isOpenDoor = false;
+    private boolean isLight = false;
+
+    private CommonService myService;
+    private CommonService.MyBinder myBinder;
     private Handler handler = new Handler();
 
     private boolean uitralight = true;
     private boolean scan = true;
     private boolean idcard = false;
-    private boolean isHaveThree = false;
+    private boolean isHaveThree = true;
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
     private boolean isReading = false;
     private String device_id;
 
-
-    ////////////////////////////////////屏保部分代码
-    private Handler mHandler01 = new Handler();
-    private Handler mHandler02 = new Handler();
-
-    /* 上一次User有动作的Time Stamp */
-    private Date lastUpdateTime;
-    /* 计算User有几秒没有动作的 */
-    private long timePeriod;
-
-    /* 静止超过N秒将自动进入屏保 */
-    private float mHoldStillTime = 30;
-    /*标识当前是否进入了屏保*/
-    private boolean isRunScreenSaver;
-
-    /*时间间隔*/
-    private long intervalScreenSaver = 1000;
-    private long intervalKeypadeSaver = 1000;
-    //////////////////////////////////////////
     /**
      * 3 身份证,1 Ultralight,4 M1,2串口
      */
     private int type;
     private String ticketNum;
+    private ServiceConnection connection = new ServiceConnection() {
 
-    private boolean isAuto = true;
-    private static Lock lock = new ReentrantLock();
-    private Thread thread;
-    private Dialog dialog;
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            myBinder = (CommonService.MyBinder) service;
+            myService = myBinder.getService();
+            myBinder.setIntentData(isHaveThree, uitralight, idcard);
+            myService.setOnProgressListener(new CommonService.OnDataListener() {
+                @Override
+                public void onIDCardMsg(IDCard idCardData) {//身份证
+                    BasicOper.dc_beep(5);
+                    if (!isReading) {
+                        type = 3;
+                        ticketNum = idCardData.getId().trim();
+                        isReading = true;
+                        takePhoto();
+                    }
+                }
+
+                @Override
+                public void onBackMsg(int mType, String result) {
+                    BasicOper.dc_beep(5);
+                    if (!isReading) {
+                        isReading = true;
+                        type = mType;
+                        if (mType == 1) {
+                            ticketNum = result.trim() + "00";
+                        } else {
+                            ticketNum = result.trim();
+                        }
+                        takePhoto();
+                    }
+                }
+            });
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_camera2);
+        setContentView(R.layout.activity_camera);
         ButterKnife.bind(this);
+      //  initView();
         new CameraPressenter2(this);
         holder = camera_sf.getHolder();
         holder.addCallback(this);
@@ -153,7 +162,7 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         Intent intent = getIntent();
         uitralight = intent.getBooleanExtra("uitralight", true);
         scan = intent.getBooleanExtra("scan", true);
-        idcard = intent.getBooleanExtra("idcard", true);
+        idcard = intent.getBooleanExtra("idcard", false);
         isHaveThree = intent.getBooleanExtra("isHaveThree", true);
         Utils.init(getApplicationContext());
         settingSp = new SPUtils(getString(R.string.settingSp));
@@ -166,32 +175,9 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         if (scan) {
             openErWeiMa();
         }
-        startService(new Intent(this, ScreenService.class));
-        RxBus.getDefault().toObserverable(MyMessage.class).subscribe(myMessage -> {
-            int num = myMessage.getNum();
-            if (num == 0) {
-                Log.i("sss", "dalogDismiss");
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        dialog.dismiss();
-                        isAuto = true;
-                    }
-                });
 
-            }
-        });
-          /* 初始取得User可触碰屏幕的时间 */
-        lastUpdateTime = new Date(System.currentTimeMillis());
-
-        //身份证
-        isAuto = true;
-        thread = new Thread(task);
-        thread.start();
-        //UltralightCard
-        model = new UltralightCardModel(this);
-        //M1
-        model2 = new M1CardModel(this);
+        Intent bindIntent1 = new Intent(this, CommonService.class);
+        bindService(bindIntent1, connection, BIND_AUTO_CREATE);
     }
 
     //打开设备
@@ -200,9 +186,8 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         int portSate = BasicOper.dc_open(USB, this, "", 0);
         if (portSate >= 0) {
             BasicOper.dc_beep(5);
-            Log.d("sss", "portSate:" + portSate + "设备已连接");
         } else {
-            Toast.makeText(this, "设备没有连接上！", Toast.LENGTH_LONG).show();
+            // Toast.makeText(this,"设备没有连接上！",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -251,10 +236,6 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
                 }
                 bm.recycle();
                 bm1.recycle();
-                startPreview();
-                RequestOptions options = new RequestOptions()
-                        .error(R.drawable.left_img);
-                Glide.with(CameraActivity2.this).load(filePath).apply(options).into(img1);
                 upload();
             }
         }
@@ -264,53 +245,21 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
      * 上传信息
      */
     private void upload() {
-        // Log.i("xxxx","type >>" + type +"" +" ticketNum>>" + ticketNum);
+     //    Log.i("sss","type >>" + type +"" +" ticketNum>>" + ticketNum);
+        File file = new File(filePath);
+        if (!file.exists()) {
+            uploadFinish();
+            return;
+        }
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
             Toast.makeText(this, "网路无法连接！", Toast.LENGTH_LONG).show();
             uploadFinish();
             return;
         }
-        File file = new File(filePath);
-        if (!file.exists()) {
-            uploadFinish();
-            return;
-        }
+
         presenter.load(device_id, type, ticketNum, file);
     }
-
-    /**
-     * 0.5秒关门
-     */
-    private void uploadFinish() {
-        isReading = false;
-        ticketNum = "";
-
-        if (isOpenDoor) {
-            isOpenDoor = false;
-            handler.postDelayed(runnable, 500);
-        }
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                text_card.setText("");
-                flag_tag.setImageResource(R.drawable.welcome);
-                img1.setImageResource(R.drawable.left_img);
-                File file = new File(filePath);
-                if (file.exists()) {
-                    file.delete();
-                }
-            }
-        }, 1000);
-    }
-
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            rkGpioControlNative.ControlGpio(1, 1);//关门
-            rkGpioControlNative.ControlGpio(4, 1);//亮灯
-        }
-    };
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
         opts.inJustDecodeBounds = false;
@@ -326,39 +275,34 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         super.onResume();
         camera = openCamera();
         onOpenConnectPort();
-        ///////////////////////////////////
-        mHandler01.postAtTime(mTask01, intervalKeypadeSaver);
-
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         onDisConnectPort();
-          /*activity不可见的时候取消线程*/
-        mHandler01.removeCallbacks(mTask01);
-        mHandler02.removeCallbacks(mTask02);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        isAuto = false;
+        if (myBinder != null) {
+            myBinder.stopThread();
+        }
+        unbindService(connection);
         closeCamera();
         adcNative.close(0);
         adcNative.close(2);
         rkGpioControlNative.close();
         closeErWeiMa();
-        stopService(new Intent(this, ScreenService.class));
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         try {
             camera.setPreviewDisplay(holder);
-        } catch (Exception exception) {
-            finish();
+        } catch (IOException exception) {
+
         }
     }
 
@@ -508,9 +452,19 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
 
     @Override
     public void doError() {
-        text_card.setText("请求失败！");
         flag_tag.setImageResource(R.drawable.not_pass);
+        rkGpioControlNative.ControlGpio(20, 0);//亮灯
+        isLight = true;
         SoundPoolUtil.play(3);
+        uploadFinish();
+    }
+
+    @Override
+    public void doFaceError() {
+        flag_tag.setImageResource(R.drawable.face_error);
+        rkGpioControlNative.ControlGpio(20, 0);//亮灯
+        isLight = true;
+        SoundPoolUtil.play(1);
         uploadFinish();
     }
 
@@ -519,15 +473,53 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         if (!TextUtils.isEmpty(Face_path)) {
             RequestOptions options = new RequestOptions()
                     .error(R.drawable.left_img);
-            Glide.with(CameraActivity2.this).load(Face_path).apply(options).into(img_server);
+            if (!TextUtils.isEmpty(Face_path)) {
+                Glide.with(CameraActivity2.this).load(Face_path).apply(options).into(img_server);
+            }
         }
         isOpenDoor = true;
         rkGpioControlNative.ControlGpio(1, 0);//开门
-        rkGpioControlNative.ControlGpio(4, 0);//亮灯
         SoundPoolUtil.play(4);
         flag_tag.setImageResource(R.drawable.pass);
         uploadFinish();
     }
+
+    private void uploadFinish() {
+
+        ticketNum = "";
+
+        if (isOpenDoor) {
+            isOpenDoor = false;
+            handler.postDelayed(runnable, 500);
+        }
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startPreview();
+                img_server.setImageResource(R.drawable.left_img);
+                flag_tag.setImageResource(R.drawable.welcome);
+                File file = new File(filePath);
+                if (file.exists()) {
+                    file.delete();
+                }
+                //变灯
+                if (isLight) {
+                    rkGpioControlNative.ControlGpio(20, 1);
+                    isLight = false;
+                }
+                isReading = false;
+            }
+        }, 1000);
+
+    }
+
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            rkGpioControlNative.ControlGpio(1, 1);//关门
+        }
+    };
 
 
     private class SerialControl extends SerialHelper {
@@ -550,23 +542,19 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
             while (!isInterrupted()) {
                 final ComBean ComData;
                 while ((ComData = QueueList.poll()) != null) {
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            if (!isReading) {
-                                updateUserActionTime();
-                                isReading = true;
-                                try {
-                                    ticketNum = new String(ComData.bRec).trim();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                type = 2;
-                                takePhoto();
-                            }
+                    if (!isReading) {
+                        isReading = true;
+                        try {
+                            ticketNum = new String(ComData.bRec).trim();
+                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + ticketNum);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    });
+                        type = 2;
+                        takePhoto();
+                    }
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(800);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -580,212 +568,4 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         }
     }
 
-
-    /////////////////////////////////////////////////////////屏保部分代码
-
-    /**
-     * 计时线程
-     */
-    private Runnable mTask01 = new Runnable() {
-
-        @Override
-        public void run() {
-            Date timeNow = new Date(System.currentTimeMillis());
-            /* 计算User静止不动作的时间间距 */
-            /**当前的系统时间 - 上次触摸屏幕的时间 = 静止不动的时间**/
-            timePeriod = (long) timeNow.getTime() - (long) lastUpdateTime.getTime();
-
-            /*将静止时间毫秒换算成秒*/
-            float timePeriodSecond = ((float) timePeriod / 1000);
-
-            if (timePeriodSecond > mHoldStillTime) {
-                if (isRunScreenSaver == false) {  //说明没有进入屏保
-                    /* 启动线程去显示屏保 */
-                    mHandler02.postAtTime(mTask02, intervalScreenSaver);
-                    /*显示屏保置为true*/
-                    isRunScreenSaver = true;
-                } else {
-                    /*屏保正在显示中*/
-                }
-            } else {
-                /*说明静止之间没有超过规定时长*/
-                isRunScreenSaver = false;
-            }
-            /*反复调用自己进行检查*/
-            mHandler01.postDelayed(mTask01, intervalKeypadeSaver);
-        }
-    };
-
-    /**
-     * 持续屏保显示线程
-     */
-    private Runnable mTask02 = new Runnable() {
-
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            if (isRunScreenSaver == true) {  //如果屏保正在显示，就计算不断持续显示
-//              hideOriginalLayout();
-                showScreenSaver();
-                mHandler02.postDelayed(mTask02, intervalScreenSaver);
-            } else {
-                mHandler02.removeCallbacks(mTask02);  //如果屏保没有显示则移除线程
-            }
-        }
-    };
-
-    /**
-     * 显示屏保
-     */
-    private void showScreenSaver() {
-//        Intent intent = new Intent(this, MainActivity.class);
-//        startActivity(intent);
-//        finish();
-        showDialog();
-    }
-
-    private void showDialog() {
-        dialog = new Dialog(this, R.style.Dialog_Fullscreen);
-        dialog.setContentView(R.layout.activity_main);
-        dialog.show();
-        isAuto = false;
-    }
-
-    /*用户有操作的时候不断重置静止时间和上次操作的时间*/
-    public void updateUserActionTime() {
-        Date timeNow = new Date(System.currentTimeMillis());
-        timePeriod = timeNow.getTime() - lastUpdateTime.getTime();
-        lastUpdateTime.setTime(timeNow.getTime());
-    }
-
-    //三和一
-    private int flag = 3;
-    private final int TIME = 1000;
-    //UltralightCard读卡
-    private UltralightCardModel model;
-    private boolean isHaveOne = false;
-    //M1
-    private M1CardModel model2;
-
-    Runnable task = new Runnable() {
-        @Override
-        public void run() {
-            while (isAuto) {
-                lock.lock();
-                try {
-                    if (flag == 1) {//UltralightCard
-                        if (uitralight) {
-                            model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
-                            Thread.sleep(TIME);
-                        } else {//M1
-                            if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
-                                final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
-                                isHaveOne = true;
-                                model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 0);
-                            }
-                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
-                            Thread.sleep(TIME);
-                        }
-                        if (idcard) {
-                            flag = 2;
-                        }
-                    } else if (flag == 2) {//身份证
-                        if (idcard) {
-                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
-                            com.decard.entitys.IDCard idCardData;
-                            idCardData = BasicOper.dc_get_i_d_raw_info();
-                            if (idCardData != null) {
-                                updateUserActionTime();
-                                BasicOper.dc_beep(5);
-                                if (!isReading) {
-                                    type = 3;
-                                    ticketNum = idCardData.getId().trim();
-                                    isReading = true;
-                                    takePhoto();
-                                }
-                            }
-                            Thread.sleep(1000);
-                        }
-                        if (isHaveThree) {
-                            flag = 1;
-                        }
-                    } else if (flag == 3) {
-                        if (isHaveThree) {
-                            flag = 1;
-                        }
-                        if (idcard) {
-                            flag = 2;
-                        }
-                        Thread.sleep(2000);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    lock.unlock();
-                }
-            }
-        }
-    };
-
-    @Override
-    public void getUltralightCardResult(String cmd, String result) {
-        if (!result.equals("1003|无卡或无法寻到卡片")) {
-            if (!result.equals("0001|操作失败")) {
-                if (!result.equals("FFFF|操作失败")) {
-                    onBackMsg(1, result);
-                }
-            }
-        }
-    }
-
-    private void onBackMsg(int i, String result) {
-        updateUserActionTime();
-        BasicOper.dc_beep(5);
-        if (!isReading) {
-            isReading = true;
-            type = i;
-            if (i == 1) {
-                ticketNum = result.trim() + "00";
-            } else {
-                ticketNum = result.trim();
-            }
-            takePhoto();
-        }
-
-
-    }
-
-    @Override
-    public void getM1CardResult(String cmd, List<String> list, String result, String resultCode) {
-        if (isHaveOne) {
-            isHaveOne = false;
-            if (list == null) {
-                if (result.length() > 2) {
-                    readSectorData(Integer.parseInt(resultCode));
-                } else {
-                    readSectorData(Integer.parseInt(result));
-                }
-            }
-        }
-    }
-
-    private void readSectorData(int currentSectors) {
-        boolean b = true;
-        int piece = (currentSectors + 1) * 4;
-        SectorDataBean sectorDataBean = new SectorDataBean();
-        String[] pieceDatas = new String[4];
-        for (int i = piece - 4, j = 0; i < piece; i++, j++) {
-            String pieceData = MDSEUtils.returnResult(BasicOper.dc_read_hex(i));
-            pieceDatas[j] = pieceData;
-        }
-        sectorDataBean.pieceZero = pieceDatas[0];
-
-        if (b) {
-            String string = sectorDataBean.pieceZero.substring(0, 8);
-            onBackMsg(4, string);
-            b = false;
-        }
-
-    }
 }

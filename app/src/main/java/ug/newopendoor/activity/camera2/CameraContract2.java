@@ -14,6 +14,8 @@ public interface CameraContract2 {
     interface View extends IBaseView<Presenter> {
         void doError();
 
+        void doFaceError();
+
         void doSuccess(String Face_path);
     }
 

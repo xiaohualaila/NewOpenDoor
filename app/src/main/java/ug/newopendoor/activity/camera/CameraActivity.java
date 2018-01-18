@@ -72,6 +72,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
 
     @BindView(R.id.flag_tag)
     ImageView flag_tag;
+//    @BindView(R.id.ticket_no)
+//    TextView ticket_no;
 
     private Camera camera;
     private String filePath;
@@ -199,6 +201,12 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
     }
 
     private void takePhoto() {
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                ticket_no.setText(ticketNum);
+//            }
+//        });
         camera.takePicture(null, null, jpeg);
     }
 
@@ -246,7 +254,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
      * 上传信息
      */
     private void upload() {
-        // Log.i("sss","type >>" + type +"" +" ticketNum>>" + ticketNum);
+     //    Log.i("sss","type >>" + type +"" +" ticketNum>>" + ticketNum);
         File file = new File(filePath);
         if (!file.exists()) {
             uploadFinish();

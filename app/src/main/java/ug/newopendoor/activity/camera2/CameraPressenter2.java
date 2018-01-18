@@ -14,6 +14,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import ug.newopendoor.activity.base.BasePresenter;
+import ug.newopendoor.activity.camera.CameraContract;
 import ug.newopendoor.retrofit.Api;
 import ug.newopendoor.retrofit.ConnectUrl;
 
@@ -47,27 +48,28 @@ public class CameraPressenter2 extends BasePresenter implements CameraContract2.
                 .subscribe(new Action1<JSONObject>() {
                                @Override
                                public void call(JSONObject jsonObject) {
+                                   Log.i("sss",jsonObject.toString());
                                    jsonObjectResult(jsonObject);
                                }
                            }, new Action1<Throwable>() {
                                @Override
                                public void call(Throwable throwable) {
-                                   Log.i("sss", throwable.toString());
+                                   Log.i("sss",throwable.toString());
                                    view.doError();
                                }
                            }
                 );
-
     }
 
     private void jsonObjectResult(JSONObject jsonObject) {
-        // Log.i("xxxx",jsonObject.toString());
         if (jsonObject != null) {
             String result = jsonObject.optString("Result");
             if (!TextUtils.isEmpty(result)) {
                 if (result.equals("1")) {
                     String imageStr = jsonObject.optString("Face_path");
                     view.doSuccess(imageStr);
+                } else if (result.equals("5")) {
+                    view.doFaceError();
                 } else {
                     view.doError();
                 }

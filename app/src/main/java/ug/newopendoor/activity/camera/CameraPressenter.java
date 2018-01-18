@@ -47,12 +47,13 @@ public class CameraPressenter extends BasePresenter implements CameraContract.Pr
                 .subscribe(new Action1<JSONObject>() {
                                @Override
                                public void call(JSONObject jsonObject) {
+                                   Log.i("sss",jsonObject.toString());
                                    jsonObjectResult(jsonObject);
                                }
                            }, new Action1<Throwable>() {
                                @Override
                                public void call(Throwable throwable) {
-                                   //  Log.i("sss",throwable.toString());
+                                   Log.i("sss",throwable.toString());
                                    view.doError();
                                }
                            }
@@ -60,7 +61,6 @@ public class CameraPressenter extends BasePresenter implements CameraContract.Pr
     }
 
     private void jsonObjectResult(JSONObject jsonObject) {
-        // Log.i("xxxx",jsonObject.toString());
         if (jsonObject != null) {
             String result = jsonObject.optString("Result");
             if (!TextUtils.isEmpty(result)) {
