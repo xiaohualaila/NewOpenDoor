@@ -6,7 +6,9 @@ import android.content.Intent;
 
 import ug.newopendoor.activity.camera.CameraActivity;
 import ug.newopendoor.activity.camera2.CameraActivity2;
+import ug.newopendoor.activity.camera3.FragmentActivity;
 import ug.newopendoor.activity.camera4.FragmentActivity2;
+import ug.newopendoor.activity.camera5.CameraActivity5;
 
 
 /**
@@ -19,8 +21,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(ACTION)) {
-            Intent in = new Intent(context, CameraActivity2.class);
-            //Intent in = new Intent(context, FragmentActivity2.class);
+            Intent in = new Intent(context, CameraActivity5.class);
+            // Intent in = new Intent(context, FragmentActivity.class);
             in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(in);
         }
