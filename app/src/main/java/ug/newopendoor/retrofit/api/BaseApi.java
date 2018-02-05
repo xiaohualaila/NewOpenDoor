@@ -23,7 +23,7 @@ public interface BaseApi {
             @Part List<MultipartBody.Part> file
     );
 
-    @POST("api.php")
+    @POST("Api.php")
     @Multipart
     Observable<JSONObject> uploadPhotoBase(
             @Query("deviceid") String deviceid,
@@ -32,24 +32,8 @@ public interface BaseApi {
             @Part List<MultipartBody.Part> file
     );
 
-    @POST("api.php")
-    Observable<JSONObject> uploadData(
-            @Query("deviceid") String deviceid,
-            @Query("inserttype") int type,
-            @Query("ticketid") String ticketNum
-    );
 
-    @POST("api.php")
-    @Multipart
-    Observable<JSONObject> uploadData(
-            @Query("deviceid") String deviceid,
-            @Query("inserttype") int type,
-            @Query("ticketid") String ticketNum,
-            @Part List<MultipartBody.Part> file
-    );
 
-    @POST("validate.php")
-    Observable<JSONObject> checkIp();
 
 }
 

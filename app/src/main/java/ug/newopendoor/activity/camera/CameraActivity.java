@@ -495,9 +495,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
     }
 
     private void uploadFinish() {
-        isReading = false;
-        ticketNum = "";
-
         if (isOpenDoor) {
             isOpenDoor = false;
             handler.postDelayed(runnable, 500);
@@ -519,6 +516,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
                     rkGpioControlNative.ControlGpio(20, 1);
                     isLight = false;
                 }
+                isReading = false;
+                ticketNum = "";
             }
         }, 1000);
 

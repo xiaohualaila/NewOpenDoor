@@ -9,6 +9,7 @@ import ug.newopendoor.activity.camera2.CameraActivity2;
 import ug.newopendoor.activity.camera3.FragmentActivity;
 import ug.newopendoor.activity.camera4.FragmentActivity2;
 import ug.newopendoor.activity.camera5.CameraActivity5;
+import ug.newopendoor.activity.camera6.CameraActivity6;
 
 
 /**

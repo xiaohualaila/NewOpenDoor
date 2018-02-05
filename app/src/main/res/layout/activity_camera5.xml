@@ -35,7 +35,6 @@
             android:textStyle="bold"
             android:textColor="@color/white"
             android:textSize="40sp"
-            android:text="欢迎光临"
             android:layout_width="40dp"
             android:layout_centerHorizontal="true"
             android:layout_height="match_parent" />

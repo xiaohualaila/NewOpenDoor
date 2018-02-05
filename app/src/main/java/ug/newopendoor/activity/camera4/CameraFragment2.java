@@ -89,7 +89,6 @@ public class CameraFragment2 extends BaseFragment implements SurfaceHolder.Callb
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(getActivity());//获取设备号
-        initView();
         RxBus.getDefault().toObserverable(Ticket.class).subscribe(myMessage -> {
             if(!isReading){
                 type = myMessage.getType();
@@ -110,12 +109,6 @@ public class CameraFragment2 extends BaseFragment implements SurfaceHolder.Callb
         });
     }
 
-    private void initView() {
-
-
-
-
-    }
 
     private void takePhoto(){
         camera.takePicture(null, null, jpeg);
@@ -250,9 +243,6 @@ public class CameraFragment2 extends BaseFragment implements SurfaceHolder.Callb
      * 0.5秒关门
      */
     private void uploadFinish() {
-        isReading =false;
-        ticketNum = "";
-
         if(isOpenDoor){
             isOpenDoor = false;
             handler.postDelayed(runnable,500);
@@ -272,8 +262,10 @@ public class CameraFragment2 extends BaseFragment implements SurfaceHolder.Callb
                     rkGpioControlNative.ControlGpio(20, 1);//变灯
                     isLight = false;
                 }
+                isReading =false;
+                ticketNum = "";
             }
-        },1000);
+        },2500);
     }
 
     Runnable runnable = new Runnable() {

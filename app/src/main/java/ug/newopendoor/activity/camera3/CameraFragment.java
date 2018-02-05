@@ -238,9 +238,6 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
      * 0.5秒关门
      */
     private void uploadFinish() {
-        isReading =false;
-        ticketNum = "";
-
         if(isOpenDoor){
             isOpenDoor = false;
             handler.postDelayed(runnable,500);
@@ -260,6 +257,8 @@ public class CameraFragment extends BaseFragment implements SurfaceHolder.Callba
                     rkGpioControlNative.ControlGpio(20, 1);//变灯
                     isLight = false;
                 }
+                isReading =false;
+                ticketNum = "";
             }
         },1000);
     }

@@ -1,4 +1,4 @@
-package ug.newopendoor.activity.camera2;
+package ug.newopendoor.activity.camera6;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,8 +18,6 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,9 +41,10 @@ import java.util.Queue;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
-import ug.newopendoor.activity.camera.CameraContract;
-import ug.newopendoor.activity.camera.CameraPressenter;
+import ug.newopendoor.activity.camera5.CameraPressenter5;
+import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.service.CommonService;
+import ug.newopendoor.service.Service2;
 import ug.newopendoor.usbtest.ComBean;
 import ug.newopendoor.usbtest.SPUtils;
 import ug.newopendoor.usbtest.SerialHelper;
@@ -55,14 +53,15 @@ import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.MyUtil;
 import ug.newopendoor.util.RoundImageView;
 import ug.newopendoor.util.SoundPoolUtil;
+import ug.newopendoor.util.Ticket;
 
 
 /**
  * Created by dhht on 16/9/29.
  */
 
-public class CameraActivity2 extends Activity implements SurfaceHolder.Callback, CameraContract2.View {
-    private CameraContract2.Presenter presenter;
+public class CameraActivity6 extends Activity implements SurfaceHolder.Callback, CameraContract6.View {
+    private CameraContract6.Presenter presenter;
     @BindView(R.id.camera_sf)
     SurfaceView camera_sf;
 //    @BindView(R.id.img1)
@@ -70,11 +69,8 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     @BindView(R.id.img_server)
     RoundImageView img_server;
 
-    @BindView(R.id.state_pass)
-    ImageView flag_tag;
-
-    @BindView(R.id.bg)
-    RelativeLayout re_bg;
+    @BindView(R.id.state_tip)
+    TextView flag_tag;
     private Camera camera;
     private String filePath;
     private SurfaceHolder holder;
@@ -82,22 +78,10 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     private int width = 640;
     private int height = 480;
 
-    private SPUtils settingSp;
-    private String USB = "";
     private boolean isOpenDoor = false;
     private boolean isLight = false;
-
-    private CommonService myService;
-    private CommonService.MyBinder myBinder;
     private Handler handler = new Handler();
 
-    private boolean uitralight = true;
-    private boolean scan = true;
-    private boolean idcard = false;
-    private boolean isHaveThree = true;
-    //串口
-    SerialControl ComA;
-    DispQueueThread DispQueue;
     private boolean isReading = false;
     private String device_id;
 
@@ -106,100 +90,39 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
      */
     private int type;
     private String ticketNum;
-    private ServiceConnection connection = new ServiceConnection() {
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            myBinder = (CommonService.MyBinder) service;
-            myService = myBinder.getService();
-            myBinder.setIntentData(isHaveThree, uitralight, idcard);
-            myService.setOnProgressListener(new CommonService.OnDataListener() {
-                @Override
-                public void onIDCardMsg(IDCard idCardData) {//身份证
-                    BasicOper.dc_beep(5);
-                    if (!isReading) {
-                        type = 3;
-                        ticketNum = idCardData.getId().trim();
-                        isReading = true;
-                        takePhoto();
-                    }
-                }
-
-                @Override
-                public void onBackMsg(int mType, String result) {
-                    BasicOper.dc_beep(5);
-                    if (!isReading) {
-                        isReading = true;
-                        type = mType;
-                        if (mType == 1) {
-                            ticketNum = result.trim() + "00";
-                        } else {
-                            ticketNum = result.trim();
-                        }
-                        takePhoto();
-                    }
-                }
-            });
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_camera);
+        setContentView(R.layout.activity_camera5);
         ButterKnife.bind(this);
-      //  initView();
-        new CameraPressenter2(this);
+        new CameraPressenter6(this);
         holder = camera_sf.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
-        Intent intent = getIntent();
-        uitralight = intent.getBooleanExtra("uitralight", true);
-        scan = intent.getBooleanExtra("scan", true);
-        idcard = intent.getBooleanExtra("idcard", false);
-        isHaveThree = intent.getBooleanExtra("isHaveThree", true);
-        Utils.init(getApplicationContext());
-        settingSp = new SPUtils(getString(R.string.settingSp));
-        USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
-        rkGpioControlNative.init();
-        //串口
-        ComA = new SerialControl();
-        DispQueue = new DispQueueThread();
-        DispQueue.start();
-        if (scan) {
-            openErWeiMa();
-        }
 
-        Intent bindIntent1 = new Intent(this, CommonService.class);
-        bindService(bindIntent1, connection, BIND_AUTO_CREATE);
+        startService(new Intent(this, Service2.class));
+        RxBus.getDefault().toObserverable(Ticket.class).subscribe(myMessage -> {
+            if (!isReading) {
+                isReading = true;
+                type = myMessage.getType();
+                if (type != 2) {
+                    BasicOper.dc_beep(5);
+                }
+                if (type == 1) {
+                    ticketNum = myMessage.getNum().trim() + "00";
+                } else {
+                    ticketNum = myMessage.getNum().trim();
+                }
+           //     Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+                takePhoto();
+            }
+        });
     }
 
-    //打开设备
-    public void onOpenConnectPort() {
-        BasicOper.dc_AUSB_ReqPermission(this);
-        int portSate = BasicOper.dc_open(USB, this, "", 0);
-        if (portSate >= 0) {
-            BasicOper.dc_beep(5);
-        } else {
-            // Toast.makeText(this,"设备没有连接上！",Toast.LENGTH_LONG).show();
-        }
-    }
 
-    //关闭设备
-    public void onDisConnectPort() {
-        int close_status = BasicOper.dc_exit();
-        if (close_status >= 0) {
-            //   Log.i("sss","设备关闭");
-        } else {
-            //  Log.i("sss","Port has closed");
-        }
-    }
 
     private void takePhoto() {
         camera.takePicture(null, null, jpeg);
@@ -245,7 +168,6 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
      * 上传信息
      */
     private void upload() {
-     //    Log.i("sss","type >>" + type +"" +" ticketNum>>" + ticketNum);
         File file = new File(filePath);
         if (!file.exists()) {
             uploadFinish();
@@ -274,27 +196,14 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     protected void onResume() {
         super.onResume();
         camera = openCamera();
-        onOpenConnectPort();
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        onDisConnectPort();
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (myBinder != null) {
-            myBinder.stopThread();
-        }
-        unbindService(connection);
         closeCamera();
-        adcNative.close(0);
-        adcNative.close(2);
-        rkGpioControlNative.close();
-        closeErWeiMa();
+        stopService(new Intent(this,Service2.class));
     }
 
     @Override
@@ -414,45 +323,15 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         }
     }
 
-
-    //打开串口
-    public void openErWeiMa() {
-        ComA.setPort("/dev/ttyS4");
-        ComA.setBaudRate("115200");
-        OpenComPort(ComA);
-    }
-
-    private void OpenComPort(SerialHelper ComPort) {
-        try {
-            ComPort.open();
-        } catch (SecurityException e) {
-            Log.i("xxx", "SecurityException" + e.toString());
-        } catch (IOException e) {
-            Log.i("xxx", "IOException" + e.toString());
-        } catch (InvalidParameterException e) {
-            Log.i("xxx", "InvalidParameterException" + e.toString());
-        }
-    }
-
-    public void closeErWeiMa() {
-        CloseComPort(ComA);
-    }
-
-    private void CloseComPort(SerialHelper ComPort) {
-        if (ComPort != null) {
-            ComPort.stopSend();
-            ComPort.close();
-        }
-    }
-
     @Override
-    public void setPresenter(CameraContract2.Presenter presenter) {
+    public void setPresenter(CameraContract6.Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
     public void doError() {
-        flag_tag.setImageResource(R.drawable.not_pass);
+        flag_tag.setText("验证失败");
+        flag_tag.setTextColor(getResources().getColor(R.color.red));
         rkGpioControlNative.ControlGpio(20, 0);//亮灯
         isLight = true;
         SoundPoolUtil.play(3);
@@ -461,7 +340,8 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
 
     @Override
     public void doFaceError() {
-        flag_tag.setImageResource(R.drawable.face_error);
+        flag_tag.setText("人脸验证失败");
+        flag_tag.setTextColor(getResources().getColor(R.color.red));
         rkGpioControlNative.ControlGpio(20, 0);//亮灯
         isLight = true;
         SoundPoolUtil.play(1);
@@ -474,17 +354,19 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
             RequestOptions options = new RequestOptions()
                     .error(R.drawable.left_img);
             if (!TextUtils.isEmpty(Face_path)) {
-                Glide.with(CameraActivity2.this).load(Face_path).apply(options).into(img_server);
+                Glide.with(CameraActivity6.this).load(Face_path).apply(options).into(img_server);
             }
         }
         isOpenDoor = true;
         rkGpioControlNative.ControlGpio(1, 0);//开门
         SoundPoolUtil.play(4);
-        flag_tag.setImageResource(R.drawable.pass);
+        flag_tag.setText("验证成功");
+        flag_tag.setTextColor(getResources().getColor(R.color.green));
         uploadFinish();
     }
 
     private void uploadFinish() {
+
         if (isOpenDoor) {
             isOpenDoor = false;
             handler.postDelayed(runnable, 500);
@@ -495,7 +377,7 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
             public void run() {
                 startPreview();
                 img_server.setImageResource(R.drawable.left_img);
-                flag_tag.setImageResource(R.drawable.welcome);
+                flag_tag.setText("");
                 File file = new File(filePath);
                 if (file.exists()) {
                     file.delete();
@@ -508,7 +390,7 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
                 isReading = false;
                 ticketNum = "";
             }
-        }, 1000);
+        }, 2500);
 
     }
 
@@ -519,51 +401,5 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
         }
     };
 
-
-    private class SerialControl extends SerialHelper {
-
-        public SerialControl() {
-        }
-
-        @Override
-        protected void onDataReceived(final ComBean ComRecData) {
-            DispQueue.AddQueue(ComRecData);
-        }
-    }
-
-    private class DispQueueThread extends Thread {
-        private Queue<ComBean> QueueList = new LinkedList<ComBean>();
-
-        @Override
-        public void run() {
-            super.run();
-            while (!isInterrupted()) {
-                final ComBean ComData;
-                while ((ComData = QueueList.poll()) != null) {
-                    if (!isReading) {
-                        isReading = true;
-                        try {
-                            ticketNum = new String(ComData.bRec).trim();
-                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + ticketNum);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        type = 2;
-                        takePhoto();
-                    }
-                    try {
-                        Thread.sleep(800);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                }
-            }
-        }
-
-        public synchronized void AddQueue(ComBean ComData) {
-            QueueList.add(ComData);
-        }
-    }
 
 }

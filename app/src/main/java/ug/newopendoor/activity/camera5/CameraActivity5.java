@@ -480,8 +480,6 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
 
     private void uploadFinish() {
 
-        ticketNum = "";
-
         if (isOpenDoor) {
             isOpenDoor = false;
             handler.postDelayed(runnable, 500);
@@ -503,8 +501,9 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
                     isLight = false;
                 }
                 isReading = false;
+                ticketNum = "";
             }
-        }, 1000);
+        }, 2500);
 
     }
 
@@ -540,7 +539,6 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
                         isReading = true;
                         try {
                             ticketNum = new String(ComData.bRec).trim();
-                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + ticketNum);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
