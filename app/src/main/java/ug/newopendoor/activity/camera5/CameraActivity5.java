@@ -34,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.InvalidParameterException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -42,6 +43,7 @@ import butterknife.ButterKnife;
 import ug.newopendoor.R;
 import ug.newopendoor.service.CommonService;
 import ug.newopendoor.usbtest.ComBean;
+import ug.newopendoor.usbtest.ConvertUtils;
 import ug.newopendoor.usbtest.SPUtils;
 import ug.newopendoor.usbtest.SerialHelper;
 import ug.newopendoor.usbtest.Utils;
@@ -66,6 +68,12 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
 
     @BindView(R.id.state_tip)
     TextView flag_tag;
+    @BindView(R.id.ad)
+    ImageView ad;
+    @BindView(R.id.tv_name)
+    TextView tv_name;
+    @BindView(R.id.tv_idcard)
+    TextView tv_idcard;
     private Camera camera;
     private String filePath;
     private SurfaceHolder holder;
@@ -91,7 +99,6 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
     DispQueueThread DispQueue;
     private boolean isReading = false;
     private String device_id;
-
     /**
      * 3 身份证,1 Ultralight,4 M1,2串口
      */
@@ -114,6 +121,11 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
                     BasicOper.dc_beep(5);
                     if (!isReading) {
                         type = 3;
+                        if(idCardData != null){
+                            tv_name.setText(idCardData.getName());
+                            tv_idcard.setText(idCardData.getBirthday());
+                            img_server.setImageBitmap(ConvertUtils.bytes2Bitmap(ConvertUtils.hexString2Bytes(idCardData.getPhotoDataHexStr())));
+                        }
                         ticketNum = idCardData.getId().trim();
                         isReading = true;
                         takePhoto();
@@ -144,14 +156,13 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_camera5);
         ButterKnife.bind(this);
-      //  initView();
         new CameraPressenter5(this);
         holder = camera_sf.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
         Intent intent = getIntent();
-        uitralight = intent.getBooleanExtra("uitralight", true);
+        uitralight = intent.getBooleanExtra("uitralight", false);
         scan = intent.getBooleanExtra("scan", true);
         idcard = intent.getBooleanExtra("idcard", false);
         isHaveThree = intent.getBooleanExtra("isHaveThree", true);
@@ -169,6 +180,11 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
 
         Intent bindIntent1 = new Intent(this, CommonService.class);
         bindService(bindIntent1, connection, BIND_AUTO_CREATE);
+//        RequestOptions options = new RequestOptions()
+//                .error(R.drawable.ad);
+//        Glide.with(CameraActivity5.this).load(ConnectUrl.URL_IMG).apply(options).into(ad);
+
+
     }
 
     //打开设备
@@ -177,19 +193,12 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
         int portSate = BasicOper.dc_open(USB, this, "", 0);
         if (portSate >= 0) {
             BasicOper.dc_beep(5);
-        } else {
-            // Toast.makeText(this,"设备没有连接上！",Toast.LENGTH_LONG).show();
         }
     }
 
     //关闭设备
     public void onDisConnectPort() {
-        int close_status = BasicOper.dc_exit();
-        if (close_status >= 0) {
-            //   Log.i("sss","设备关闭");
-        } else {
-            //  Log.i("sss","Port has closed");
-        }
+         BasicOper.dc_exit();
     }
 
     private void takePhoto() {
@@ -466,9 +475,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
         if (!TextUtils.isEmpty(Face_path)) {
             RequestOptions options = new RequestOptions()
                     .error(R.drawable.left_img);
-            if (!TextUtils.isEmpty(Face_path)) {
-                Glide.with(CameraActivity5.this).load(Face_path).apply(options).into(img_server);
-            }
+            Glide.with(CameraActivity5.this).load(Face_path).apply(options).into(img_server);
         }
         isOpenDoor = true;
         rkGpioControlNative.ControlGpio(1, 0);//开门
@@ -491,6 +498,8 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
                 startPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
+                tv_idcard.setText("");
+                tv_name.setText("");
                 File file = new File(filePath);
                 if (file.exists()) {
                     file.delete();

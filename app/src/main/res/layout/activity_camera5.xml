@@ -62,6 +62,7 @@
             android:textColor="@color/white"
             android:text="姓名："/>
         <TextView
+            android:id="@+id/tv_name"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_info"
@@ -93,6 +94,7 @@
             android:textColor="@color/white"
             android:text="身份证："/>
         <TextView
+            android:id="@+id/tv_idcard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_info"

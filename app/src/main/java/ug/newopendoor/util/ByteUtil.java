@@ -1,5 +1,7 @@
 package ug.newopendoor.util;
 
+import java.io.ByteArrayOutputStream;
+
 public class ByteUtil {
     /**
      * 将short 转化成字节
@@ -188,5 +190,30 @@ public class ByteUtil {
             sbu.append((char) Integer.parseInt(chars[i]));
         }
         return sbu.toString();
+    }
+
+    /**
+     * 16进制转换成字符串
+     */
+    private static String hexString = "0123456789ABCDEF";
+    public static String decode(String bytes) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(bytes.length() / 2);
+        // 将每2位16进制整数组装成一个字节
+        for (int i = 0; i < bytes.length(); i += 2)
+            baos.write((hexString.indexOf(bytes.charAt(i)) << 4 | hexString
+                    .indexOf(bytes.charAt(i + 1))));
+        return new String(baos.toByteArray());
+    }
+
+    /**
+     * ascii码转16进制
+     */
+    public static String convertStringToHex(String str){
+        char[] chars = str.toCharArray();
+        StringBuffer hex = new StringBuffer();
+        for(int i = 0; i < chars.length; i++){
+            hex.append(Integer.toHexString((int)chars[i]));
+        }
+        return hex.toString();
     }
 }

@@ -104,6 +104,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                     if (three) {
                         if (uitralight) {
                             model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
+                                  Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
                             Thread.sleep(TIME);
                         } else {//M1
                             if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
@@ -227,7 +228,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     //打开设备
     public void onOpenConnectPort() {
         BasicOper.dc_AUSB_ReqPermission(this);
-        int portSate = BasicOper.dc_open(USB, this, "", 0);
+        int portSate = BasicOper.dc_open("AUSB", this, "", 0);
         if (portSate >= 0) {
             BasicOper.dc_beep(5);
         }

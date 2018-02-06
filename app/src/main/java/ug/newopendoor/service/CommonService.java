@@ -5,14 +5,17 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.decard.NDKMethod.BasicOper;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import ug.newopendoor.R;
 import ug.newopendoor.usbtest.ConstUtils;
 import ug.newopendoor.usbtest.M1CardListener;
 import ug.newopendoor.usbtest.M1CardModel;
@@ -20,6 +23,7 @@ import ug.newopendoor.usbtest.MDSEUtils;
 import ug.newopendoor.usbtest.SectorDataBean;
 import ug.newopendoor.usbtest.UltralightCardListener;
 import ug.newopendoor.usbtest.UltralightCardModel;
+import ug.newopendoor.util.ByteUtil;
 
 /**
  * Created by Administrator on 2017/12/13.
@@ -44,6 +48,7 @@ public class CommonService extends Service implements UltralightCardListener, M1
     public boolean idcard = false;
     public boolean three = false;
 
+    private String[] sectorsNums;
     private OnDataListener onDataListener;
 
     public void setOnProgressListener(OnDataListener onProgressListener) {
@@ -60,6 +65,13 @@ public class CommonService extends Service implements UltralightCardListener, M1
         model = new UltralightCardModel(this);
         //M1
         model2 = new M1CardModel(this);
+
+
+        //以下是后来添加读取M1秘钥部分代码
+        String newPasswordKey =  ByteUtil.convertStringToHex("111111");//设置秘钥12位  安卓是16进制 电脑是ascii码
+        Log.i("xxx",newPasswordKey);
+        model2.bt_download(ConstUtils.BT_DOWNLOAD,"All",0,newPasswordKey,0);
+
     }
 
     @Override
@@ -84,8 +96,9 @@ public class CommonService extends Service implements UltralightCardListener, M1
                             if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
                                 final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
                                 isHaveOne = true;
-                                model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 0);
+                                model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 5);
                             }
+                            //   Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
                             Thread.sleep(TIME);
                         }
                     }
@@ -153,11 +166,11 @@ public class CommonService extends Service implements UltralightCardListener, M1
         sectorDataBean.pieceZero = pieceDatas[0];
 
         if (b) {
-            String string = sectorDataBean.pieceZero.substring(0, 8);
-            onDataListener.onBackMsg(4, string);
+            String string = sectorDataBean.pieceZero.substring(0, 24);//
+            String num =  ByteUtil. decode(string);
+            onDataListener.onBackMsg(4, num);
             b = false;
         }
-
     }
 
 
