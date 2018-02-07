@@ -48,7 +48,6 @@ public class CommonService extends Service implements UltralightCardListener, M1
     public boolean idcard = false;
     public boolean three = false;
 
-    private String[] sectorsNums;
     private OnDataListener onDataListener;
 
     public void setOnProgressListener(OnDataListener onProgressListener) {

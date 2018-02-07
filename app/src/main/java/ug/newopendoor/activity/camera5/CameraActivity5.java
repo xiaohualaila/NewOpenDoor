@@ -120,14 +120,19 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
                 public void onIDCardMsg(IDCard idCardData) {//身份证
                     BasicOper.dc_beep(5);
                     if (!isReading) {
+                        isReading = true;
                         type = 3;
                         if(idCardData != null){
-                            tv_name.setText(idCardData.getName());
-                            tv_idcard.setText(idCardData.getBirthday());
-                            img_server.setImageBitmap(ConvertUtils.bytes2Bitmap(ConvertUtils.hexString2Bytes(idCardData.getPhotoDataHexStr())));
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tv_name.setText(idCardData.getName());
+                                    tv_idcard.setText(idCardData.getId());
+                                    img_server.setImageBitmap(ConvertUtils.bytes2Bitmap(ConvertUtils.hexString2Bytes(idCardData.getPhotoDataHexStr())));
+                                }
+                            });
                         }
                         ticketNum = idCardData.getId().trim();
-                        isReading = true;
                         takePhoto();
                     }
                 }
@@ -164,7 +169,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
         Intent intent = getIntent();
         uitralight = intent.getBooleanExtra("uitralight", false);
         scan = intent.getBooleanExtra("scan", true);
-        idcard = intent.getBooleanExtra("idcard", false);
+        idcard = intent.getBooleanExtra("idcard", true);
         isHaveThree = intent.getBooleanExtra("isHaveThree", true);
         Utils.init(getApplicationContext());
         settingSp = new SPUtils(getString(R.string.settingSp));
