@@ -92,8 +92,8 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
 
     private boolean uitralight = true;
     private boolean scan = true;
-    private boolean idcard = false;
-    private boolean isHaveThree = true;
+    private boolean idcard = true;
+    private boolean m1 = true;
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
@@ -114,7 +114,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
         public void onServiceConnected(ComponentName name, IBinder service) {
             myBinder = (CommonService.MyBinder) service;
             myService = myBinder.getService();
-            myBinder.setIntentData(isHaveThree, uitralight, idcard);
+            myBinder.setIntentData(m1, uitralight, idcard);
             myService.setOnProgressListener(new CommonService.OnDataListener() {
                 @Override
                 public void onIDCardMsg(IDCard idCardData) {//身份证
@@ -167,10 +167,10 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
         Intent intent = getIntent();
-        uitralight = intent.getBooleanExtra("uitralight", false);
-        scan = intent.getBooleanExtra("scan", true);
-        idcard = intent.getBooleanExtra("idcard", true);
-        isHaveThree = intent.getBooleanExtra("isHaveThree", true);
+        uitralight = intent.getBooleanExtra("uitralight", true);//芯片
+        scan = intent.getBooleanExtra("scan", true);//扫描二维码
+        idcard = intent.getBooleanExtra("idcard", true);//身份证
+        m1 = intent.getBooleanExtra("isHaveThree", true);//m1卡
         Utils.init(getApplicationContext());
         settingSp = new SPUtils(getString(R.string.settingSp));
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
@@ -250,7 +250,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
      * 上传信息
      */
     private void upload() {
-     //    Log.i("sss","type >>" + type +"" +" ticketNum>>" + ticketNum);
+         Log.i("xxx","type >>" + type +"" +" ticketNum>>" + ticketNum);
         File file = new File(filePath);
         if (!file.exists()) {
             uploadFinish();
