@@ -5,17 +5,12 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.decard.NDKMethod.BasicOper;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import ug.newopendoor.R;
 import ug.newopendoor.usbtest.ConstUtils;
 import ug.newopendoor.usbtest.M1CardListener;
 import ug.newopendoor.usbtest.M1CardModel;
@@ -30,8 +25,7 @@ import ug.newopendoor.util.ByteUtil;
  */
 
 public class CommonService extends Service implements UltralightCardListener, M1CardListener {
-    private int flag = 3;
-    private final int TIME = 1000;
+    private final int TIME = 800;
     //身份证
     private Thread thread;
     private boolean isAuto = true;
@@ -68,7 +62,7 @@ public class CommonService extends Service implements UltralightCardListener, M1
 
         //以下是后来添加读取M1秘钥部分代码
         String newPasswordKey =  ByteUtil.convertStringToHex("111111");//设置秘钥12位  安卓是16进制 电脑是ascii码
-        Log.i("xxx",newPasswordKey);
+//        Log.i("xxx",newPasswordKey);
         model2.bt_download(ConstUtils.BT_DOWNLOAD,"All",0,newPasswordKey,0);
 
     }
@@ -89,7 +83,7 @@ public class CommonService extends Service implements UltralightCardListener, M1
                     if (three) {
                         if (uitralight) {
                             model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-                      //      Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
+//                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
                             Thread.sleep(TIME);
                         } else {//M1
                             if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
@@ -97,13 +91,13 @@ public class CommonService extends Service implements UltralightCardListener, M1
                                 isHaveOne = true;
                                 model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 5);
                             }
-                            //   Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
+//                               Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
                             Thread.sleep(TIME);
                         }
                     }
                     //身份证
                     if (idcard) {
-                     //   Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
+//                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
                         com.decard.entitys.IDCard idCardData;
                         if (!choose) {
                             //标准协议
