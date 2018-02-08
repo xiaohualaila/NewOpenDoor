@@ -5,6 +5,6 @@ package ug.newopendoor.retrofit;
  */
 public class ConnectUrl {
 
-    public static final String URL = "http://116.62.57.42/ticket_checking/Api/api12/";
+    public static final String URL = "http://116.62.57.42/ticket_checking/Api/api19/";
     public static final String URL_IMG = "";
 }
