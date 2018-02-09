@@ -108,7 +108,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 } else {
                     ticketNum = myMessage.getNum().trim();
                 }
-                Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+             //   Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
                 takePhoto();
             }
         });
@@ -132,8 +132,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             }
         });
     }
-
-
 
     private void takePhoto() {
         camera.takePicture(null, null, jpeg);
@@ -220,7 +218,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     protected void onDestroy() {
         super.onDestroy();
         closeCamera();
-
     }
 
     @Override
