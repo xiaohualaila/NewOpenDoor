@@ -32,6 +32,7 @@ import ug.newopendoor.usbtest.SerialHelper;
 import ug.newopendoor.usbtest.UltralightCardListener;
 import ug.newopendoor.usbtest.UltralightCardModel;
 import ug.newopendoor.usbtest.Utils;
+import ug.newopendoor.util.ByteUtil;
 import ug.newopendoor.util.Ticket;
 
 
@@ -41,7 +42,6 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     //身份证
     private Thread thread;
     private boolean isAuto = true;
-    private boolean choose = false;//false标准协议,true公安部协议
     private static Lock lock = new ReentrantLock();
     //UltralightCard读卡
     private UltralightCardModel model;
@@ -52,13 +52,12 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private SPUtils settingSp;
     private String USB = "";
 
-    private boolean uitralight = true;
-    private boolean idcard = false;
-    private boolean three = true;
+    private boolean uitralight = false;
+    private boolean idcard = true;
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
-
+    private String newPasswordKey;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -81,6 +80,11 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         model = new UltralightCardModel(this);
         //M1
         model2 = new M1CardModel(this);
+
+        if(!uitralight){
+            //以下是后来添加读取M1秘钥部分代码
+            newPasswordKey =  ByteUtil.convertStringToHex("111111");//设置秘钥12位  安卓是16进制 电脑是ascii码
+        }
     }
 
     @Override
@@ -101,33 +105,30 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                 lock.lock();
                 try {
                     //UltralightCard
-                    if (three) {
-                        if (uitralight) {
-                            model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-                                  Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
-                            Thread.sleep(TIME);
-                        } else {//M1
-                            if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
-                                final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
-                                isHaveOne = true;
-                                model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 0);
-                            }
-                            Thread.sleep(TIME);
+                    if (uitralight) {
+                        model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
+                   //           Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
+                        Thread.sleep(TIME);
+                    } else {
+                        //M1
+                        model2.bt_download(ConstUtils.BT_DOWNLOAD,"All",0,newPasswordKey,0);
+                        if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
+                            final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
+                            isHaveOne = true;
+                            model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 0);
                         }
+                      //  Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
+                        Thread.sleep(TIME);
                     }
+
                     //身份证
                     if (idcard) {
+                    //    Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
                         com.decard.entitys.IDCard idCardData;
-                        if (!choose) {
-                            //标准协议
-                            idCardData = BasicOper.dc_get_i_d_raw_info();
-                        } else {
-                            //公安部协议
-                            idCardData = BasicOper.dc_SamAReadCardInfo(1);
-                        }
+                        //标准协议
+                        idCardData = BasicOper.dc_get_i_d_raw_info();
                         if (idCardData != null) {
-                            Ticket ticket = new Ticket(3, idCardData.getId());
-                            RxBus.getDefault().post(ticket);
+                            RxBus.getDefault().post(idCardData);
                         }
                         Thread.sleep(TIME);
                     }
@@ -187,8 +188,9 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         sectorDataBean.pieceZero = pieceDatas[0];
 
         if (b) {
-            String string = sectorDataBean.pieceZero.substring(0, 8);
-            Ticket ticket = new Ticket(4, string);
+            String string = sectorDataBean.pieceZero.substring(0, 24);
+            String num =  ByteUtil. decode(string);
+            Ticket ticket = new Ticket(4, num);
             RxBus.getDefault().post(ticket);
             b = false;
         }
@@ -228,7 +230,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     //打开设备
     public void onOpenConnectPort() {
         BasicOper.dc_AUSB_ReqPermission(this);
-        int portSate = BasicOper.dc_open("AUSB", this, "", 0);
+        int portSate = BasicOper.dc_open(USB, this, "", 0);
         if (portSate >= 0) {
             BasicOper.dc_beep(5);
         }

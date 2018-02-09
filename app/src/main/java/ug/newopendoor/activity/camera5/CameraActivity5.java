@@ -167,10 +167,10 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
         Intent intent = getIntent();
-        uitralight = intent.getBooleanExtra("uitralight", true);//芯片
+        uitralight = intent.getBooleanExtra("uitralight", true);//芯片或者M1
         scan = intent.getBooleanExtra("scan", true);//扫描二维码
         idcard = intent.getBooleanExtra("idcard", true);//身份证
-        m1 = intent.getBooleanExtra("isHaveThree", true);//m1卡
+        m1 = intent.getBooleanExtra("isHaveThree", true);
         Utils.init(getApplicationContext());
         settingSp = new SPUtils(getString(R.string.settingSp));
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));

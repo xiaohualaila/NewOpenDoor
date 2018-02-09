@@ -1,9 +1,7 @@
 package ug.newopendoor.activity.camera6;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -11,7 +9,6 @@ import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Surface;
@@ -23,7 +20,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.cmm.rkadcreader.adcNative;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
 import com.decard.entitys.IDCard;
@@ -33,22 +29,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.InvalidParameterException;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
-import ug.newopendoor.activity.camera5.CameraPressenter5;
 import ug.newopendoor.rx.RxBus;
-import ug.newopendoor.service.CommonService;
 import ug.newopendoor.service.Service2;
-import ug.newopendoor.usbtest.ComBean;
-import ug.newopendoor.usbtest.SPUtils;
-import ug.newopendoor.usbtest.SerialHelper;
-import ug.newopendoor.usbtest.Utils;
+import ug.newopendoor.usbtest.ConvertUtils;
 import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.MyUtil;
 import ug.newopendoor.util.RoundImageView;
@@ -71,6 +59,10 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
 
     @BindView(R.id.state_tip)
     TextView flag_tag;
+    @BindView(R.id.tv_name)
+    TextView tv_name;
+    @BindView(R.id.tv_idcard)
+    TextView tv_idcard;
     private Camera camera;
     private String filePath;
     private SurfaceHolder holder;
@@ -103,7 +95,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
 
-        startService(new Intent(this, Service2.class));
+
         RxBus.getDefault().toObserverable(Ticket.class).subscribe(myMessage -> {
             if (!isReading) {
                 isReading = true;
@@ -116,7 +108,26 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 } else {
                     ticketNum = myMessage.getNum().trim();
                 }
-           //     Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+                Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+                takePhoto();
+            }
+        });
+        RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
+            BasicOper.dc_beep(5);
+            if (!isReading) {
+                isReading = true;
+                type = 3;
+                if(idCard != null){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_name.setText(idCard.getName());
+                            tv_idcard.setText(idCard.getId());
+                            img_server.setImageBitmap(ConvertUtils.bytes2Bitmap(ConvertUtils.hexString2Bytes(idCard.getPhotoDataHexStr())));
+                        }
+                    });
+                }
+                ticketNum = idCard.getId().trim();
                 takePhoto();
             }
         });
@@ -196,14 +207,20 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     protected void onResume() {
         super.onResume();
         camera = openCamera();
+        startService(new Intent(this, Service2.class));
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopService(new Intent(this,Service2.class));
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         closeCamera();
-        stopService(new Intent(this,Service2.class));
+
     }
 
     @Override
@@ -378,6 +395,8 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 startPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
+                tv_idcard.setText("");
+                tv_name.setText("");
                 File file = new File(filePath);
                 if (file.exists()) {
                     file.delete();
