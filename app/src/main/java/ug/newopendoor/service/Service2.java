@@ -52,7 +52,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private SPUtils settingSp;
     private String USB = "";
 
-    private boolean uitralight = false;
+    private boolean uitralight = true;
     private boolean idcard = true;
     //串口
     SerialControl ComA;
