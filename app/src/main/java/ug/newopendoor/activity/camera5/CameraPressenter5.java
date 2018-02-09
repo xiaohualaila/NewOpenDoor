@@ -2,6 +2,8 @@ package ug.newopendoor.activity.camera5;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
+
 import org.json.JSONObject;
 import java.io.File;
 import okhttp3.MediaType;
@@ -44,13 +46,11 @@ public class CameraPressenter5 extends BasePresenter implements CameraContract5.
                 .subscribe(new Action1<JSONObject>() {
                                @Override
                                public void call(JSONObject jsonObject) {
-                                   Log.i("sss",jsonObject.toString());
                                    jsonObjectResult(jsonObject);
                                }
                            }, new Action1<Throwable>() {
                                @Override
                                public void call(Throwable throwable) {
-                                   Log.i("sss",throwable.toString());
                                    view.doError();
                                }
                            }
