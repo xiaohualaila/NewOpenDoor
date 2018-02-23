@@ -52,7 +52,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private SPUtils settingSp;
     private String USB = "";
 
-    private boolean uitralight = true;
+    private boolean uitralight = true;//设置为false m1读卡
     private boolean idcard = true;
     //串口
     SerialControl ComA;
@@ -76,12 +76,13 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         //身份证
         thread = new Thread(task);
         thread.start();
-        //UltralightCard
-        model = new UltralightCardModel(this);
-        //M1
-        model2 = new M1CardModel(this);
 
-        if(!uitralight){
+        if(uitralight){
+            //UltralightCard
+            model = new UltralightCardModel(this);
+        }else {
+            //M1
+            model2 = new M1CardModel(this);
             //以下是后来添加读取M1秘钥部分代码
             newPasswordKey =  ByteUtil.convertStringToHex("111111");//设置秘钥12位  安卓是16进制 电脑是ascii码
         }
@@ -107,7 +108,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                     //UltralightCard
                     if (uitralight) {
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-                   //     Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
+                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
                         Thread.sleep(TIME);
                     } else {
                         //M1
@@ -117,13 +118,13 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                             isHaveOne = true;
                             model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 0);
                         }
-                      //  Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
+                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
                         Thread.sleep(TIME);
                     }
 
                     //身份证
                     if (idcard) {
-                    //    Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
+                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
                         com.decard.entitys.IDCard idCardData;
                         //标准协议
                         idCardData = BasicOper.dc_get_i_d_raw_info();

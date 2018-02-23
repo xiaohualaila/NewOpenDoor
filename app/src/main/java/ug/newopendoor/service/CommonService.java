@@ -82,7 +82,7 @@ public class CommonService extends Service implements UltralightCardListener, M1
 
                     if (uitralight) {
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-                //            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
+                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
                         Thread.sleep(TIME);
                     } else {
                         //M1
@@ -91,12 +91,12 @@ public class CommonService extends Service implements UltralightCardListener, M1
                             isHaveOne = true;
                             model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 5);
                         }
-                 //           Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
+                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
                         Thread.sleep(TIME);
                     }
                     //身份证
                     if (idcard) {
-            //            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
+                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
                         com.decard.entitys.IDCard idCardData;
                         if (!choose) {
                             //标准协议

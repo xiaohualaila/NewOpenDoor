@@ -108,7 +108,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 } else {
                     ticketNum = myMessage.getNum().trim();
                 }
-             //   Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+                Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
                 takePhoto();
             }
         });
@@ -343,22 +343,30 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     }
 
     @Override
+    public void requestFail() {
+        flag_tag.setText("网络请求失败");
+      //  SoundPoolUtil.play(3);
+        doErrorRequest();
+    }
+
+    @Override
     public void doError() {
         flag_tag.setText("验证失败");
-        flag_tag.setTextColor(getResources().getColor(R.color.red));
-        rkGpioControlNative.ControlGpio(20, 0);//亮灯
-        isLight = true;
         SoundPoolUtil.play(3);
-        uploadFinish();
+        doErrorRequest();
     }
 
     @Override
     public void doFaceError() {
         flag_tag.setText("人脸验证失败");
+        SoundPoolUtil.play(1);
+        doErrorRequest();
+    }
+
+    public void doErrorRequest(){
         flag_tag.setTextColor(getResources().getColor(R.color.red));
         rkGpioControlNative.ControlGpio(20, 0);//亮灯
         isLight = true;
-        SoundPoolUtil.play(1);
         uploadFinish();
     }
 

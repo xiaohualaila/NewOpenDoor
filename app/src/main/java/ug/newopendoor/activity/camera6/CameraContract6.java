@@ -12,6 +12,8 @@ import ug.newopendoor.activity.base.IBaseView;
 
 public interface CameraContract6 {
     interface View extends IBaseView<Presenter> {
+        void requestFail();
+
         void doError();
 
         void doFaceError();
