@@ -23,6 +23,6 @@ public interface CameraContract6 {
 
     interface Presenter extends IBasePresenter {
         void load(String device_id, int type, String ticketNum, File newFile);
-
+        void load(String device_id, int type, String ticketNum,String xinCode, File newFile);
     }
 }

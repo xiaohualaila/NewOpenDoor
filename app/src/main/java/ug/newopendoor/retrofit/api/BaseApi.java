@@ -28,11 +28,19 @@ public interface BaseApi {
     Observable<JSONObject> uploadPhotoBase(
             @Query("deviceid") String deviceid,
             @Query("ticketid") String ticketid,
+            @Query("xinCode") String xinCode,
             @Query("type") int type,
             @Part List<MultipartBody.Part> file
     );
 
-
+    @POST("Api.php")
+    @Multipart
+    Observable<JSONObject> uploadPhotoBase(
+            @Query("deviceid") String deviceid,
+            @Query("ticketid") String ticketid,
+            @Query("type") int type,
+            @Part List<MultipartBody.Part> file
+    );
 
 
 }

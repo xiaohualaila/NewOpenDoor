@@ -77,11 +77,13 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     private boolean isReading = false;
     private String device_id;
 
+    private boolean isM1Right = false;//M1是否验证过
+    private String xinCode = "";//芯片票号
     /**
      * 3 身份证,1 Ultralight,4 M1,2串口
      */
     private int type;
-    private String ticketNum;
+    private String ticketNum ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +97,8 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
 
-
         RxBus.getDefault().toObserverable(Ticket.class).subscribe(myMessage -> {
             if (!isReading) {
-                isReading = true;
                 type = myMessage.getType();
                 if (type != 2) {
                     BasicOper.dc_beep(5);
@@ -106,10 +106,39 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 if (type == 1) {
                     ticketNum = myMessage.getNum().trim() + "00";
                 } else {
-                    ticketNum = myMessage.getNum().trim();
+                    if(type == 4){
+                        xinCode = myMessage.getNum().trim();
+                        if(!xinCode.equals("")){
+                            isM1Right = true;
+                        }
+                        if(!ticketNum.equals("")){
+                            isReading = true;
+                            takePhoto();
+                        }
+                    }else {
+                        ticketNum = myMessage.getNum().trim();
+                        if(isM1Right){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    flag_tag.setText("");
+                                }
+                            });
+                            isReading = true;
+                            takePhoto();
+                        }else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    flag_tag.setText("没有芯片验证");
+                                    flag_tag.setTextColor(getResources().getColor(R.color.red));
+                                }
+                            });
+                        }
+                    }
                 }
-                Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
-                takePhoto();
+               Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+
             }
         });
         RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
@@ -189,7 +218,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(device_id, type, ticketNum, file);
+        presenter.load(device_id, type, ticketNum,xinCode, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
@@ -412,7 +441,9 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     isLight = false;
                 }
                 isReading = false;
+                isM1Right = false;
                 ticketNum = "";
+                xinCode = "";
             }
         }, 2500);
 
