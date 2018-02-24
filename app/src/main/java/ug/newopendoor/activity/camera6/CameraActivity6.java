@@ -138,6 +138,16 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     }
                 }
             //   Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+                /**
+                 *
+                 *
+                 *
+                 *
+                 *
+                 *
+                 *
+                 *
+                 */
 
             }
         });
