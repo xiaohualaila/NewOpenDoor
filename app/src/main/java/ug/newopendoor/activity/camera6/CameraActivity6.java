@@ -138,7 +138,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     }
                 }
                Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
-
             }
         });
         RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
