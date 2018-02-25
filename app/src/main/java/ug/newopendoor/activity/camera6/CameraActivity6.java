@@ -110,10 +110,24 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                         xinCode = myMessage.getNum().trim();
                         if(!xinCode.equals("")){
                             isM1Right = true;
-                        }
-                        if(!ticketNum.equals("")){
-                            isReading = true;
-                            takePhoto();
+                            if(!ticketNum.equals("")){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        flag_tag.setText("");
+                                    }
+                                });
+                                isReading = true;
+                                takePhoto();
+                            }else {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        flag_tag.setText("请扫描二维码");
+                                        flag_tag.setTextColor(getResources().getColor(R.color.red));
+                                    }
+                                });
+                            }
                         }
                     }else {
                         ticketNum = myMessage.getNum().trim();
@@ -138,17 +152,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     }
                 }
             //   Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
-                /**
-                 *
-                 *
-                 *
-                 *
-                 *
-                 *
-                 *
-                 *
-                 */
-
             }
         });
         RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
