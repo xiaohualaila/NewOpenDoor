@@ -38,7 +38,7 @@ import ug.newopendoor.util.Ticket;
 
 public class Service2 extends Service implements UltralightCardListener, M1CardListener {
 
-    private final int TIME = 1000;
+    private final int TIME = 500;
     //身份证
     private Thread thread;
     private boolean isAuto = true;
@@ -53,7 +53,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private String USB = "";
 
     private boolean uitralight = false;//设置为false m1读卡
-    private boolean idcard = true;
+    private boolean idcard = false;
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
@@ -84,7 +84,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             //M1
             model2 = new M1CardModel(this);
             //以下是后来添加读取M1秘钥部分代码
-            newPasswordKey =  ByteUtil.convertStringToHex("111111");//设置秘钥12位  安卓是16进制 电脑是ascii码
+            newPasswordKey =  ByteUtil.convertStringToHex("123123");//设置秘钥12位  安卓是16进制 电脑是ascii码
         }
     }
 
@@ -118,13 +118,13 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                             isHaveOne = true;
                             model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 0);
                         }
-                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
+                     //   Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
                         Thread.sleep(TIME);
                     }
 
                     //身份证
                     if (idcard) {
-                   //     Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
+                     //   Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
                         com.decard.entitys.IDCard idCardData;
                         //标准协议
                         idCardData = BasicOper.dc_get_i_d_raw_info();
