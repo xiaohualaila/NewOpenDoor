@@ -129,7 +129,8 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                                 });
                             }
                         }
-                    }else {
+                    }
+                    if(type == 2){
                         ticketNum = myMessage.getNum().trim();
                         if(isM1Right){
                             runOnUiThread(new Runnable() {
