@@ -33,6 +33,7 @@ import ug.newopendoor.usbtest.UltralightCardListener;
 import ug.newopendoor.usbtest.UltralightCardModel;
 import ug.newopendoor.usbtest.Utils;
 import ug.newopendoor.util.ByteUtil;
+import ug.newopendoor.util.SharedPreferencesUtil;
 import ug.newopendoor.util.Ticket;
 
 
@@ -54,6 +55,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
 
     private boolean uitralight = true;//设置为false m1读卡
     private boolean idcard = true;
+    private boolean scan = true;
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
@@ -66,12 +68,16 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
         rkGpioControlNative.init();
         onOpenConnectPort();
-
-        //串口
-        ComA = new SerialControl();
-        openErWeiMa();
-        DispQueue = new DispQueueThread();
-        DispQueue.start();
+        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
+        idcard = SharedPreferencesUtil.getBoolean(this,"scan", true);
+        scan =  SharedPreferencesUtil.getBoolean(this,"idcard", true);
+        //串口二维码
+        if(scan){
+            ComA = new SerialControl();
+            openErWeiMa();
+            DispQueue = new DispQueueThread();
+            DispQueue.start();
+        }
 
         //身份证
         thread = new Thread(task);
@@ -96,7 +102,9 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         adcNative.close(0);
         adcNative.close(2);
         rkGpioControlNative.close();
-        closeErWeiMa();
+        if(scan){
+            closeErWeiMa();
+        }
     }
 
     Runnable task = new Runnable() {
@@ -108,7 +116,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                     //UltralightCard
                     if (uitralight) {
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-                    //    Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
+                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
                         Thread.sleep(TIME);
                     } else {
                         //M1
@@ -124,7 +132,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
 
                     //身份证
                     if (idcard) {
-                   //     Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
+                       Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
                         com.decard.entitys.IDCard idCardData;
                         //标准协议
                         idCardData = BasicOper.dc_get_i_d_raw_info();
@@ -264,7 +272,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                 while ((ComData = QueueList.poll()) != null) {
                     try {
                         ticketNum = new String(ComData.bRec).trim();
-                      //  Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+                        Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
                         Ticket ticket = new Ticket(2, ticketNum);
                         RxBus.getDefault().post(ticket);
                         Thread.sleep(800);
@@ -280,5 +288,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             QueueList.add(ComData);
         }
     }
+
+
 
 }

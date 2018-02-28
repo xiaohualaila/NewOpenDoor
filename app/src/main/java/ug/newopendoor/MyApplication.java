@@ -6,6 +6,7 @@ import android.content.Context;
 
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 
+import ug.newopendoor.util.SharedPreferencesUtil;
 import ug.newopendoor.util.SoundPoolUtil;
 
 /**
@@ -17,7 +18,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
-       SoundPoolUtil.getInstance(this);
+        SoundPoolUtil.getInstance(this);
     }
     public static Context getContext() {
         return mContext;

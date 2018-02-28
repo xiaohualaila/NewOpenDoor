@@ -40,6 +40,7 @@ import ug.newopendoor.usbtest.ConvertUtils;
 import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.MyUtil;
 import ug.newopendoor.util.RoundImageView;
+import ug.newopendoor.util.SharedPreferencesUtil;
 import ug.newopendoor.util.SoundPoolUtil;
 import ug.newopendoor.util.Ticket;
 
@@ -82,6 +83,10 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
      */
     private int type;
     private String ticketNum ="";
+
+    private boolean uitralight = true;//设置为false m1读卡
+    private boolean idcard = true;
+    private boolean scan = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +131,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 takePhoto();
             }
         });
+
     }
 
     private void takePhoto() {
@@ -199,7 +205,8 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     protected void onResume() {
         super.onResume();
         camera = openCamera();
-        startService(new Intent(this, Service2.class));
+        Intent intent = new Intent(this, Service2.class);
+        startService(intent);
     }
 
     @Override
