@@ -86,12 +86,7 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
         SharedPreferencesUtil.putBoolean(this,"uitralight", isUitralight);
         SharedPreferencesUtil.putBoolean(this,"scan", isScan);
         SharedPreferencesUtil.putBoolean(this,"idcard", isIdcard);
-
         Intent intent = new Intent(this, CameraActivity6.class);
-//        intent.putExtra("uitralight",isUitralight);
-//        intent.putExtra("scan",isScan);
-//        intent.putExtra("idcard",isIdcard);
-//
         startActivity(intent);
         finish();
     }
