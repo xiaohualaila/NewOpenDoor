@@ -55,7 +55,7 @@ public class SharedPreferencesUtil {
 	 * @return
 	 */
 	public static SharedPreferences getSharedPreference(Context context) {
-		return context.getSharedPreferences(name, Context.MODE_PRIVATE);
+		return context.getSharedPreferences(name, Context.MODE_MULTI_PROCESS);
 	}/**
 	 * 获取boolean的value
 	 *

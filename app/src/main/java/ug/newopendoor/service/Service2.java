@@ -103,7 +103,9 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         adcNative.close(0);
         adcNative.close(2);
         rkGpioControlNative.close();
-        closeErWeiMa();
+        if(scan){
+            closeErWeiMa();
+        }
     }
 
     Runnable task = new Runnable() {
