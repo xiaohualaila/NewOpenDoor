@@ -48,7 +48,7 @@
 
 
         </activity>
-        <activity android:name=".activity.SetupActivity">
+        <activity android:name=".activity.setup.SetupActivity">
 
         </activity>
 
