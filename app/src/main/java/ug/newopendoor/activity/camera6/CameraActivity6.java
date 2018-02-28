@@ -96,47 +96,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         device_id = MyUtil.getDeviceID(this);//获取设备号
 
         RxBus.getDefault().toObserverable(Ticket.class).subscribe(myMessage -> {
-//            if (!isReading) {
-//                type = myMessage.getType();
-//                if (type != 2) {
-//                    BasicOper.dc_beep(5);
-//                }
-//                if (type == 1) {
-//                    ticketNum = myMessage.getNum().trim() + "00";
-//                } else {
-//                    if(type == 4){
-//                        xinCode = myMessage.getNum().trim();
-//                        if(!xinCode.equals("")){
-//                            isM1Right = true;
-//                        }
-//                        if(!ticketNum.equals("")){
-//                            isReading = true;
-//                            takePhoto();
-//                        }
-//                    }else {
-//                        ticketNum = myMessage.getNum().trim();
-//                        if(isM1Right){
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    flag_tag.setText("");
-//                                }
-//                            });
-//                            isReading = true;
-//                            takePhoto();
-//                        }else {
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    flag_tag.setText("没有芯片验证");
-//                                    flag_tag.setTextColor(getResources().getColor(R.color.red));
-//                                }
-//                            });
-//                        }
-//                    }
-//                }
-//               Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
-//            }
             if (!isReading) {
                 isReading = true;
                 type = myMessage.getType();
