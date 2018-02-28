@@ -84,10 +84,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     private int type;
     private String ticketNum ="";
 
-    private boolean uitralight = true;//设置为false m1读卡
-    private boolean idcard = true;
-    private boolean scan = true;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
