@@ -77,8 +77,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     private boolean isReading = false;
     private String device_id;
 
-    private boolean isM1Right = false;//M1是否验证过
-    private String xinCode = "";//芯片票号
     /**
      * 3 身份证,1 Ultralight,4 M1,2串口
      */
@@ -98,46 +96,56 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         device_id = MyUtil.getDeviceID(this);//获取设备号
 
         RxBus.getDefault().toObserverable(Ticket.class).subscribe(myMessage -> {
+//            if (!isReading) {
+//                type = myMessage.getType();
+//                if (type != 2) {
+//                    BasicOper.dc_beep(5);
+//                }
+//                if (type == 1) {
+//                    ticketNum = myMessage.getNum().trim() + "00";
+//                } else {
+//                    if(type == 4){
+//                        xinCode = myMessage.getNum().trim();
+//                        if(!xinCode.equals("")){
+//                            isM1Right = true;
+//                        }
+//                        if(!ticketNum.equals("")){
+//                            isReading = true;
+//                            takePhoto();
+//                        }
+//                    }else {
+//                        ticketNum = myMessage.getNum().trim();
+//                        if(isM1Right){
+//                            runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    flag_tag.setText("");
+//                                }
+//                            });
+//                            isReading = true;
+//                            takePhoto();
+//                        }else {
+//                            runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    flag_tag.setText("没有芯片验证");
+//                                    flag_tag.setTextColor(getResources().getColor(R.color.red));
+//                                }
+//                            });
+//                        }
+//                    }
+//                }
+//               Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+//            }
             if (!isReading) {
+                isReading = true;
                 type = myMessage.getType();
-                if (type != 2) {
-                    BasicOper.dc_beep(5);
-                }
                 if (type == 1) {
                     ticketNum = myMessage.getNum().trim() + "00";
                 } else {
-                    if(type == 4){
-                        xinCode = myMessage.getNum().trim();
-                        if(!xinCode.equals("")){
-                            isM1Right = true;
-                        }
-                        if(!ticketNum.equals("")){
-                            isReading = true;
-                            takePhoto();
-                        }
-                    }else {
-                        ticketNum = myMessage.getNum().trim();
-                        if(isM1Right){
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    flag_tag.setText("");
-                                }
-                            });
-                            isReading = true;
-                            takePhoto();
-                        }else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    flag_tag.setText("没有芯片验证");
-                                    flag_tag.setTextColor(getResources().getColor(R.color.red));
-                                }
-                            });
-                        }
-                    }
+                    ticketNum = myMessage.getNum().trim();
                 }
-               Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+                takePhoto();
             }
         });
         RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
@@ -216,8 +224,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-
-        presenter.load(device_id, type, ticketNum,xinCode, file);
+        presenter.load(device_id, type, ticketNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
@@ -440,9 +447,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     isLight = false;
                 }
                 isReading = false;
-                isM1Right = false;
                 ticketNum = "";
-                xinCode = "";
             }
         }, 2500);
 
