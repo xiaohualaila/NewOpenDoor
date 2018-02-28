@@ -72,13 +72,13 @@ public class CameraPressenter6 extends BasePresenter implements CameraContract6.
                 .subscribe(new Action1<JSONObject>() {
                                @Override
                                public void call(JSONObject jsonObject) {
-                                  Log.i("sss",jsonObject.toString());
+                                //  Log.i("sss",jsonObject.toString());
                                    jsonObjectResult(jsonObject);
                                }
                            }, new Action1<Throwable>() {
                                @Override
                                public void call(Throwable throwable) {
-                                   Log.i("sss",throwable.toString());
+                               //    Log.i("sss",throwable.toString());
                                    view.requestFail();
                                }
                            }
