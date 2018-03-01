@@ -39,7 +39,7 @@ import ug.newopendoor.util.Ticket;
 
 public class Service2 extends Service implements UltralightCardListener, M1CardListener {
 
-    private final int TIME = 1000;
+    private final int TIME = 500;
     //身份证
     private Thread thread;
     private boolean isAuto = true;
@@ -60,6 +60,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     SerialControl ComA;
     DispQueueThread DispQueue;
     private String newPasswordKey;
+    private String secret = "111111";
     @Override
     public void onCreate() {
         super.onCreate();
@@ -71,8 +72,9 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
         idcard = SharedPreferencesUtil.getBoolean(this,"scan", true);
         scan =  SharedPreferencesUtil.getBoolean(this,"idcard", true);
-        //串口二维码
+        secret = SharedPreferencesUtil.getStringByKey("secret",this);
         if(scan){
+            //串口
             ComA = new SerialControl();
             openErWeiMa();
             DispQueue = new DispQueueThread();
@@ -90,7 +92,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             //M1
             model2 = new M1CardModel(this);
             //以下是后来添加读取M1秘钥部分代码
-            newPasswordKey =  ByteUtil.convertStringToHex("111111");//设置秘钥12位  安卓是16进制 电脑是ascii码
+            newPasswordKey =  ByteUtil.convertStringToHex(secret);//设置秘钥12位  安卓是16进制 电脑是ascii码
         }
     }
 
@@ -132,7 +134,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
 
                     //身份证
                     if (idcard) {
-                       Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
+                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
                         com.decard.entitys.IDCard idCardData;
                         //标准协议
                         idCardData = BasicOper.dc_get_i_d_raw_info();
@@ -272,7 +274,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                 while ((ComData = QueueList.poll()) != null) {
                     try {
                         ticketNum = new String(ComData.bRec).trim();
-                        Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+                      //  Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
                         Ticket ticket = new Ticket(2, ticketNum);
                         RxBus.getDefault().post(ticket);
                         Thread.sleep(800);
@@ -288,7 +290,5 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             QueueList.add(ComData);
         }
     }
-
-
 
 }
