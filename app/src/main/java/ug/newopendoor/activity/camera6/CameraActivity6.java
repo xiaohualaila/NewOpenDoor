@@ -34,12 +34,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
+import ug.newopendoor.retrofit.ConnectUrl;
 import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.service.Service2;
 import ug.newopendoor.usbtest.ConvertUtils;
 import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.MyUtil;
 import ug.newopendoor.util.RoundImageView;
+import ug.newopendoor.util.SharedPreferencesUtil;
 import ug.newopendoor.util.SoundPoolUtil;
 import ug.newopendoor.util.Ticket;
 
@@ -231,8 +233,9 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-
-        presenter.load(device_id, type, ticketNum,xinCode, file);
+     //  String url =  SharedPreferencesUtil.getStringByKey("ip_address",this);
+         String url = ConnectUrl.URL;
+            presenter.load(device_id, type, ticketNum,xinCode, file,url);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {

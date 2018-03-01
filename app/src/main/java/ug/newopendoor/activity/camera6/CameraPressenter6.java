@@ -16,6 +16,7 @@ import rx.schedulers.Schedulers;
 import ug.newopendoor.activity.base.BasePresenter;
 import ug.newopendoor.retrofit.Api;
 import ug.newopendoor.retrofit.ConnectUrl;
+import ug.newopendoor.util.SharedPreferencesUtil;
 
 
 /**
@@ -36,18 +37,18 @@ public class CameraPressenter6 extends BasePresenter implements CameraContract6.
     }
 
     @Override
-    public void load(String device_id, int type, String ticketNum, File newFile) {
+    public void load(String device_id, int type, String ticketNum, File newFile, String url) {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), newFile);
         builder.addFormDataPart("photoImgFiles", newFile.getName(), requestBody);
-        Api.getBaseApiWithOutFormat(ConnectUrl.URL)
+        Api.getBaseApiWithOutFormat(url)
                 .uploadPhotoBase(device_id, ticketNum, type, builder.build().parts())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<JSONObject>() {
                                @Override
                                public void call(JSONObject jsonObject) {
-                                  //  Log.i("sss",jsonObject.toString());
+                                   //  Log.i("sss",jsonObject.toString());
                                    jsonObjectResult(jsonObject);
                                }
                            }, new Action1<Throwable>() {
@@ -61,11 +62,11 @@ public class CameraPressenter6 extends BasePresenter implements CameraContract6.
     }
 
     @Override
-    public void load(String device_id, int type, String ticketNum,String xinCode, File newFile) {
+    public void load(String device_id, int type, String ticketNum,String xinCode, File newFile,String url) {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), newFile);
         builder.addFormDataPart("photoImgFiles", newFile.getName(), requestBody);
-        Api.getBaseApiWithOutFormat(ConnectUrl.URL)
+        Api.getBaseApiWithOutFormat(url)
                 .uploadPhotoBase(device_id, ticketNum,xinCode, type, builder.build().parts())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
