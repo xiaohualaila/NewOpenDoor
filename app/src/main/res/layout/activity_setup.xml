@@ -5,8 +5,6 @@
     android:focusable= "true"
     android:focusableInTouchMode= "true"
     android:background="@mipmap/bg_main">
-
-
     <LinearLayout
         android:id="@+id/ll"
         android:layout_width="match_parent"
