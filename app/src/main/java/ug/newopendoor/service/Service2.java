@@ -70,8 +70,8 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         rkGpioControlNative.init();
         onOpenConnectPort();
         uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
-        idcard = SharedPreferencesUtil.getBoolean(this,"scan", true);
-        scan =  SharedPreferencesUtil.getBoolean(this,"idcard", true);
+        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
+        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", true);
         secret = SharedPreferencesUtil.getStringByKey("secret",this);
         if(scan){
             //串口
