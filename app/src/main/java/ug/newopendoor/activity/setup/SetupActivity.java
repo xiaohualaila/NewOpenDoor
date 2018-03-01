@@ -1,5 +1,6 @@
 package ug.newopendoor.activity.setup;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -67,81 +69,61 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
         ButterKnife.bind(this);
+
         // 添加监听
         idcard_switch.setOnCheckedChangeListener(this);
         scan_switch.setOnCheckedChangeListener(this);
-        ct_ip_address.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                ip_address = s.toString();
-                if(TextUtils.isEmpty(duankou)){
-                     URL1 = "http://" + ip_address + "/ticket_checking/Api/" + jieko + "/";
-                    ip_context.setText(URL1);
-                } else {
-                     URL = "http://" + ip_address + ":" + duankou + "/ticket_checking/Api/" + jieko + "/";
-                    ip_context.setText(URL);
-                }
-            }
-        });
-        ct_duankou.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                duankou = s.toString();
-                if(TextUtils.isEmpty(duankou)){
-                    URL1 = "http://" + ip_address + "/ticket_checking/Api/" + jieko + "/";
-                    ip_context.setText(URL1);
-                } else {
-                    URL = "http://" + ip_address + ":" + duankou + "/ticket_checking/Api/" + jieko + "/";
-                    ip_context.setText(URL);
-                }
-            }
-        });
-        ct_jieko.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                jieko = s.toString();
-                if(TextUtils.isEmpty(duankou)){
-                    URL1 = "http://" + ip_address + "/ticket_checking/Api/" + jieko + "/";
-                    ip_context.setText(URL1);
-                } else {
-                    URL = "http://" + ip_address + ":" + duankou + "/ticket_checking/Api/" + jieko + "/";
-                    ip_context.setText(URL);
-                }
-            }
-        });
+        setTextChangedListener(ct_ip_address,1);
+        setTextChangedListener(ct_duankou,2);
+        setTextChangedListener(ct_jieko,3);
     }
 
+   public void setTextChangedListener(ClearEditTextWhite editTextWhite,int content){
+       editTextWhite.addTextChangedListener(new TextWatcher() {
+           @Override
+           public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+           }
+
+           @Override
+           public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+           }
+
+           @Override
+           public void afterTextChanged(Editable s) {
+
+               if(content == 1){
+                   ip_address = s.toString();
+                   if(TextUtils.isEmpty(duankou)){
+                       URL1 = "http://" + ip_address + "/ticket_checking/Api/" + jieko + "/";
+                       ip_context.setText(URL1);
+                   } else {
+                       URL = "http://" + ip_address + ":" + duankou + "/ticket_checking/Api/" + jieko + "/";
+                       ip_context.setText(URL);
+                   }
+               }else if(content == 2){
+                   duankou = s.toString();
+                   if(TextUtils.isEmpty(duankou)){
+                       URL1 = "http://" + ip_address + "/ticket_checking/Api/" + jieko + "/";
+                       ip_context.setText(URL1);
+                   } else {
+                       URL = "http://" + ip_address + ":" + duankou + "/ticket_checking/Api/" + jieko + "/";
+                       ip_context.setText(URL);
+                   }
+               }else if(content == 3){
+                   jieko = s.toString();
+                   if(TextUtils.isEmpty(duankou)){
+                       URL1 = "http://" + ip_address + "/ticket_checking/Api/" + jieko + "/";
+                       ip_context.setText(URL1);
+                   } else {
+                       URL = "http://" + ip_address + ":" + duankou + "/ticket_checking/Api/" + jieko + "/";
+                       ip_context.setText(URL);
+                   }
+               }
+           }
+       });
+   }
 
     @OnClick({R.id.rb_uitralight, R.id.rb_m1, R.id.finish, R.id.add_excel})
     public void onClick(View v) {
@@ -194,6 +176,5 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
         startActivity(intent);
         finish();
     }
-
 
 }
