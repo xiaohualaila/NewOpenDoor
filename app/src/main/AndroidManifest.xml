@@ -38,18 +38,18 @@
 
         </activity>
         <activity android:name=".activity.camera6.CameraActivity6">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".activity.MainActivity" android:launchMode="singleTask">
 
 
         </activity>
         <activity android:name=".activity.setup.SetupActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity android:name=".activity.camera3.FragmentActivity">
