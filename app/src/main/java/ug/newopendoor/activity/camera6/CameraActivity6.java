@@ -54,8 +54,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     private CameraContract6.Presenter presenter;
     @BindView(R.id.camera_sf)
     SurfaceView camera_sf;
-//    @BindView(R.id.img1)
-//    RoundImageView img1;
     @BindView(R.id.img_server)
     RoundImageView img_server;
 
@@ -229,7 +227,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         }
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
-            Toast.makeText(this, "网路无法连接！", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getResources().getText(R.string.error_net), Toast.LENGTH_LONG).show();
             uploadFinish();
             return;
         }
@@ -391,21 +389,21 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
 
     @Override
     public void requestFail() {
-        flag_tag.setText("网络请求失败");
+        flag_tag.setText(getResources().getText(R.string.error_net));
       //  SoundPoolUtil.play(3);
         doErrorRequest();
     }
 
     @Override
     public void doError() {
-        flag_tag.setText("验证失败");
+        flag_tag.setText(getResources().getText(R.string.error_ticket));
         SoundPoolUtil.play(3);
         doErrorRequest();
     }
 
     @Override
     public void doFaceError() {
-        flag_tag.setText("人脸验证失败");
+        flag_tag.setText(getResources().getText(R.string.error_face));
         SoundPoolUtil.play(1);
         doErrorRequest();
     }
@@ -429,7 +427,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         isOpenDoor = true;
         rkGpioControlNative.ControlGpio(1, 0);//开门
         SoundPoolUtil.play(4);
-        flag_tag.setText("验证成功");
+        flag_tag.setText(getResources().getText(R.string.right_ticket));
         flag_tag.setTextColor(getResources().getColor(R.color.green));
         uploadFinish();
     }

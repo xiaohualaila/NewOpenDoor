@@ -15,7 +15,8 @@
     <string name="open_door_5">人脸识别不符，不能通过!</string>
     <string name="open_door_6">首次进入，验证通过!</string>
     <string name="open_door_other">无效票卡，不允许入场!</string>
-    <string name="open_door_99">网络异常，请重试！</string>
-    <string name="open_door_ok">网络异常，请重试！</string>
-    <string name="open_door_faill">网络异常，请重试！</string>
+    <string name="error_net">网络异常</string>
+    <string name="error_face">人脸验证失败</string>
+    <string name="error_ticket">无效票卡请重试</string>
+    <string name="right_ticket">验证成功</string>
 </resources>
