@@ -60,7 +60,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     SerialControl ComA;
     DispQueueThread DispQueue;
     private String newPasswordKey;
-    private String secret = "111111";
+    private String secret = "fkz432";
     @Override
     public void onCreate() {
         super.onCreate();
@@ -69,9 +69,9 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
         rkGpioControlNative.init();
         onOpenConnectPort();
-        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
+        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", false);
         scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
-        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", true);
+        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", false);
         secret = SharedPreferencesUtil.getStringByKey("secret",this);
         if(scan){
             //串口

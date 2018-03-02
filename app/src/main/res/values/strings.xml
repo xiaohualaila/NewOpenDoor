@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">三合一</string>
+    <string name="app_name">闸机</string>
     <string name="usbKey">usbKey</string>
     <string name="androidUsb">AUSB</string>
     <string name="settingSp">spSetting</string>
