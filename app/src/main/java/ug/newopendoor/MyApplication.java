@@ -3,10 +3,6 @@ package ug.newopendoor;
 
 import android.app.Application;
 import android.content.Context;
-
-import com.cmm.rkgpiocontrol.rkGpioControlNative;
-
-import ug.newopendoor.util.SharedPreferencesUtil;
 import ug.newopendoor.util.SoundPoolUtil;
 
 /**
