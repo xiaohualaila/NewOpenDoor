@@ -39,7 +39,7 @@ import ug.newopendoor.util.Ticket;
 
 public class Service2 extends Service implements UltralightCardListener, M1CardListener {
 
-    private final int TIME = 500;
+    private final int TIME = 300;
     //身份证
     private Thread thread;
     private boolean isAuto = true;
@@ -53,8 +53,8 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private SPUtils settingSp;
     private String USB = "";
 
-    private boolean uitralight = true;//设置为false m1读卡
-    private boolean idcard = true;
+    private boolean uitralight = false;//设置为false m1读卡
+    private boolean idcard = false;
     private boolean scan = true;
     //串口
     SerialControl ComA;
@@ -69,10 +69,10 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
         rkGpioControlNative.init();
         onOpenConnectPort();
-        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", false);
-        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
-        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", false);
-        secret = SharedPreferencesUtil.getStringByKey("secret",this);
+//        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", false);
+//        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
+//        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", false);
+       // secret = SharedPreferencesUtil.getStringByKey("secret",this);
         if(scan){
             //串口
             ComA = new SerialControl();
@@ -274,7 +274,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                 while ((ComData = QueueList.poll()) != null) {
                     try {
                         ticketNum = new String(ComData.bRec).trim();
-                      //  Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+                        Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
                         Ticket ticket = new Ticket(2, ticketNum);
                         RxBus.getDefault().post(ticket);
                         Thread.sleep(800);
