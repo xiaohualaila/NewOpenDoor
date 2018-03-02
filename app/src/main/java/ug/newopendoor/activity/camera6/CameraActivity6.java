@@ -164,6 +164,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 }
                 bm.recycle();
                 bm1.recycle();
+              //  startCameraPreview();
                 upload();
             }
         }
@@ -274,7 +275,16 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             }
         }
     }
-
+    /* 开始预览 */
+    private void startCameraPreview() {
+        if (camera != null) {
+            try {
+                camera.startPreview();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public void setCameraDisplayOrientation(int cameraId, Camera camera) {
         Camera.CameraInfo info = new Camera.CameraInfo();
         Camera.getCameraInfo(cameraId, info);
@@ -342,7 +352,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
 
     @Override
     public void requestFail() {
-        flag_tag.setText(getResources().getText(R.string.open_door_faill));
+        flag_tag.setText(getResources().getText(R.string.error_net));
       //  SoundPoolUtil.play(3);
         doErrorRequest();
     }
@@ -395,7 +405,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startPreview();
+                startCameraPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
                 tv_idcard.setText("");
