@@ -163,7 +163,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 }
                 bm.recycle();
                 bm1.recycle();
-              //  startCameraPreview();
                 upload();
             }
         }
