@@ -136,7 +136,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     private Camera.PictureCallback jpeg = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            stopPreview();
             filePath = FileUtil.getPath() + File.separator + FileUtil.getTime() + ".jpeg";
             Matrix matrix = new Matrix();
             matrix.reset();
@@ -164,7 +163,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 }
                 bm.recycle();
                 bm1.recycle();
-                startCameraPreview();
+              //  startCameraPreview();
                 upload();
             }
         }
@@ -405,7 +404,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-               // startCameraPreview();
+                startCameraPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
                 tv_idcard.setText("");
