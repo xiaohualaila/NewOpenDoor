@@ -211,6 +211,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 }
                 bm.recycle();
                 bm1.recycle();
+                //startCameraPreview();
                 upload();
             }
         }
@@ -316,6 +317,17 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         if (camera != null) {
             try {
                 camera.stopPreview();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /* 开始预览预览 */
+    private void startCameraPreview() {
+        if (camera != null) {
+            try {
+                camera.startPreview();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -442,7 +454,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startPreview();
+                startCameraPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
                 tv_idcard.setText("");
