@@ -60,7 +60,8 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     SerialControl ComA;
     DispQueueThread DispQueue;
     private String newPasswordKey;
-    private String secret = "fkz432";
+    //private String secret = "fkz432";
+    private String secret = "111111";
     @Override
     public void onCreate() {
         super.onCreate();
@@ -72,7 +73,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
 //        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", false);
 //        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
 //        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", false);
-       // secret = SharedPreferencesUtil.getStringByKey("secret",this);
+        secret = SharedPreferencesUtil.getStringByKey("secret",this);
         if(scan){
             //串口
             ComA = new SerialControl();
