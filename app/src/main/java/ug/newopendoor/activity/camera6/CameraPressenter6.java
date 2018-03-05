@@ -2,11 +2,8 @@ package ug.newopendoor.activity.camera6;
 
 import android.text.TextUtils;
 import android.util.Log;
-
 import org.json.JSONObject;
-
 import java.io.File;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -15,8 +12,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import ug.newopendoor.activity.base.BasePresenter;
 import ug.newopendoor.retrofit.Api;
-import ug.newopendoor.retrofit.ConnectUrl;
-import ug.newopendoor.util.SharedPreferencesUtil;
+
 
 
 /**
