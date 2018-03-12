@@ -96,9 +96,12 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         device_id = MyUtil.getDeviceID(this);//获取设备号
 
         RxBus.getDefault().toObserverable(Ticket.class).subscribe(myMessage -> {
+            type = myMessage.getType();
+            if(type !=2 ){
+                BasicOper.dc_beep(5);
+            }
             if (!isReading) {
                 isReading = true;
-                type = myMessage.getType();
                 if (type == 1) {
                     ticketNum = myMessage.getNum().trim() + "00";
                 } else {
