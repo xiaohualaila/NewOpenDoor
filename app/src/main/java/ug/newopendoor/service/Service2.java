@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.cmm.rkadcreader.adcNative;
@@ -72,7 +73,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
         scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
         idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", true);
-        secret = SharedPreferencesUtil.getStringByKey("secret",this);
+
         if(scan){
             //串口
             ComA = new SerialControl();
@@ -90,6 +91,11 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             model = new UltralightCardModel(this);
         }else {
             //M1
+            String sp_secret = SharedPreferencesUtil.getStringByKey("secret",this);
+            if(!TextUtils.isEmpty(sp_secret)){
+                secret = sp_secret;
+            }
+            Log.i("sss","secret>> " + secret);
             model2 = new M1CardModel(this);
             //以下是后来添加读取M1秘钥部分代码
             newPasswordKey =  ByteUtil.convertStringToHex(secret);//设置秘钥12位  安卓是16进制 电脑是ascii码
@@ -274,7 +280,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                 while ((ComData = QueueList.poll()) != null) {
                     try {
                         ticketNum = new String(ComData.bRec).trim();
-                      //  Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+                        Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
                         Ticket ticket = new Ticket(2, ticketNum);
                         RxBus.getDefault().post(ticket);
                         Thread.sleep(800);

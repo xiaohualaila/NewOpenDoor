@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="5dp"
+            android:visibility="gone"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="100dp"
@@ -40,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="100dp"
@@ -63,6 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="100dp"
@@ -86,6 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="100dp"
@@ -106,9 +110,11 @@
                 android:background="@drawable/background_corner_right" />
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/ll_secret"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="100dp"
@@ -125,7 +131,6 @@
                 android:gravity="center"
                 android:paddingRight="5dp"
                 android:textSize="20sp"
-                android:text="111111"
                 android:textColor="@color/clear_edit_text"
                 android:background="@drawable/background_corner_right" />
         </LinearLayout>

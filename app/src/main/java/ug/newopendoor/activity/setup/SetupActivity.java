@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -56,6 +57,8 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
     ClearEditTextWhite ct_secret;
     @BindView(R.id.ip_context)
     TextView ip_context;
+    @BindView(R.id.ll_secret)
+    LinearLayout ll_secret;
     private boolean isUitralight = true;
     private boolean isScan = true;
     private boolean isIdcard = true;
@@ -130,11 +133,14 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
         switch (v.getId()) {
             case R.id.rb_uitralight:
                 isUitralight = true;
+                ll_secret.setVisibility(View.GONE);
                 break;
             case R.id.rb_m1:
                 isUitralight = false;
+                ll_secret.setVisibility(View.VISIBLE);
                 break;
             case R.id.finish:
+
                 toActivity();
                 break;
         }
