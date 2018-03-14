@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.cmm.rkadcreader.adcNative;
@@ -92,6 +93,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             model = new UltralightCardModel(this);
         }else {
             //M1
+          //  Log.i("sss","secret>> " + secret);
             model2 = new M1CardModel(this);
             //以下是后来添加读取M1秘钥部分代码
             newPasswordKey =  ByteUtil.convertStringToHex(secret);//设置秘钥12位  安卓是16进制 电脑是ascii码
@@ -120,7 +122,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                     //UltralightCard
                     if (uitralight) {
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-                       Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
+               //        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
                         Thread.sleep(TIME);
                     } else {
                         //M1
@@ -130,13 +132,13 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                             isHaveOne = true;
                             model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 0);
                         }
-                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
+              //          Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
                         Thread.sleep(TIME);
                     }
 
                     //身份证
                     if (idcard) {
-                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
+                   //     Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
                         com.decard.entitys.IDCard idCardData;
                         //标准协议
                         idCardData = BasicOper.dc_get_i_d_raw_info();

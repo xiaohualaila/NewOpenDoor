@@ -232,7 +232,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         }
      // String url =  SharedPreferencesUtil.getStringByKey("ip_address",this);
          String url = ConnectUrl.URL;
-            Log.i("sss","ticketNum>>>" + ticketNum + "   xinCode>>>" + xinCode +"url》》  " + url);
+      //      Log.i("sss","ticketNum>>>" + ticketNum + "   xinCode>>>" + xinCode +"url》》  " + url);
             presenter.load(device_id, type, ticketNum,xinCode, file,url);
     }
 

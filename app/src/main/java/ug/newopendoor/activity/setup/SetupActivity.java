@@ -56,9 +56,9 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
     ClearEditTextWhite ct_secret;
     @BindView(R.id.ip_context)
     TextView ip_context;
-    private boolean isUitralight = true;
+    private boolean isUitralight = false;
     private boolean isScan = true;
-    private boolean isIdcard = true;
+    private boolean isIdcard = false;
     private String ip_address = "";
     private String duankou = "";
     private String jieko = "";

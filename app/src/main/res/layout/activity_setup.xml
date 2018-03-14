@@ -133,7 +133,6 @@
                 android:gravity="center"
                 android:paddingRight="5dp"
                 android:textSize="20sp"
-                android:text="111111"
                 android:textColor="@color/clear_edit_text"
                 android:background="@drawable/background_corner_right" />
         </LinearLayout>
