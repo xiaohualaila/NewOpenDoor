@@ -104,7 +104,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     BasicOper.dc_beep(5);
                 }
 
-            if(type == 4){
+            if(type == 4){//芯片
                 xinCode = myMessage.getNum().trim();
                 if(!xinCode.equals("")){
                     isM1Right = true;
@@ -129,7 +129,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     }
                 }
             }
-            if(type == 2){
+            if(type == 2){//二维码
                 ticketNum = myMessage.getNum().trim();
                 if(isM1Right){
                     runOnUiThread(new Runnable() {
