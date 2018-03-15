@@ -124,7 +124,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                     //UltralightCard
                     if (uitralight) {
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
+                    //    Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
                         Thread.sleep(TIME);
                     } else {
                         //M1
@@ -134,13 +134,13 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                             isHaveOne = true;
                             model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 0);
                         }
-                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
+                    //    Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
                         Thread.sleep(TIME);
                     }
 
                     //身份证
                     if (idcard) {
-                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
+                      //  Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
                         com.decard.entitys.IDCard idCardData;
                         //标准协议
                         idCardData = BasicOper.dc_get_i_d_raw_info();

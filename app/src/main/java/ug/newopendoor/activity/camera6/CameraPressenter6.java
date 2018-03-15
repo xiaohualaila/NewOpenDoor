@@ -74,7 +74,7 @@ public class CameraPressenter6 extends BasePresenter implements CameraContract6.
                     view.doDoorError();
                 } else if (result.equals("5")) {
                     view.doFaceError();
-                } else if (result.equals("7")) {
+                } else if (result.equals("7")) {//入场时间错误
                     view.doTimeError();
                 }else {
                     view.doError();
