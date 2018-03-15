@@ -20,6 +20,10 @@ public interface CameraContract6 {
 
         void doTimeError();
 
+        void doDoorError();
+
+        void doNumError();
+
         void doSuccess(String Face_path);
     }
 

@@ -21,4 +21,6 @@
     <string name="error_ticket">无效票卡请重试</string>
     <string name="right_ticket">验证成功</string>
     <string name="error_time">入场时间错误</string>
+    <string name="error_door">入场口错误</string>
+    <string name="error_num">入场次数已用完</string>
 </resources>

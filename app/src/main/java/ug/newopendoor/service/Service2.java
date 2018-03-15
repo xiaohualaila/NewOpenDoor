@@ -280,7 +280,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                 while ((ComData = QueueList.poll()) != null) {
                     try {
                         ticketNum = new String(ComData.bRec).trim();
-                        Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+                      //  Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
                         Ticket ticket = new Ticket(2, ticketNum);
                         RxBus.getDefault().post(ticket);
                         Thread.sleep(800);

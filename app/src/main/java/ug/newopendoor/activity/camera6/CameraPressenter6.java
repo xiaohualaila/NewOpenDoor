@@ -68,6 +68,10 @@ public class CameraPressenter6 extends BasePresenter implements CameraContract6.
                 if (result.equals("1")) {
                     String imageStr = jsonObject.optString("Face_path");
                     view.doSuccess(imageStr);
+                }  else if (result.equals("2")) {//入场次数已用完
+                    view.doNumError();
+                } else if (result.equals("3")) {//入场口错误
+                    view.doDoorError();
                 } else if (result.equals("5")) {
                     view.doFaceError();
                 } else if (result.equals("7")) {
