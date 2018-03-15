@@ -103,9 +103,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 if (type != 2) {
                     BasicOper.dc_beep(5);
                 }
-                if (type == 1) {
-                    ticketNum = myMessage.getNum().trim() + "00";
-                } else {
+
                     if(type == 4){
                         xinCode = myMessage.getNum().trim();
                         if(!xinCode.equals("")){
@@ -153,7 +151,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                             });
                         }
                     }
-                }
+
             //   Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
             }
         });
