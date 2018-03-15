@@ -104,53 +104,53 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     BasicOper.dc_beep(5);
                 }
 
-                    if(type == 4){
-                        xinCode = myMessage.getNum().trim();
-                        if(!xinCode.equals("")){
-                            isM1Right = true;
-                            if(!ticketNum.equals("")){
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        flag_tag.setText("");
-                                    }
-                                });
-                                isReading = true;
-                                takePhoto();
-                            }else {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        flag_tag.setText("请扫描二维码");
-                                        SoundPoolUtil.play(10);
-                                        flag_tag.setTextColor(getResources().getColor(R.color.red));
-                                    }
-                                });
+            if(type == 4){
+                xinCode = myMessage.getNum().trim();
+                if(!xinCode.equals("")){
+                    isM1Right = true;
+                    if(!ticketNum.equals("")){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                flag_tag.setText("");
                             }
-                        }
+                        });
+                        isReading = true;
+                        takePhoto();
+                    }else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                flag_tag.setText("请扫描二维码");
+                                SoundPoolUtil.play(10);
+                                flag_tag.setTextColor(getResources().getColor(R.color.red));
+                            }
+                        });
                     }
-                    if(type == 2){
-                        ticketNum = myMessage.getNum().trim();
-                        if(isM1Right){
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    flag_tag.setText("");
-                                }
-                            });
-                            isReading = true;
-                            takePhoto();
-                        }else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    flag_tag.setText("没有芯片验证");
-                                    SoundPoolUtil.play(9);
-                                    flag_tag.setTextColor(getResources().getColor(R.color.red));
-                                }
-                            });
+                }
+            }
+            if(type == 2){
+                ticketNum = myMessage.getNum().trim();
+                if(isM1Right){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            flag_tag.setText("");
                         }
-                    }
+                    });
+                    isReading = true;
+                    takePhoto();
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            flag_tag.setText("没有芯片验证");
+                            SoundPoolUtil.play(9);
+                            flag_tag.setTextColor(getResources().getColor(R.color.red));
+                        }
+                    });
+                }
+            }
 
             //   Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
             }
@@ -232,7 +232,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         }
      // String url =  SharedPreferencesUtil.getStringByKey("ip_address",this);
          String url = ConnectUrl.URL;
-      //      Log.i("sss","ticketNum>>>" + ticketNum + "   xinCode>>>" + xinCode +"url》》  " + url);
+            Log.i("sss","ticketNum>>>" + ticketNum + "   xinCode>>>" + xinCode +"   url》》  " + url);
             presenter.load(device_id, type, ticketNum, file,url);
     }
 
