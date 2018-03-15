@@ -34,10 +34,11 @@ public class SoundPoolUtil {
         soundPool.load(context, R.raw.enter_many, 5);//5.入场次数频繁
         soundPool.load(context, R.raw.enter_time_error, 6);//6.入场时间错误
         soundPool.load(context, R.raw.no_face, 7);//7.没有检测到人脸
+        soundPool.load(context, R.raw.net_error, 8);//8.网络异常
     }
 
     public static void play(int number) {
-        Log.d("tag", "number " + number);
+     //   Log.d("tag", "number " + number);
         //播放音频
         soundPool.play(number, 0.9f, 0.9f, 0, 0, 1);
     }

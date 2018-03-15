@@ -400,7 +400,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     @Override
     public void requestFail() {
         flag_tag.setText(getResources().getText(R.string.error_net));
-      //  SoundPoolUtil.play(3);
+        SoundPoolUtil.play(8);
         doErrorRequest("");
     }
 
