@@ -61,7 +61,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     SerialControl ComA;
     DispQueueThread DispQueue;
     private String newPasswordKey;
-    private String secret = "111111";
+    private String secret = "";
     @Override
     public void onCreate() {
         super.onCreate();
