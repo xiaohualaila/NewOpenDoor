@@ -31,7 +31,7 @@ public class SoundPoolUtil {
         soundPool.load(context, R.raw.repeat_enter, 2);//3.重复刷卡，请退出通道
         soundPool.load(context, R.raw.ticket_error, 3);//2.无效票证，请退出通道
         soundPool.load(context, R.raw.ticket_right, 4);//1.验证通过，请通行
-
+        soundPool.load(context, R.raw.enter_time_error, 5);//入场时间错误
     }
 
     public static void play(int number) {

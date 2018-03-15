@@ -375,7 +375,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     @Override
     public void doTimeError() {
         flag_tag.setText(getResources().getText(R.string.error_time));
-       // SoundPoolUtil.play(1);
+        SoundPoolUtil.play(5);
         doErrorRequest();
     }
 
