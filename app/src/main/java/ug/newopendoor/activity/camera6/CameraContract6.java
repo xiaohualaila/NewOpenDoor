@@ -16,9 +16,16 @@ public interface CameraContract6 {
 
         void doError();
 
-        void doFaceError();
+        void doFaceError(String Face_path);
+
+        void doTimeError(String Face_path);
+
+        void doManyError(String Face_path);
+
+        void doNoFaceError(String Face_path);
 
         void doSuccess(String Face_path);
+
     }
 
     interface Presenter extends IBasePresenter {

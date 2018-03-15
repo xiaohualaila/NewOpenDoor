@@ -401,24 +401,52 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     public void requestFail() {
         flag_tag.setText(getResources().getText(R.string.error_net));
       //  SoundPoolUtil.play(3);
-        doErrorRequest();
+        doErrorRequest("");
     }
 
     @Override
     public void doError() {
         flag_tag.setText(getResources().getText(R.string.error_ticket));
         SoundPoolUtil.play(3);
-        doErrorRequest();
+        doErrorRequest("");
     }
 
     @Override
-    public void doFaceError() {
+    public void doFaceError(String Face_path) {
         flag_tag.setText(getResources().getText(R.string.error_face));
         SoundPoolUtil.play(1);
-        doErrorRequest();
+        doErrorRequest(Face_path);
     }
 
-    public void doErrorRequest(){
+    @Override
+    public void doTimeError(String Face_path) {
+        flag_tag.setText(getResources().getText(R.string.error_time));//入场时间错误
+        SoundPoolUtil.play(6);
+        doErrorRequest(Face_path);
+    }
+
+    @Override
+    public void doManyError(String Face_path) {
+        flag_tag.setText(getResources().getText(R.string.error_many));//入场频繁
+        SoundPoolUtil.play(5);
+        doErrorRequest(Face_path);
+    }
+
+    @Override
+    public void doNoFaceError(String Face_path) {
+        flag_tag.setText(getResources().getText(R.string.error_no_face));//没有检测到人脸
+        SoundPoolUtil.play(6);
+        doErrorRequest(Face_path);
+    }
+
+    public void doErrorRequest(String Face_path){
+        if (!TextUtils.isEmpty(Face_path)) {
+            RequestOptions options = new RequestOptions()
+                    .error(R.drawable.left_img);
+            if (!TextUtils.isEmpty(Face_path)) {
+                Glide.with(CameraActivity6.this).load(Face_path).apply(options).into(img_server);
+            }
+        }
         flag_tag.setTextColor(getResources().getColor(R.color.red));
         rkGpioControlNative.ControlGpio(20, 0);//亮灯
         isLight = true;
