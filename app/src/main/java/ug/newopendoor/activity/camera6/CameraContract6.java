@@ -18,6 +18,8 @@ public interface CameraContract6 {
 
         void doFaceError();
 
+        void doTimeError();
+
         void doSuccess(String Face_path);
     }
 

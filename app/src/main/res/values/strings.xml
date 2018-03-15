@@ -20,4 +20,5 @@
     <string name="error_face">人脸验证失败</string>
     <string name="error_ticket">无效票卡请重试</string>
     <string name="right_ticket">验证成功</string>
+    <string name="error_time">入场时间错误</string>
 </resources>

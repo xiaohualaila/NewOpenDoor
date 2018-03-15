@@ -372,6 +372,13 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         doErrorRequest();
     }
 
+    @Override
+    public void doTimeError() {
+        flag_tag.setText(getResources().getText(R.string.error_time));
+       // SoundPoolUtil.play(1);
+        doErrorRequest();
+    }
+
     public void doErrorRequest(){
         flag_tag.setTextColor(getResources().getColor(R.color.red));
         rkGpioControlNative.ControlGpio(20, 0);//亮灯
