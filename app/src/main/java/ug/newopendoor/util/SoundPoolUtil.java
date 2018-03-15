@@ -35,6 +35,8 @@ public class SoundPoolUtil {
         soundPool.load(context, R.raw.enter_time_error, 6);//6.入场时间错误
         soundPool.load(context, R.raw.no_face, 7);//7.没有检测到人脸
         soundPool.load(context, R.raw.net_error, 8);//8.网络异常
+        soundPool.load(context, R.raw.please_xin, 9);//请刷芯片
+        soundPool.load(context, R.raw.please_code, 10);//请扫二维码
     }
 
     public static void play(int number) {

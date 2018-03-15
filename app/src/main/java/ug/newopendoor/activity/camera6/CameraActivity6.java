@@ -124,6 +124,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                                     @Override
                                     public void run() {
                                         flag_tag.setText("请扫描二维码");
+                                        SoundPoolUtil.play(10);
                                         flag_tag.setTextColor(getResources().getColor(R.color.red));
                                     }
                                 });
@@ -146,6 +147,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                                 @Override
                                 public void run() {
                                     flag_tag.setText("没有芯片验证");
+                                    SoundPoolUtil.play(9);
                                     flag_tag.setTextColor(getResources().getColor(R.color.red));
                                 }
                             });
