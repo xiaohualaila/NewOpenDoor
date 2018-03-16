@@ -140,12 +140,18 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     if(!xinCode.equals("")){
                         WhiteList whiteList = GetDataUtil.getXinDataBooean(xinCode);
                         if(whiteList != null){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ll_company.setVisibility(View.VISIBLE);
+                                    ll_audience.setVisibility(View.GONE);
+                                    tv_name.setText(whiteList.getName());
+                                    tv_company.setText(whiteList.getCompany());
+                                }
+                            });
+                            ticketNum = xinCode;
                             isReading = true;
                             isCompany = true;
-                            ll_company.setVisibility(View.VISIBLE);
-                            ll_audience.setVisibility(View.GONE);
-                            tv_name.setText(whiteList.getName());
-                            tv_company.setText(whiteList.getCompany());
                             takePhoto();
                         }else {
                             isM1Right = true;
@@ -274,7 +280,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-            Log.i("sss","ticketNum>>>" + ticketNum );
+      //      Log.i("sss","ticketNum>>>" + ticketNum );
             presenter.load(device_id, type, ticketNum, file);
     }
 
