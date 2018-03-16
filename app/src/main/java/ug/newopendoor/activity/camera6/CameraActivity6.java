@@ -117,23 +117,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 if (type != 2) {
                     BasicOper.dc_beep(5);
                 }
-//            if(type == 1) {//Ultralight
-//                ticketNum = myMessage.getNum().trim();
-//                if(!TextUtils.isEmpty(ticketNum)) {
-//                    isReading = true;
-//                    isCompany = true;
-//                    takePhoto();
-//                }
-//            }
-
-//            if(type == 2){//二维码
-//                ticketNum = myMessage.getNum().trim();
-//                if(!TextUtils.isEmpty(ticketNum)){
-//                    isReading = true;
-//                    isCompany = false;
-//                    takePhoto();
-//                }
-//            }
 
                 if(type == 1){//芯片
                     xinCode = myMessage.getNum().trim();
