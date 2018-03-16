@@ -24,7 +24,7 @@ public interface CameraContract6 {
 
         void doNoFaceError(String Face_path);
 
-        void doSuccess(String Face_path,String name,String company,String ticket_no,String seat_info);
+        void doSuccess(String Face_path,String ticket_no,String seat_info);
 
     }
 
