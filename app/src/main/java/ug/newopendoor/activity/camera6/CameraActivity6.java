@@ -186,7 +186,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-        //  String url =  SharedPreferencesUtil.getStringByKey("ip_address",this);
         presenter.load(device_id, type, ticketNum, file);
     }
 
