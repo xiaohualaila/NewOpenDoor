@@ -14,7 +14,9 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,10 +61,19 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
 
     @BindView(R.id.state_tip)
     TextView flag_tag;
+    @BindView(R.id.ll_company)
+    LinearLayout ll_company;
     @BindView(R.id.tv_name)
     TextView tv_name;
-    @BindView(R.id.tv_idcard)
-    TextView tv_idcard;
+    @BindView(R.id.tv_company)
+    TextView tv_company;
+
+    @BindView(R.id.ll_audience)
+    LinearLayout ll_audience;
+    @BindView(R.id.tv_ticket_no)
+    TextView tv_ticket_no;
+    @BindView(R.id.tv_seat_info)
+    TextView tv_seat_info;
     private Camera camera;
     private String filePath;
     private SurfaceHolder holder;
@@ -79,6 +90,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
 
     private boolean isM1Right = false;//M1是否验证过
     private String xinCode = "";//芯片票号
+    private boolean isCompany = false;
     /**
      * 3 身份证,1 Ultralight,4 M1,2串口
      */
@@ -110,6 +122,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     String s = (String) xinCode.subSequence(0, 1);
                     if(s.equals("@")){
                         isReading = true;
+                        isCompany = true;
                         takePhoto();
                     }else {
                         isM1Right = true;
@@ -121,6 +134,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                                 }
                             });
                             isReading = true;
+                            isCompany = false;
                             takePhoto();
                         }else {
                             runOnUiThread(new Runnable() {
@@ -145,6 +159,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                         }
                     });
                     isReading = true;
+                    isCompany = false;
                     takePhoto();
                 }else {
                     runOnUiThread(new Runnable() {
@@ -171,7 +186,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                         @Override
                         public void run() {
                             tv_name.setText(idCard.getName());
-                            tv_idcard.setText(idCard.getId());
+                         //   tv_idcard.setText(idCard.getId());
                             img_server.setImageBitmap(ConvertUtils.bytes2Bitmap(ConvertUtils.hexString2Bytes(idCard.getPhotoDataHexStr())));
                         }
                     });
@@ -443,6 +458,44 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         doErrorRequest(Face_path);
     }
 
+    @Override
+    public void doSuccess(String Face_path, String name, String company, String ticket_no,String seat_info) {
+        if (!TextUtils.isEmpty(Face_path)) {
+            RequestOptions options = new RequestOptions()
+                    .error(R.drawable.left_img);
+            if (!TextUtils.isEmpty(Face_path)) {
+                Glide.with(CameraActivity6.this).load(Face_path).apply(options).into(img_server);
+            }
+        }
+
+        if(isCompany){
+            ll_company.setVisibility(View.VISIBLE);
+            ll_audience.setVisibility(View.GONE);
+            if (!TextUtils.isEmpty(name)){
+                tv_name.setText(name);
+            }
+            if (!TextUtils.isEmpty(company)){
+                tv_company.setText(name);
+            }
+        }else {
+            ll_company.setVisibility(View.GONE);
+            ll_audience.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(ticket_no)){
+                tv_ticket_no.setText(ticket_no);
+            }
+            if (!TextUtils.isEmpty(seat_info)){
+                tv_seat_info.setText(seat_info);
+            }
+        }
+
+        isOpenDoor = true;
+        rkGpioControlNative.ControlGpio(1, 0);//开门
+        SoundPoolUtil.play(4);
+        flag_tag.setText(getResources().getText(R.string.right_ticket));
+        flag_tag.setTextColor(getResources().getColor(R.color.green));
+        uploadFinish();
+    }
+
     public void doErrorRequest(String Face_path){
         if (!TextUtils.isEmpty(Face_path)) {
             RequestOptions options = new RequestOptions()
@@ -457,22 +510,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         uploadFinish();
     }
 
-    @Override
-    public void doSuccess(String Face_path) {
-        if (!TextUtils.isEmpty(Face_path)) {
-            RequestOptions options = new RequestOptions()
-                    .error(R.drawable.left_img);
-            if (!TextUtils.isEmpty(Face_path)) {
-                Glide.with(CameraActivity6.this).load(Face_path).apply(options).into(img_server);
-            }
-        }
-        isOpenDoor = true;
-        rkGpioControlNative.ControlGpio(1, 0);//开门
-        SoundPoolUtil.play(4);
-        flag_tag.setText(getResources().getText(R.string.right_ticket));
-        flag_tag.setTextColor(getResources().getColor(R.color.green));
-        uploadFinish();
-    }
 
     private void uploadFinish() {
 
@@ -487,8 +524,11 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 startCameraPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
-                tv_idcard.setText("");
-                tv_name.setText("");
+                if(isCompany){
+                    ll_company.setVisibility(View.GONE);
+                }else {
+                    ll_audience.setVisibility(View.GONE);
+                }
                 File file = new File(filePath);
                 if (file.exists()) {
                     file.delete();
