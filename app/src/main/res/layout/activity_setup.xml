@@ -117,6 +117,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="100dp"
@@ -238,9 +239,8 @@
         android:textColor="@color/white"
         android:textStyle="bold"
         android:gravity="center"
-        android:layout_margin="20dp"
-        android:visibility="gone"
-        android:text="脱机请点击加载excel文件"/>
+        android:layout_margin="30dp"
+        android:text="请点击加载excel文件"/>
     <TextView
         android:id="@+id/finish"
         android:layout_below="@+id/add_excel"
@@ -248,7 +248,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/btn_pressed"
         android:textSize="28sp"
-
         android:textColor="@color/white"
         android:textStyle="bold"
         android:gravity="center"

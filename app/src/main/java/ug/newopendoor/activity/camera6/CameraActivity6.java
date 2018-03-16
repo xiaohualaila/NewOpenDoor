@@ -36,11 +36,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
+import ug.newopendoor.activity.bean.WhiteList;
 import ug.newopendoor.retrofit.ConnectUrl;
 import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.service.Service2;
 import ug.newopendoor.usbtest.ConvertUtils;
 import ug.newopendoor.util.FileUtil;
+import ug.newopendoor.util.GetDataUtil;
 import ug.newopendoor.util.MyUtil;
 import ug.newopendoor.util.RoundImageView;
 import ug.newopendoor.util.SharedPreferencesUtil;
@@ -115,40 +117,61 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 if (type != 2) {
                     BasicOper.dc_beep(5);
                 }
+//            if(type == 1) {//Ultralight
+//                ticketNum = myMessage.getNum().trim();
+//                if(!TextUtils.isEmpty(ticketNum)) {
+//                    isReading = true;
+//                    isCompany = true;
+//                    takePhoto();
+//                }
+//            }
 
-            if(type == 4){//芯片
-                xinCode = myMessage.getNum().trim();
-                if(!xinCode.equals("")){
-                    String s = (String) xinCode.subSequence(0, 1);
-                    if(s.equals("@")){
-                        isReading = true;
-                        isCompany = true;
-                        takePhoto();
-                    }else {
-                        isM1Right = true;
-                        if(!ticketNum.equals("")){
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    flag_tag.setText("");
-                                }
-                            });
+//            if(type == 2){//二维码
+//                ticketNum = myMessage.getNum().trim();
+//                if(!TextUtils.isEmpty(ticketNum)){
+//                    isReading = true;
+//                    isCompany = false;
+//                    takePhoto();
+//                }
+//            }
+
+                if(type == 1){//芯片
+                    xinCode = myMessage.getNum().trim();
+                    if(!xinCode.equals("")){
+                        WhiteList whiteList = GetDataUtil.getXinDataBooean(xinCode);
+                        if(whiteList != null){
                             isReading = true;
-                            isCompany = false;
+                            isCompany = true;
+                            ll_company.setVisibility(View.VISIBLE);
+                            ll_audience.setVisibility(View.GONE);
+                            tv_name.setText(whiteList.getName());
+                            tv_company.setText(whiteList.getCompany());
                             takePhoto();
                         }else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    flag_tag.setText("请扫描二维码");
-                                    SoundPoolUtil.play(10);
-                                    flag_tag.setTextColor(getResources().getColor(R.color.red));
-                                }
-                            });
+                            isM1Right = true;
+                            if(!ticketNum.equals("")){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        flag_tag.setText("");
+                                    }
+                                });
+                                isReading = true;
+                                isCompany = false;
+                                takePhoto();
+                            }else {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        flag_tag.setText("请扫描二维码");
+                                        SoundPoolUtil.play(10);
+                                        flag_tag.setTextColor(getResources().getColor(R.color.red));
+                                    }
+                                });
+                            }
                         }
                     }
                 }
-            }
             if(type == 2){//二维码
                 ticketNum = myMessage.getNum().trim();
                 if(isM1Right){
@@ -173,7 +196,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 }
             }
 
-            //   Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+              Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
             }
         });
         RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
@@ -251,7 +274,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-          //  Log.i("sss","ticketNum>>>" + ticketNum + "   xinCode>>>" + xinCode);
+            Log.i("sss","ticketNum>>>" + ticketNum );
             presenter.load(device_id, type, ticketNum, file);
     }
 
@@ -468,16 +491,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             }
         }
 
-        if(isCompany){
-            ll_company.setVisibility(View.VISIBLE);
-            ll_audience.setVisibility(View.GONE);
-            if (!TextUtils.isEmpty(name)){
-                tv_name.setText(name);
-            }
-            if (!TextUtils.isEmpty(company)){
-                tv_company.setText(name);
-            }
-        }else {
+        if(!isCompany){
             ll_company.setVisibility(View.GONE);
             ll_audience.setVisibility(View.VISIBLE);
             if (!TextUtils.isEmpty(ticket_no)){

@@ -54,7 +54,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private SPUtils settingSp;
     private String USB = "";
 
-    private boolean uitralight = false;//设置为false m1读卡
+    private boolean uitralight = true;//设置为false m1读卡
     private boolean idcard = false;
     private boolean scan = true;
     //串口
