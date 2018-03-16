@@ -131,7 +131,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                             isHaveOne = true;
                             model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 0);
                         }
-                     //   Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
+                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
                         Thread.sleep(TIME);
                     }
 
