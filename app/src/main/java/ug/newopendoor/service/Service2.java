@@ -61,7 +61,6 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     SerialControl ComA;
     DispQueueThread DispQueue;
     private String newPasswordKey;
-    private String secret = "111111";
     @Override
     public void onCreate() {
         super.onCreate();
@@ -91,10 +90,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             model = new UltralightCardModel(this);
         }else {
             //M1
-            String sp_secret = SharedPreferencesUtil.getStringByKey("secret",this);
-            if(!TextUtils.isEmpty(sp_secret)){
-                secret = sp_secret;
-            }
+            String secret = SharedPreferencesUtil.getStringByKey("secret",this);
             Log.i("sss","secret>> " + secret);
             model2 = new M1CardModel(this);
             //以下是后来添加读取M1秘钥部分代码

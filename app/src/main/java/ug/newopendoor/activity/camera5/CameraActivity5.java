@@ -72,8 +72,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
     ImageView ad;
     @BindView(R.id.tv_name)
     TextView tv_name;
-    @BindView(R.id.tv_idcard)
-    TextView tv_idcard;
+
     private Camera camera;
     private String filePath;
     private SurfaceHolder holder;
@@ -127,7 +126,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
                                 @Override
                                 public void run() {
                                     tv_name.setText(idCardData.getName());
-                                    tv_idcard.setText(idCardData.getId());
+//                                    tv_idcard.setText(idCardData.getId());
                                     img_server.setImageBitmap(ConvertUtils.bytes2Bitmap(ConvertUtils.hexString2Bytes(idCardData.getPhotoDataHexStr())));
                                 }
                             });
@@ -511,7 +510,6 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
                 startPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
-                tv_idcard.setText("");
                 tv_name.setText("");
                 File file = new File(filePath);
                 if (file.exists()) {

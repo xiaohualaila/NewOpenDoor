@@ -187,8 +187,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             return;
         }
         //  String url =  SharedPreferencesUtil.getStringByKey("ip_address",this);
-        String url = ConnectUrl.URL;
-        presenter.load(device_id, type, ticketNum, file,url);
+        presenter.load(device_id, type, ticketNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {

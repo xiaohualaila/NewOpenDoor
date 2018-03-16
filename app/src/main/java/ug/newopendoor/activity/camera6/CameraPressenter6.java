@@ -36,11 +36,11 @@ public class CameraPressenter6 extends BasePresenter implements CameraContract6.
     }
 
     @Override
-    public void load(String device_id, int type, String ticketNum, File newFile,String url) {
+    public void load(String device_id, int type, String ticketNum, File newFile) {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), newFile);
         builder.addFormDataPart("photoImgFiles", newFile.getName(), requestBody);
-        Api.getBaseApiWithOutFormat(url)
+        Api.getBaseApiWithOutFormat(ConnectUrl.URL)
                 .uploadPhotoBase(device_id, ticketNum, type, builder.build().parts())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
