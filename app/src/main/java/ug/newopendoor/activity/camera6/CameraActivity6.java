@@ -111,7 +111,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
 
-        RxBus.getDefault().toObserverable(Ticket.class).subscribe(myMessage -> {
+        RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
             if (!isReading) {
                 type = myMessage.getType();
                 if (type != 2) {
@@ -163,6 +163,8 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 }
             if(type == 2){//二维码
                 ticketNum = myMessage.getNum().trim();
+            //    String n = ticketNum.substring(ticketNum.indexOf("%") + 1,ticketNum.length());
+            //    Log.i("sss",n);
                 if(isM1Right){
                     runOnUiThread(new Runnable() {
                         @Override
@@ -429,10 +431,11 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     }
 
     @Override
-    public void requestFail() {
+    public void requestFail(String msg) {
         flag_tag.setText(getResources().getText(R.string.error_net));
         SoundPoolUtil.play(8);
         doErrorRequest("");
+        Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
     }
 
     @Override

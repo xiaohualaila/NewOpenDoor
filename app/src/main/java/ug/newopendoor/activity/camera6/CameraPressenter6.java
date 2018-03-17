@@ -51,7 +51,7 @@ public class CameraPressenter6 extends BasePresenter implements CameraContract6.
                                @Override
                                public void call(Throwable throwable) {
                                    Log.i("sss",throwable.toString());
-                                   view.requestFail();
+                                   view.requestFail(throwable.toString());
                                }
                            }
                 );
@@ -61,8 +61,8 @@ public class CameraPressenter6 extends BasePresenter implements CameraContract6.
         if (jsonObject != null) {
             String result = jsonObject.optString("Result");
             String imageStr = jsonObject.optString("Face_path");
-            String ticket_no = jsonObject.optString("");
-            String seat_info = jsonObject.optString("");
+            String ticket_no = jsonObject.optString("soldCode");
+            String seat_info = jsonObject.optString("ticketAreaName");
             if (!TextUtils.isEmpty(result)) {
                 if (result.equals("1")) {
                     view.doSuccess(imageStr,ticket_no,seat_info);
