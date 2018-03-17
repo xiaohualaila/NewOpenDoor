@@ -40,7 +40,7 @@ import ug.newopendoor.util.Ticket;
 
 public class Service2 extends Service implements UltralightCardListener, M1CardListener {
 
-    private final int TIME = 300;
+    private final int TIME = 500;
     //身份证
     private Thread thread;
     private boolean isAuto = true;
