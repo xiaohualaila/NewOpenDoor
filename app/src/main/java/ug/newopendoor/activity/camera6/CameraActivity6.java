@@ -19,25 +19,21 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
 import com.decard.entitys.IDCard;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
 import ug.newopendoor.activity.bean.WhiteList;
-import ug.newopendoor.retrofit.ConnectUrl;
 import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.service.Service2;
 import ug.newopendoor.usbtest.ConvertUtils;
@@ -45,7 +41,6 @@ import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.GetDataUtil;
 import ug.newopendoor.util.MyUtil;
 import ug.newopendoor.util.RoundImageView;
-import ug.newopendoor.util.SharedPreferencesUtil;
 import ug.newopendoor.util.SoundPoolUtil;
 import ug.newopendoor.util.Ticket;
 
@@ -163,8 +158,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 }
             if(type == 2){//二维码
                 ticketNum = myMessage.getNum().trim();
-            //    String n = ticketNum.substring(ticketNum.indexOf("%") + 1,ticketNum.length());
-            //    Log.i("sss",n);
                 if(isM1Right){
                     runOnUiThread(new Runnable() {
                         @Override
