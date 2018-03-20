@@ -1,33 +1,24 @@
 package ug.newopendoor.activity.setup;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.File;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ug.newopendoor.R;
-import ug.newopendoor.activity.camera2.CameraActivity2;
-import ug.newopendoor.activity.camera6.CameraActivity6;
+import ug.newopendoor.activity.camera7.CameraActivity7;
 import ug.newopendoor.util.ClearEditTextWhite;
-import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.SharedPreferencesUtil;
 
 
@@ -178,7 +169,7 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
         SharedPreferencesUtil.putBoolean(this,"uitralight", isUitralight);
         SharedPreferencesUtil.putBoolean(this,"scan", isScan);
         SharedPreferencesUtil.putBoolean(this,"idcard", isIdcard);
-        Intent intent = new Intent(this, CameraActivity6.class);
+        Intent intent = new Intent(this, CameraActivity7.class);
         startActivity(intent);
         finish();
     }

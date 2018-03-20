@@ -40,6 +40,9 @@
         <activity android:name=".activity.camera6.CameraActivity6">
 
         </activity>
+        <activity android:name=".activity.camera7.CameraActivity7">
+
+        </activity>
         <activity android:name=".activity.MainActivity" android:launchMode="singleTask">
 
 
