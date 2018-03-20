@@ -102,6 +102,8 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     }
                     if (type == 1) {
                         ticketNum = ticket + "00";
+                    }else {
+                        ticketNum = ticket;
                     }
                     isReading = true;
                     takePhoto();
