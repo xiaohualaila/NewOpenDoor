@@ -132,7 +132,6 @@ public class CommonService extends Service implements UltralightCardListener, M1
                 if (!result.equals("FFFF|操作失败")) {
                     if (!result.equals("1001|设备未打开")) {
                         onDataListener.onBackMsg(1, result);
-                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard>>> "+ result);
                     }
                 }
             }
