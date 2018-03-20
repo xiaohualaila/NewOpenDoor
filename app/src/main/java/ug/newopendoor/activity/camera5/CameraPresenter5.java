@@ -52,8 +52,8 @@ public class CameraPresenter5 extends BasePresenter implements CameraContract5.P
                            }, new Action1<Throwable>() {
                                @Override
                                public void call(Throwable throwable) {
-                                   Log.i("sss",throwable.getMessage().toString());
-                                   view.doError();
+                                   Log.i("sss",throwable.toString());
+                                   view.doCommonError("网络异常",6);
                                }
                            }
                 );
@@ -66,16 +66,22 @@ public class CameraPresenter5 extends BasePresenter implements CameraContract5.P
                 if (result.equals("1")) {
                     String imageStr = jsonObject.optString("Face_path");
                     view.doSuccess(imageStr);
+                }  else if (result.equals("2")) {//入场次数已用完
+                    view.doCommonError("入场次数已用完",7);
+                } else if (result.equals("3")) {//入场口错误
+                    view.doCommonError("入场口错误",8);
                 } else if (result.equals("5")) {
-                    view.doFaceError();
-                } else {
-                    view.doError();
+                    view.doCommonError("人脸验证失败",1);
+                } else if (result.equals("7")) {//入场时间错误
+                    view.doCommonError("入场时间错误",5);
+                }else {
+                    view.doCommonError("无效票卡请重试",3);
                 }
             } else {
-                view.doError();
+                view.doCommonError("无效票卡请重试",3);
             }
         } else {
-            view.doError();
+            view.doCommonError("无效票卡请重试",3);
         }
     }
 }

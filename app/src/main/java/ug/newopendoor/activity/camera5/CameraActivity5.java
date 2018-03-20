@@ -90,7 +90,6 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
     private boolean uitralight = true;
     private boolean scan = true;
     private boolean idcard = true;
-    private boolean m1 = true;
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
@@ -111,7 +110,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
         public void onServiceConnected(ComponentName name, IBinder service) {
             myBinder = (CommonService.MyBinder) service;
             myService = myBinder.getService();
-            myBinder.setIntentData(m1, uitralight, idcard);
+            myBinder.setIntentData(uitralight, idcard);
             myService.setOnProgressListener(new CommonService.OnDataListener() {
                 @Override
                 public void onIDCardMsg(IDCard idCardData) {//身份证
@@ -166,8 +165,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
         Intent intent = getIntent();
         uitralight = intent.getBooleanExtra("uitralight", true);//芯片或者M1
         scan = intent.getBooleanExtra("scan", true);//扫描二维码
-        idcard = intent.getBooleanExtra("idcard", true);//身份证
-        m1 = intent.getBooleanExtra("isHaveThree", true);
+        idcard = intent.getBooleanExtra("idcard", false);//身份证
         Utils.init(getApplicationContext());
         settingSp = new SPUtils(getString(R.string.settingSp));
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
@@ -179,14 +177,8 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
         if (scan) {
             openErWeiMa();
         }
-
         Intent bindIntent1 = new Intent(this, CommonService.class);
         bindService(bindIntent1, connection, BIND_AUTO_CREATE);
-//        RequestOptions options = new RequestOptions()
-//                .error(R.drawable.ad);
-//        Glide.with(CameraActivity5.this).load(ConnectUrl.URL_IMG).apply(options).into(ad);
-
-
     }
 
     //打开设备
@@ -210,7 +202,6 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
     private Camera.PictureCallback jpeg = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            stopPreview();
             filePath = FileUtil.getPath() + File.separator + FileUtil.getTime() + ".jpeg";
             Matrix matrix = new Matrix();
             matrix.reset();
@@ -452,33 +443,6 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
         this.presenter = presenter;
     }
 
-    @Override
-    public void requestFail() {
-        flag_tag.setText("网络请求失败");
-    //    SoundPoolUtil.play(3);
-        doErrorRequest();
-    }
-
-    @Override
-    public void doError() {
-        flag_tag.setText("验证失败");
-        SoundPoolUtil.play(3);
-        doErrorRequest();
-    }
-
-    @Override
-    public void doFaceError() {
-        flag_tag.setText("人脸验证失败");
-        SoundPoolUtil.play(1);
-        doErrorRequest();
-    }
-
-    public void doErrorRequest(){
-        flag_tag.setTextColor(getResources().getColor(R.color.red));
-        rkGpioControlNative.ControlGpio(20, 0);//亮灯
-        isLight = true;
-        uploadFinish();
-    }
 
     @Override
     public void doSuccess(String Face_path) {
@@ -495,6 +459,16 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
         uploadFinish();
     }
 
+    @Override
+    public void doCommonError(String text, int num) {
+        flag_tag.setText(text);
+        SoundPoolUtil.play(num);
+        flag_tag.setTextColor(getResources().getColor(R.color.red));
+        rkGpioControlNative.ControlGpio(20, 0);//亮灯
+        isLight = true;
+        uploadFinish();
+    }
+
     private void uploadFinish() {
 
         if (isOpenDoor) {
@@ -508,7 +482,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
                 startPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
-                tv_name.setText("");
+              //  tv_name.setText("");
                 File file = new File(filePath);
                 if (file.exists()) {
                     file.delete();

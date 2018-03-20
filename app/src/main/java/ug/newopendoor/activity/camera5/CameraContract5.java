@@ -12,13 +12,10 @@ import ug.newopendoor.activity.base.IBaseView;
 
 public interface CameraContract5 {
     interface View extends IBaseView<Presenter> {
-        void requestFail();
-
-        void doError();
-
-        void doFaceError();
 
         void doSuccess(String Face_path);
+
+        void doCommonError(String text,int num);
     }
 
     interface Presenter extends IBasePresenter {

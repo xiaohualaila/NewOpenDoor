@@ -19,6 +19,7 @@ import ug.newopendoor.usbtest.SectorDataBean;
 import ug.newopendoor.usbtest.UltralightCardListener;
 import ug.newopendoor.usbtest.UltralightCardModel;
 import ug.newopendoor.util.ByteUtil;
+import ug.newopendoor.util.SharedPreferencesUtil;
 
 /**
  * Created by Administrator on 2017/12/13.
@@ -26,6 +27,7 @@ import ug.newopendoor.util.ByteUtil;
 
 public class CommonService extends Service implements UltralightCardListener, M1CardListener {
     private final int TIME = 800;
+    private int count = 0;
     //身份证
     private Thread thread;
     private boolean isAuto = true;
@@ -82,7 +84,8 @@ public class CommonService extends Service implements UltralightCardListener, M1
 
                     if (uitralight) {
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
+                        count++;
+                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard第"+ count + "次");
                         Thread.sleep(TIME);
                     } else {
                         //M1
@@ -126,6 +129,7 @@ public class CommonService extends Service implements UltralightCardListener, M1
                 if (!result.equals("FFFF|操作失败")) {
                     if (!result.equals("1001|设备未打开")) {
                         onDataListener.onBackMsg(1, result);
+                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard>>> "+ result);
                     }
                 }
             }
@@ -171,7 +175,7 @@ public class CommonService extends Service implements UltralightCardListener, M1
             return CommonService.this;
         }
 
-        public void setIntentData(boolean three, boolean uitralight, boolean idcard) {
+        public void setIntentData(boolean uitralight, boolean idcard) {
             CommonService.this.uitralight = uitralight;
             CommonService.this.idcard = idcard;
         }
