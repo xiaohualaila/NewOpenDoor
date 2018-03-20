@@ -10,6 +10,7 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -104,6 +105,8 @@ public class CameraActivity7 extends Activity implements SurfaceHolder.Callback,
                     }
                     if (type == 1) {
                         ticketNum = ticket + "00";
+                    }else {
+                        ticketNum = ticket;
                     }
                     isReading = true;
                     takePhoto();
@@ -186,6 +189,7 @@ public class CameraActivity7 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
+     //   Log.i("sss","ticketNum>>>  " + ticketNum);
         presenter.load(device_id, type, ticketNum, file);
     }
 

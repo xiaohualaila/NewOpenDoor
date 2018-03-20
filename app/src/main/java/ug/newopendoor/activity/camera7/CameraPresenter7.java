@@ -1,20 +1,16 @@
 package ug.newopendoor.activity.camera7;
 
 import android.text.TextUtils;
-
+import android.util.Log;
 import org.json.JSONObject;
-
 import java.io.File;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-import ug.newopendoor.R;
 import ug.newopendoor.activity.base.BasePresenter;
-import ug.newopendoor.activity.camera6.CameraContract6;
 import ug.newopendoor.retrofit.Api;
 import ug.newopendoor.retrofit.ConnectUrl;
 
@@ -48,13 +44,13 @@ public class CameraPresenter7 extends BasePresenter implements CameraContract7.P
                 .subscribe(new Action1<JSONObject>() {
                                @Override
                                public void call(JSONObject jsonObject) {
-                                   // Log.i("sss",jsonObject.toString());
+                                   Log.i("sss",jsonObject.toString());
                                    jsonObjectResult(jsonObject);
                                }
                            }, new Action1<Throwable>() {
                                @Override
                                public void call(Throwable throwable) {
-                                   // Log.i("sss",throwable.toString());
+                                    Log.i("sss",throwable.toString());
                                    view.doCommonError("网络异常",6);
                                }
                            }
