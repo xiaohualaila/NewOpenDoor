@@ -384,6 +384,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         doErrorRequest();
     }
 
+    //入场次数已用完
     @Override
     public void doNumError() {
         flag_tag.setText(getResources().getText(R.string.error_num));
