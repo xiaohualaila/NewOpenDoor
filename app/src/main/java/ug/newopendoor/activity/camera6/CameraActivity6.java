@@ -115,7 +115,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
 
                 if(type == 1){//芯片
                     xinCode = myMessage.getNum().trim();
-                    if(!xinCode.equals("")){
+                    if(!TextUtils.isEmpty(xinCode)){
                         WhiteList whiteList = GetDataUtil.getXinDataBooean(xinCode);
                         if(whiteList != null){
                             runOnUiThread(new Runnable() {
@@ -133,7 +133,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                             takePhoto();
                         }else {
                             isM1Right = true;
-                            if(!ticketNum.equals("")){
+                            if(!TextUtils.isEmpty(ticketNum)){
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
@@ -158,25 +158,27 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 }
             if(type == 2){//二维码
                 ticketNum = myMessage.getNum().trim();
-                if(isM1Right){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            flag_tag.setText("");
-                        }
-                    });
-                    isReading = true;
-                    isCompany = false;
-                    takePhoto();
-                }else {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            flag_tag.setText("没有芯片验证");
-                            SoundPoolUtil.play(9);
-                            flag_tag.setTextColor(getResources().getColor(R.color.red));
-                        }
-                    });
+                if(!TextUtils.isEmpty(ticketNum)){
+                    if(isM1Right){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                flag_tag.setText("");
+                            }
+                        });
+                        isReading = true;
+                        isCompany = false;
+                        takePhoto();
+                    }else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                flag_tag.setText("没有芯片验证");
+                                SoundPoolUtil.play(9);
+                                flag_tag.setTextColor(getResources().getColor(R.color.red));
+                            }
+                        });
+                    }
                 }
             }
 

@@ -121,7 +121,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                     //UltralightCard
                     if (uitralight) {
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-               //        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
+                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
                         Thread.sleep(TIME);
                     } else {
                         //M1
@@ -137,7 +137,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
 
                     //身份证
                     if (idcard) {
-                   //     Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
+                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
                         com.decard.entitys.IDCard idCardData;
                         //标准协议
                         idCardData = BasicOper.dc_get_i_d_raw_info();
@@ -168,8 +168,10 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             if (!result.equals("0001|操作失败")) {
                 if (!result.equals("FFFF|操作失败")) {
                     if (!result.equals("1001|设备未打开")) {
-                        Ticket ticket = new Ticket(1, result);
-                        RxBus.getDefault().post(ticket);
+                        if(!TextUtils.isEmpty(result)){
+                            Ticket ticket = new Ticket(1, result);
+                            RxBus.getDefault().post(ticket);
+                        }
                     }
                 }
             }
@@ -279,9 +281,11 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                 while ((ComData = QueueList.poll()) != null) {
                     try {
                         ticketNum = new String(ComData.bRec).trim();
-                     //   Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
-                        Ticket ticket = new Ticket(2, ticketNum);
-                        RxBus.getDefault().post(ticket);
+                        Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
+                        if(!TextUtils.isEmpty(ticketNum)){
+                            Ticket ticket = new Ticket(2, ticketNum);
+                            RxBus.getDefault().post(ticket);
+                        }
                         Thread.sleep(800);
                     } catch (Exception e) {
                         e.printStackTrace();
