@@ -100,7 +100,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_camera5);
         ButterKnife.bind(this);
-        new CameraPressenter6(this);
+        new CameraPresenter6(this);
         holder = camera_sf.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
