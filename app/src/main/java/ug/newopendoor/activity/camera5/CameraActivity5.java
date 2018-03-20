@@ -136,16 +136,19 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
                 @Override
                 public void onBackMsg(int mType, String result) {
                     BasicOper.dc_beep(5);
-                    if (!isReading) {
-                        isReading = true;
-                        type = mType;
-                        if (mType == 1) {
-                            ticketNum = result.trim() + "00";
-                        } else {
-                            ticketNum = result.trim();
+                    if(!TextUtils.isEmpty(result)){
+                        if (!isReading) {
+                            isReading = true;
+                            type = mType;
+                            if (mType == 1) {
+                                ticketNum = result.trim() + "00";
+                            } else {
+                                ticketNum = result.trim();
+                            }
+                            takePhoto();
                         }
-                        takePhoto();
                     }
+
                 }
             });
         }

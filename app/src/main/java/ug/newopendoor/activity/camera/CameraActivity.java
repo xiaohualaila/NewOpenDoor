@@ -94,7 +94,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
     private boolean uitralight = true;
     private boolean scan = true;
     private boolean idcard = false;
-    private boolean isHaveThree = true;
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
@@ -116,7 +115,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
         public void onServiceConnected(ComponentName name, IBinder service) {
             myBinder = (CommonService.MyBinder) service;
             myService = myBinder.getService();
-            myBinder.setIntentData(isHaveThree, uitralight, idcard);
+            myBinder.setIntentData( uitralight, idcard);
             myService.setOnProgressListener(new CommonService.OnDataListener() {
                 @Override
                 public void onIDCardMsg(IDCard idCardData) {//身份证
@@ -162,7 +161,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback, 
         uitralight = intent.getBooleanExtra("uitralight", true);
         scan = intent.getBooleanExtra("scan", true);
         idcard = intent.getBooleanExtra("idcard", false);
-        isHaveThree = intent.getBooleanExtra("isHaveThree", true);
         Utils.init(getApplicationContext());
         settingSp = new SPUtils(getString(R.string.settingSp));
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));

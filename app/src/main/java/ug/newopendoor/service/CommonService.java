@@ -26,7 +26,7 @@ import ug.newopendoor.util.SharedPreferencesUtil;
  */
 
 public class CommonService extends Service implements UltralightCardListener, M1CardListener {
-    private final int TIME = 800;
+    private final int TIME = 1000;
     private int count = 0;
     //身份证
     private Thread thread;
@@ -42,7 +42,7 @@ public class CommonService extends Service implements UltralightCardListener, M1
 
     public boolean uitralight = true;
     public boolean idcard = false;
-
+    private String newPasswordKey;
 
     private OnDataListener onDataListener;
 
@@ -56,16 +56,18 @@ public class CommonService extends Service implements UltralightCardListener, M1
         //身份证
         thread = new Thread(task);
         thread.start();
-        //UltralightCard
-        model = new UltralightCardModel(this);
-        //M1
-        model2 = new M1CardModel(this);
 
-       if(!uitralight){
-           //以下是后来添加读取M1秘钥部分代码
-           String newPasswordKey =  ByteUtil.convertStringToHex("111111");//设置秘钥12位  安卓是16进制 电脑是ascii码
-           model2.bt_download(ConstUtils.BT_DOWNLOAD,"All",0,newPasswordKey,0);
-       }
+        if(uitralight){
+            //UltralightCard
+            model = new UltralightCardModel(this);
+        }else {
+            //M1
+            String secret = SharedPreferencesUtil.getStringByKey("secret",this);
+            Log.i("sss","secret>> " + secret);
+            model2 = new M1CardModel(this);
+            //以下是后来添加读取M1秘钥部分代码
+            newPasswordKey =  ByteUtil.convertStringToHex(secret);//设置秘钥12位  安卓是16进制 电脑是ascii码
+        }
     }
 
     @Override
@@ -89,6 +91,7 @@ public class CommonService extends Service implements UltralightCardListener, M1
                         Thread.sleep(TIME);
                     } else {
                         //M1
+                        model2.bt_download(ConstUtils.BT_DOWNLOAD,"All",0,newPasswordKey,0);
                         if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
                             final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
                             isHaveOne = true;
