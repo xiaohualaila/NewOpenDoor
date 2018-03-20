@@ -12,17 +12,8 @@ import ug.newopendoor.activity.base.IBaseView;
 
 public interface CameraContract6 {
     interface View extends IBaseView<Presenter> {
-        void requestFail(String msg);
 
-        void doError();
-
-        void doFaceError(String Face_path);
-
-        void doTimeError(String Face_path);
-
-        void doManyError(String Face_path);
-
-        void doNoFaceError(String Face_path);
+        void doCommonError(String text,int num,String Face_path);
 
         void doSuccess(String Face_path,String ticket_no,String seat_info);
 

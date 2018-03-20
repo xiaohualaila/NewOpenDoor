@@ -426,46 +426,19 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     }
 
     @Override
-    public void requestFail(String msg) {
-        flag_tag.setText(getResources().getText(R.string.error_net));
-        SoundPoolUtil.play(8);
-        doErrorRequest("");
-        Toast.makeText(this,msg,Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void doError() {
-        flag_tag.setText(getResources().getText(R.string.error_ticket));
-        SoundPoolUtil.play(3);
-        doErrorRequest("");
-    }
-
-    @Override
-    public void doFaceError(String Face_path) {
-        flag_tag.setText(getResources().getText(R.string.error_face));
-        SoundPoolUtil.play(1);
-        doErrorRequest(Face_path);
-    }
-
-    @Override
-    public void doTimeError(String Face_path) {
-        flag_tag.setText(getResources().getText(R.string.error_time));//入场时间错误
-        SoundPoolUtil.play(6);
-        doErrorRequest(Face_path);
-    }
-
-    @Override
-    public void doManyError(String Face_path) {
-        flag_tag.setText(getResources().getText(R.string.error_many));//入场频繁
-        SoundPoolUtil.play(5);
-        doErrorRequest(Face_path);
-    }
-
-    @Override
-    public void doNoFaceError(String Face_path) {
-        flag_tag.setText(getResources().getText(R.string.error_no_face));//没有检测到人脸
-        SoundPoolUtil.play(6);
-        doErrorRequest(Face_path);
+    public void doCommonError(String text,int num,String Face_path) {
+        flag_tag.setText(text);//没有检测到人脸
+        SoundPoolUtil.play(num);
+        if (!TextUtils.isEmpty(Face_path)) {
+            RequestOptions options = new RequestOptions().error(R.drawable.left_img);
+            if (!TextUtils.isEmpty(Face_path)) {
+                Glide.with(CameraActivity6.this).load(Face_path).apply(options).into(img_server);
+            }
+        }
+        flag_tag.setTextColor(getResources().getColor(R.color.red));
+        rkGpioControlNative.ControlGpio(20, 0);//亮灯
+        isLight = true;
+        uploadFinish();
     }
 
     @Override
@@ -496,21 +469,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
         flag_tag.setTextColor(getResources().getColor(R.color.green));
         uploadFinish();
     }
-
-    public void doErrorRequest(String Face_path){
-        if (!TextUtils.isEmpty(Face_path)) {
-            RequestOptions options = new RequestOptions()
-                    .error(R.drawable.left_img);
-            if (!TextUtils.isEmpty(Face_path)) {
-                Glide.with(CameraActivity6.this).load(Face_path).apply(options).into(img_server);
-            }
-        }
-        flag_tag.setTextColor(getResources().getColor(R.color.red));
-        rkGpioControlNative.ControlGpio(20, 0);//亮灯
-        isLight = true;
-        uploadFinish();
-    }
-
 
     private void uploadFinish() {
 

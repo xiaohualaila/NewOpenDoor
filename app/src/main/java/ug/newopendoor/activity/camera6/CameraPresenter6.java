@@ -44,14 +44,14 @@ public class CameraPresenter6 extends BasePresenter implements CameraContract6.P
                 .subscribe(new Action1<JSONObject>() {
                                @Override
                                public void call(JSONObject jsonObject) {
-                                 Log.i("sss",jsonObject.toString());
+                              //   Log.i("sss",jsonObject.toString());
                                    jsonObjectResult(jsonObject);
                                }
                            }, new Action1<Throwable>() {
                                @Override
                                public void call(Throwable throwable) {
                                    Log.i("sss",throwable.toString());
-                                   view.requestFail(throwable.toString());
+                                   view.doCommonError("网络异常",8,"");
                                }
                            }
                 );
@@ -67,21 +67,21 @@ public class CameraPresenter6 extends BasePresenter implements CameraContract6.P
                 if (result.equals("1")) {
                     view.doSuccess(imageStr,ticket_no,seat_info);
                 } else if (result.equals("5")) {
-                    view.doFaceError(imageStr);
+                    view.doCommonError("人脸验证失败",1,imageStr);
                 }  else if (result.equals("6")) {
-                    view.doFaceError(imageStr);
+                    view.doCommonError("人脸检测失败",7,imageStr);
                 } else if(result.equals("7")){
-                    view.doTimeError(imageStr);
+                    view.doCommonError("入场时间错误",6,imageStr);
                 } else if(result.equals("4")){
-                    view.doManyError(imageStr);
+                    view.doCommonError("入场次数频繁",5,imageStr);
                 } else {
-                    view.doError();
+                    view.doCommonError("无效票卡请重试",3,imageStr);
                 }
             } else {
-                view.doError();
+                view.doCommonError("无效票卡请重试",3,imageStr);
             }
         } else {
-            view.doError();
+            view.doCommonError("无效票卡请重试",3,"");
         }
     }
 }
