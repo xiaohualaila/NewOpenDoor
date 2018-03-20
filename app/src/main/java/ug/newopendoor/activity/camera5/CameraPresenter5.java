@@ -21,10 +21,10 @@ import ug.newopendoor.retrofit.ConnectUrl;
  * Created by Administrator on 2017/6/3.
  */
 
-public class CameraPressenter5 extends BasePresenter implements CameraContract5.Presenter {
+public class CameraPresenter5 extends BasePresenter implements CameraContract5.Presenter {
     private CameraContract5.View view;
 
-    public CameraPressenter5(CameraContract5.View view) {
+    public CameraPresenter5(CameraContract5.View view) {
         this.view = view;
         this.view.setPresenter(this);
     }
