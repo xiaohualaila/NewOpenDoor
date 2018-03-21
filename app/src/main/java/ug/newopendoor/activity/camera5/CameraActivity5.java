@@ -21,12 +21,14 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.cmm.rkadcreader.adcNative;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
 import com.decard.entitys.IDCard;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,6 +38,7 @@ import java.security.InvalidParameterException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
@@ -59,7 +62,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
     private CameraContract5.Presenter presenter;
     @BindView(R.id.camera_sf)
     SurfaceView camera_sf;
-//    @BindView(R.id.img1)
+    //    @BindView(R.id.img1)
 //    RoundImageView img1;
     @BindView(R.id.img_server)
     RoundImageView img_server;
@@ -118,7 +121,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
                     if (!isReading) {
                         isReading = true;
                         type = 3;
-                        if(idCardData != null){
+                        if (idCardData != null) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -136,7 +139,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
                 @Override
                 public void onBackMsg(int mType, String result) {
                     BasicOper.dc_beep(5);
-                    if(!TextUtils.isEmpty(result.trim())){
+                    if (!TextUtils.isEmpty(result.trim())) {
                         if (!isReading) {
                             isReading = true;
                             type = mType;
@@ -191,7 +194,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
 
     //关闭设备
     public void onDisConnectPort() {
-         BasicOper.dc_exit();
+        BasicOper.dc_exit();
     }
 
     private void takePhoto() {
@@ -237,7 +240,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
      * 上传信息
      */
     private void upload() {
-         Log.i("sss","type >>" + type +"" +" ticketNum>>" + ticketNum);
+        Log.i("sss", "type >>" + type + "" + " ticketNum>>" + ticketNum);
         File file = new File(filePath);
         if (!file.exists()) {
             uploadFinish();
@@ -249,7 +252,6 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-
         presenter.load(device_id, type, ticketNum, file);
     }
 
@@ -481,7 +483,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
                 startPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
-              //  tv_name.setText("");
+                //  tv_name.setText("");
                 File file = new File(filePath);
                 if (file.exists()) {
                     file.delete();

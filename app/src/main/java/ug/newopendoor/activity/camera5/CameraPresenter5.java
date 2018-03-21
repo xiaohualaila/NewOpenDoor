@@ -5,7 +5,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.json.JSONObject;
+
 import java.io.File;
+
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -46,14 +48,14 @@ public class CameraPresenter5 extends BasePresenter implements CameraContract5.P
                 .subscribe(new Action1<JSONObject>() {
                                @Override
                                public void call(JSONObject jsonObject) {
-                                   Log.i("sss",jsonObject.toString());
+                                   Log.i("sss", jsonObject.toString());
                                    jsonObjectResult(jsonObject);
                                }
                            }, new Action1<Throwable>() {
                                @Override
                                public void call(Throwable throwable) {
-                                   Log.i("sss",throwable.toString());
-                                   view.doCommonError("网络异常",6);
+                                   Log.i("sss", throwable.toString());
+                                   view.doCommonError("网络异常", 6);
                                }
                            }
                 );
@@ -66,22 +68,22 @@ public class CameraPresenter5 extends BasePresenter implements CameraContract5.P
                 if (result.equals("1")) {
                     String imageStr = jsonObject.optString("Face_path");
                     view.doSuccess(imageStr);
-                }  else if (result.equals("2")) {//入场次数已用完
-                    view.doCommonError("入场次数已用完",7);
+                } else if (result.equals("2")) {//入场次数已用完
+                    view.doCommonError("入场次数已用完", 7);
                 } else if (result.equals("3")) {//入场口错误
-                    view.doCommonError("入场口错误",8);
+                    view.doCommonError("入场口错误", 8);
                 } else if (result.equals("5")) {
-                    view.doCommonError("人脸验证失败",1);
+                    view.doCommonError("人脸验证失败", 1);
                 } else if (result.equals("7")) {//入场时间错误
-                    view.doCommonError("入场时间错误",5);
-                }else {
-                    view.doCommonError("无效票卡请重试",3);
+                    view.doCommonError("入场时间错误", 5);
+                } else {
+                    view.doCommonError("无效票卡请重试", 3);
                 }
             } else {
-                view.doCommonError("无效票卡请重试",3);
+                view.doCommonError("无效票卡请重试", 3);
             }
         } else {
-            view.doCommonError("无效票卡请重试",3);
+            view.doCommonError("无效票卡请重试", 3);
         }
     }
 }

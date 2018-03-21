@@ -15,7 +15,7 @@ public interface CameraContract5 {
 
         void doSuccess(String Face_path);
 
-        void doCommonError(String text,int num);
+        void doCommonError(String text, int num);
     }
 
     interface Presenter extends IBasePresenter {
