@@ -99,11 +99,7 @@ public class CameraActivity7 extends Activity implements SurfaceHolder.Callback,
             if (!isReading) {
                 String ticket = myMessage.getNum().trim();
                 if(!TextUtils.isEmpty(ticket)){
-                    if (type == 1) {
-                        ticketNum = ticket + "00";
-                    }else {
-                        ticketNum = ticket;
-                    }
+                    ticketNum = ticket;
                     isReading = true;
                     takePhoto();
                 }

@@ -239,7 +239,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
      * 上传信息
      */
     private void upload() {
-        Log.i("sss", "type >>" + type + "" + " ticketNum>>" + ticketNum);
+
         File file = new File(filePath);
         if (!file.exists()) {
             uploadFinish();
@@ -251,6 +251,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
+        Log.i("sss", "type >>" + type + "" + " ticketNum>>" + ticketNum);
         presenter.load(device_id, type, ticketNum, file);
     }
 

@@ -100,11 +100,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     if(type !=2 ){
                         BasicOper.dc_beep(5);
                     }
-                    if (type == 1) {
-                        ticketNum = ticket + "00";
-                    }else {
-                        ticketNum = ticket;
-                    }
+                    ticketNum = ticket;
                     isReading = true;
                     takePhoto();
                 }
