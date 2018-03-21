@@ -6,13 +6,10 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 import com.decard.NDKMethod.BasicOper;
-
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
 import ug.newopendoor.usbtest.ConstUtils;
 import ug.newopendoor.usbtest.M1CardListener;
 import ug.newopendoor.usbtest.M1CardModel;
@@ -128,17 +125,10 @@ public class CommonService extends Service implements UltralightCardListener, M1
 
     @Override
     public void getUltralightCardResult(String cmd, String result) {
-        Log.i("sss",">>>>>" + result);
-        if (!result.equals("1003|无卡或无法寻到卡片")) {
-            if (!result.equals("0001|操作失败")) {
-                if (!result.equals("FFFF|操作失败")) {
-                    if (!result.equals("1001|设备未打开")) {
-                        onDataListener.onBackMsg(1, result);
-                    }
-                }
-            }else {
-                model = new UltralightCardModel(this);
-            }
+        if (result.equals("1003|无卡或无法寻到卡片") || result.equals("0001|操作失败")||
+                result.equals("FFFF|操作失败") || result.equals("1001|设备未打开")) {
+        }else {
+            onDataListener.onBackMsg(1, result);
         }
     }
 
