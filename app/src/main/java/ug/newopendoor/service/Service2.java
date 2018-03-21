@@ -39,7 +39,6 @@ import ug.newopendoor.util.Ticket;
 
 
 public class Service2 extends Service implements UltralightCardListener, M1CardListener {
-    private int count = 0;
     private final int TIME = 1000;
     //身份证
     private Thread thread;
@@ -120,12 +119,6 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                     //UltralightCard
                     if (uitralight) {
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-
-
-                        count++;
-                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard第" + count + "次");
-
-
                         Thread.sleep(TIME);
                     } else {
                         //M1
