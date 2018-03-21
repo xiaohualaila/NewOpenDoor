@@ -96,13 +96,13 @@ public class CameraActivity7 extends Activity implements SurfaceHolder.Callback,
         device_id = MyUtil.getDeviceID(this);//获取设备号
 
         RxBus.getDefault().toObserverable(Ticket.class).subscribe(myMessage -> {
+            type = myMessage.getType();
+            if(type !=2 ){
+                BasicOper.dc_beep(5);
+            }
             if (!isReading) {
-                type = myMessage.getType();
                 String ticket = myMessage.getNum().trim();
                 if(!TextUtils.isEmpty(ticket)){
-                    if(type !=2 ){
-                        BasicOper.dc_beep(5);
-                    }
                     if (type == 1) {
                         ticketNum = ticket + "00";
                     }else {
@@ -189,7 +189,7 @@ public class CameraActivity7 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-     //   Log.i("sss","ticketNum>>>  " + ticketNum);
+        Log.i("sss","ticketNum>>>  " + ticketNum);
         presenter.load(device_id, type, ticketNum, file);
     }
 
@@ -393,8 +393,8 @@ public class CameraActivity7 extends Activity implements SurfaceHolder.Callback,
                 startCameraPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
-                tv_idcard.setText("");
-                tv_name.setText("");
+             //   tv_idcard.setText("");
+             //   tv_name.setText("");
                 File file = new File(filePath);
                 if (file.exists()) {
                     file.delete();

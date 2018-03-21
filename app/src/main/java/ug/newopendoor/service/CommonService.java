@@ -29,7 +29,7 @@ import ug.newopendoor.util.SharedPreferencesUtil;
 
 public class CommonService extends Service implements UltralightCardListener, M1CardListener {
     private final int TIME = 1000;
-    private int count = 0;
+
     //身份证
     private Thread thread;
     private boolean isAuto = true;
@@ -88,8 +88,6 @@ public class CommonService extends Service implements UltralightCardListener, M1
 
                     if (uitralight) {
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
-                        count++;
-                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard第" + count + "次");
                         Thread.sleep(TIME);
                     } else {
                         //M1
