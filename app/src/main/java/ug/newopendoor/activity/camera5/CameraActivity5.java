@@ -136,15 +136,11 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
                 @Override
                 public void onBackMsg(int mType, String result) {
                     BasicOper.dc_beep(5);
-                    if(!TextUtils.isEmpty(result)){
+                    if(!TextUtils.isEmpty(result.trim())){
                         if (!isReading) {
                             isReading = true;
                             type = mType;
-                            if (mType == 1) {
-                                ticketNum = result.trim() + "00";
-                            } else {
-                                ticketNum = result.trim();
-                            }
+                            ticketNum = result.trim();
                             takePhoto();
                         }
                     }
@@ -241,7 +237,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
      * 上传信息
      */
     private void upload() {
-         Log.i("xxx","type >>" + type +"" +" ticketNum>>" + ticketNum);
+         Log.i("sss","type >>" + type +"" +" ticketNum>>" + ticketNum);
         File file = new File(filePath);
         if (!file.exists()) {
             uploadFinish();
