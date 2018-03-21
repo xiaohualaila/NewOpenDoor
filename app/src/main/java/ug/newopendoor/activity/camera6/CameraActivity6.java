@@ -181,8 +181,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     }
                 }
             }
-
-              Log.i("sss",">>>>>>>>>>>>>>>>"+ticketNum);
             }
         });
         RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
@@ -260,7 +258,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-      //      Log.i("sss","ticketNum>>>" + ticketNum );
+            Log.i("sss","ticketNum>>>票号：  " + ticketNum );
             presenter.load(device_id, type, ticketNum, file);
     }
 
