@@ -23,19 +23,15 @@ import com.bumptech.glide.request.RequestOptions;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
 import com.decard.entitys.IDCard;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
-import ug.newopendoor.activity.camera6.CameraContract6;
-import ug.newopendoor.activity.camera6.CameraPresenter6;
 import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.service.Service2;
 import ug.newopendoor.usbtest.ConvertUtils;
