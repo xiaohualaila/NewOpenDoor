@@ -85,9 +85,9 @@ public class CommonService extends Service implements UltralightCardListener, M1
                 lock.lock();
                 try {
                     //UltralightCard
-
                     if (uitralight) {
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
+                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
                         Thread.sleep(TIME);
                     } else {
                         //M1
