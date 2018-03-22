@@ -2,12 +2,8 @@ package ug.newopendoor.activity.camera5;
 
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
-
 import org.json.JSONObject;
-
 import java.io.File;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
