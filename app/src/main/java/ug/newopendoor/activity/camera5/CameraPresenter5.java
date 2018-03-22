@@ -83,7 +83,7 @@ public class CameraPresenter5 extends BasePresenter implements CameraContract5.P
                 view.doCommonError("无效票卡请重试", 3);
             }
         } else {
-            view.doCommonError("无效票卡请重试", 3);
+            view.doCommonError("服务器无返回", 3);
         }
     }
 }
