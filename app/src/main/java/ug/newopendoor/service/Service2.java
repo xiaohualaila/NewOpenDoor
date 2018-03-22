@@ -56,6 +56,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private boolean uitralight = true;//设置为false m1读卡
     private boolean idcard = true;
     private boolean scan = true;
+    private boolean startReadCard = false;
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
@@ -135,14 +136,18 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
 
                     //身份证
                     if (idcard) {
-                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
-                        com.decard.entitys.IDCard idCardData;
-                        //标准协议
-                        idCardData = BasicOper.dc_get_i_d_raw_info();
-                        if (idCardData != null) {
-                            RxBus.getDefault().post(idCardData);
-                        }
                         Thread.sleep(TIME);
+                        if(!startReadCard){
+                            startReadCard = true;
+                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
+                            com.decard.entitys.IDCard idCardData;
+                            //标准协议
+                            idCardData = BasicOper.dc_get_i_d_raw_info();
+                            if (idCardData != null) {
+                                RxBus.getDefault().post(idCardData);
+                                startReadCard = false;
+                            }
+                        }
                     }
 
                 } catch (Exception e) {
