@@ -132,7 +132,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                             isCompany = true;
                             takePhoto();
                         }else {
-                            isM1Right = true;
                             if(!TextUtils.isEmpty(ticketNum)){
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -147,6 +146,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        isM1Right = true;
                                         flag_tag.setText("请扫描二维码");
                                         SoundPoolUtil.play(10);
                                         flag_tag.setTextColor(getResources().getColor(R.color.red));
