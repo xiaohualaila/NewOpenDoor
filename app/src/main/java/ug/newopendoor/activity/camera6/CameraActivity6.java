@@ -115,7 +115,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 }
 
                 if(type == 1){//芯片
-                    xinCode = myMessage.getNum().trim();
+                    xinCode = myMessage.getNum().trim()+"00";
                     if(!TextUtils.isEmpty(xinCode)){
                         WhiteList whiteList = GetDataUtil.getXinDataBooean(xinCode);
                         if(whiteList != null){
@@ -256,7 +256,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-     //   Log.i("sss","ticketNum>>>票号：  " + ticketNum +"    isWorker  >>>" + isWorker);
+       Log.i("sss","ticketNum>>>票号：  " + ticketNum +"    isWorker  >>>" + isWorker);
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
             Toast.makeText(this, getResources().getText(R.string.error_net), Toast.LENGTH_LONG).show();

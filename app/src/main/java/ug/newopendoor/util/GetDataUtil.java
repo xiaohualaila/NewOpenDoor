@@ -50,12 +50,12 @@ public class GetDataUtil {
             WhiteListDao whiteListDao = GreenDaoManager.getInstance().getSession().getWhiteListDao();
             whiteListDao.deleteAll();
             for (int i = 0; i < sheetRows; i++) {
-                xin_id = sheet.getCell(0, i).getContents().toUpperCase();
-                name = sheet.getCell(1, i).getContents();
-                company = sheet.getCell(2, i).getContents();
+                xin_id = sheet.getCell(0, i).getContents().toUpperCase().trim();
+                name = sheet.getCell(1, i).getContents().trim();
+                company = sheet.getCell(2, i).getContents().trim();
 
 
-                Log.i("xxx", xin_id +" " + name + " " + company);
+              //  Log.i("xxx", xin_id +" " + name + " " + company);
                 if(TextUtils.isEmpty(name) && TextUtils.isEmpty(xin_id)&& TextUtils.isEmpty(company)){
                     break;
                 }
