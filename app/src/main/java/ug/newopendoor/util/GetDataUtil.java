@@ -50,7 +50,7 @@ public class GetDataUtil {
             WhiteListDao whiteListDao = GreenDaoManager.getInstance().getSession().getWhiteListDao();
             whiteListDao.deleteAll();
             for (int i = 0; i < sheetRows; i++) {
-                xin_id = sheet.getCell(0, i).getContents();
+                xin_id = sheet.getCell(0, i).getContents().toUpperCase();
                 name = sheet.getCell(1, i).getContents();
                 company = sheet.getCell(2, i).getContents();
 

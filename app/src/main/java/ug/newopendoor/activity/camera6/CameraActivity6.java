@@ -93,6 +93,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
      */
     private int type;
     private String ticketNum ="";
+    private int isWorker = 1;//工作人员是1，观众是2
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +131,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                             ticketNum = xinCode;
                             isReading = true;
                             isCompany = true;
+                            isWorker = 1;
                             takePhoto();
                         }else {
                             isM1Right = true;
@@ -142,6 +144,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                                 });
                                 isReading = true;
                                 isCompany = false;
+                                isWorker = 2;
                                 takePhoto();
                             }else {
                                 runOnUiThread(new Runnable() {
@@ -168,12 +171,13 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                         });
                         isReading = true;
                         isCompany = false;
+                        isWorker = 2;
                         takePhoto();
                     }else {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                flag_tag.setText("没有芯片验证");
+                                flag_tag.setText("请刷芯片");
                                 SoundPoolUtil.play(9);
                                 flag_tag.setTextColor(getResources().getColor(R.color.red));
                             }
@@ -252,14 +256,15 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
+     //   Log.i("sss","ticketNum>>>票号：  " + ticketNum +"    isWorker  >>>" + isWorker);
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
             Toast.makeText(this, getResources().getText(R.string.error_net), Toast.LENGTH_LONG).show();
             uploadFinish();
             return;
         }
-            Log.i("sss","ticketNum>>>票号：  " + ticketNum );
-            presenter.load(device_id, type, ticketNum, file);
+
+            presenter.load(device_id, isWorker, ticketNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {

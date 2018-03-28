@@ -2,6 +2,8 @@ package ug.newopendoor.usbtest;
 
 
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,7 +92,7 @@ public abstract class SerialHelper {
 					byte[] buffer=new byte[512];
 					int size = mInputStream.read(buffer);
 					if (size > 0){
-						Thread.sleep(50);
+						Thread.sleep(1000);
 
 						byte[] buffer_1 = new byte[512];
 						int size_1 =  mInputStream.read(buffer_1);
@@ -102,10 +104,18 @@ public abstract class SerialHelper {
 							} else {
 								buffer_all[i] = buffer_1[i-size];
 							}
+
+							if(i > 1) {
+								if ((buffer_all[i] == 0x0A) && (buffer_all[i - 1] == 0x0D)) {  //判断是否是结束位
+									//  String receiveData = new String(buffer_all).trim();
+									ComBean ComRecData = new ComBean(sPort, buffer_all, i);
+									onDataReceived(ComRecData);
+									break;
+								}
+							}
+
 						}
 
-						ComBean ComRecData = new ComBean(sPort,buffer_all,all_size);
-						onDataReceived(ComRecData);
 					}
 					try
 					{
