@@ -284,6 +284,7 @@ public class ServiceCeShi extends Service implements UltralightCardListener, M1C
                 while ((ComData = QueueList.poll()) != null) {
                     try {
                         ticketNum = new String(ComData.bRec).trim();
+                        Log.i("sss","ticketNum >>  " +ticketNum);
                         Ticket ticket = new Ticket(2, ticketNum);
                         RxBus.getDefault().post(ticket);
                         Thread.sleep(800);
