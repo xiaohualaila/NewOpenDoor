@@ -10,6 +10,7 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -34,7 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
 import ug.newopendoor.rx.RxBus;
-import ug.newopendoor.service.Service2;
+import ug.newopendoor.service.ServiceCeShi;
 import ug.newopendoor.usbtest.ConvertUtils;
 import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.MyUtil;
@@ -96,6 +97,12 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             if (!isReading) {
                 type = myMessage.getType();
                 String ticket = myMessage.getNum().trim();
+                if(ticket.equals("0001|操作失败") || ticket.equals("FFFF|操作失败") || ticket.equals("1001|设备未打开")){
+                    stopService(new Intent(this,ServiceCeShi.class));
+                    startService(new Intent(this, ServiceCeShi.class));
+                    Log.i("sss",">>>>>>>>>>>>>>>>>>");
+                    return;
+                }
                 if(!TextUtils.isEmpty(ticket)){
                     if(type !=2 ){
                         BasicOper.dc_beep(5);
@@ -200,14 +207,14 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     protected void onResume() {
         super.onResume();
         camera = openCamera();
-        Intent intent = new Intent(this, Service2.class);
+        Intent intent = new Intent(this, ServiceCeShi.class);
         startService(intent);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        stopService(new Intent(this,Service2.class));
+        stopService(new Intent(this,ServiceCeShi.class));
     }
 
     @Override
