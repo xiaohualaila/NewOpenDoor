@@ -57,10 +57,8 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
 
     @BindView(R.id.state_tip)
     TextView flag_tag;
-    @BindView(R.id.tv_name)
-    TextView tv_name;
-    @BindView(R.id.tv_idcard)
-    TextView tv_idcard;
+    @BindView(R.id.tv_ticket)
+    TextView tv_ticket;
     private Camera camera;
     private String filePath;
     private SurfaceHolder holder;
@@ -85,7 +83,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_camera5);
+        setContentView(R.layout.activity_camera6);
         ButterKnife.bind(this);
         new CameraPresenter6(this);
         holder = camera_sf.getHolder();
@@ -97,16 +95,22 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
             if (!isReading) {
                 type = myMessage.getType();
                 String ticket = myMessage.getNum().trim();
-                if(ticket.equals("0001|操作失败") || ticket.equals("FFFF|操作失败") || ticket.equals("1001|设备未打开")){
-                    stopService(new Intent(this,ServiceCeShi.class));
-                    startService(new Intent(this, ServiceCeShi.class));
-                    Log.i("sss",">>>>>>>>>>>>>>>>>>");
-                    return;
-                }
+//                if(ticket.equals("0001|操作失败") || ticket.equals("FFFF|操作失败") || ticket.equals("1001|设备未打开")){
+//                    stopService(new Intent(this,ServiceCeShi.class));
+//                    startService(new Intent(this, ServiceCeShi.class));
+//                    Log.i("sss",">>>>>>>>>>>>>>>>>>");
+//                    return;
+//                }
                 if(!TextUtils.isEmpty(ticket)){
                     if(type !=2 ){
                         BasicOper.dc_beep(5);
                     }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_ticket.setText(ticket);
+                        }
+                    });
                     ticketNum = ticket;
                     isReading = true;
                     takePhoto();
@@ -122,8 +126,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            tv_name.setText(idCard.getName());
-                            tv_idcard.setText(idCard.getId());
                             img_server.setImageBitmap(ConvertUtils.bytes2Bitmap(ConvertUtils.hexString2Bytes(idCard.getPhotoDataHexStr())));
                         }
                     });
@@ -170,8 +172,6 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 bm.recycle();
                 bm1.recycle();
                 upload();
-//                Log.i("sss","刷到显示的票号 " + ticketNum);
-//                uploadFinish();
             }
         }
     };
@@ -434,8 +434,7 @@ public class CameraActivity6 extends Activity implements SurfaceHolder.Callback,
                 startCameraPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
-                tv_idcard.setText("");
-                tv_name.setText("");
+                tv_ticket.setText("");
                 File file = new File(filePath);
                 if (file.exists()) {
                     file.delete();
