@@ -44,7 +44,7 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
                 .subscribe(new Action1<JSONObject>() {
                                @Override
                                public void call(JSONObject jsonObject) {
-                              //   Log.i("sss",jsonObject.toString());
+                                Log.i("sss",jsonObject.toString());
                                    jsonObjectResult(jsonObject);
                                }
                            }, new Action1<Throwable>() {
@@ -69,19 +69,23 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
                 } else if (result.equals("5")) {
                     view.doCommonError("人脸验证失败",1,imageStr);
                 }  else if (result.equals("6")) {
-                    view.doCommonError("人脸检测失败",7,imageStr);
+                    view.doCommonError("人脸检测失败",1,imageStr);
                 } else if(result.equals("7")){
-                    view.doCommonError("入场时间错误",6,imageStr);
-                } else if(result.equals("4")){
-                    view.doCommonError("入场次数频繁",5,imageStr);
-                } else {
-                    view.doCommonError("无效票卡请重试",3,imageStr);
+                    view.doCommonError("入场时间错误",5,imageStr);
+                }  else if(result.equals("2")){
+                    view.doCommonError("已入场不可重复入场",2,imageStr);
+                } else if(result.equals("3")){
+                    view.doCommonError("入场口错误",8,imageStr);
+                }else if(result.equals("4")){
+                    view.doCommonError("入场次数频繁",7,imageStr);
+                }else {
+                    view.doCommonError("无效票卡请重试",0,imageStr);
                 }
             } else {
-                view.doCommonError("无效票卡请重试",3,imageStr);
+                view.doCommonError("无效票卡请重试",0,imageStr);
             }
         } else {
-            view.doCommonError("无效票卡请重试",3,"");
+            view.doCommonError("无效票卡请重试",0,"");
         }
     }
 }

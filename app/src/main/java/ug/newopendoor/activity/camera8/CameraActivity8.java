@@ -116,6 +116,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
 
                 if(type == 1){//芯片
                     xinCode = myMessage.getNum().trim();
+                    Log.i("sss","xinCode" + xinCode);
                     if(!TextUtils.isEmpty(xinCode)){
                         if (xinCode.equals("0001|操作失败")||xinCode.equals("FFFF|操作失败")||xinCode.equals("1001|设备未打开")) {
                             stopService(new Intent(this,Service2.class));
