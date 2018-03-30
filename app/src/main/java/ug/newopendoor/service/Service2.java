@@ -54,7 +54,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private String USB = "";
 
     private boolean uitralight = true;//设置为false m1读卡
-    private boolean idcard = true;
+    private boolean idcard = false;
     private boolean scan = true;
     private boolean startReadCard = false;
     //串口
@@ -69,9 +69,9 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
         rkGpioControlNative.init();
         onOpenConnectPort();
-        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
-        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
-        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", false);
+//        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
+//        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
+//        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", false);
 
         if(scan){
             //串口

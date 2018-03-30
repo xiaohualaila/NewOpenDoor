@@ -116,7 +116,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
 
                 if(type == 1){//芯片
                     xinCode = myMessage.getNum().trim();
-                    Log.i("sss" , "xinCode>>>  " + xinCode );
                     if(!TextUtils.isEmpty(xinCode)){
                         WhiteList whiteList = GetDataUtil.getXinDataBooean(xinCode);
                         if(whiteList != null){

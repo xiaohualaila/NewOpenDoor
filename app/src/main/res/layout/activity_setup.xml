@@ -2,9 +2,12 @@
 <RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/bg_main"
     android:focusable= "true"
     android:focusableInTouchMode= "true"
-    android:background="@mipmap/bg_main">
+    >
+
+
     <LinearLayout
         android:id="@+id/ll"
         android:layout_width="match_parent"
@@ -82,6 +85,7 @@
                 android:gravity="center"
                 android:paddingRight="5dp"
                 android:textSize="20sp"
+                android:hint="如果没有端口不填写"
                 android:textColor="@color/clear_edit_text"
                 android:background="@drawable/background_corner_right" />
         </LinearLayout>
@@ -110,7 +114,6 @@
                 android:background="@drawable/background_corner_right" />
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/ll_secret"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
@@ -138,6 +141,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:visibility="gone"
             android:background="@color/gray">
             <TextView
                 android:id="@+id/scan_text"
@@ -162,6 +166,7 @@
             android:id="@+id/m1_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginTop="20dp"
             android:background="@color/gray">
             <TextView
@@ -203,6 +208,7 @@
             android:layout_marginBottom="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:background="@color/gray">
             <TextView
                 android:id="@+id/read_idcard_text"
@@ -233,9 +239,8 @@
         android:textColor="@color/white"
         android:textStyle="bold"
         android:gravity="center"
-        android:layout_margin="20dp"
-        android:visibility="gone"
-        android:text="脱机请点击加载excel文件"/>
+        android:layout_margin="30dp"
+        android:text="请点击加载excel文件"/>
     <TextView
         android:id="@+id/finish"
         android:layout_below="@+id/add_excel"
@@ -246,6 +251,6 @@
         android:textColor="@color/white"
         android:textStyle="bold"
         android:gravity="center"
-        android:layout_margin="20dp"
+        android:layout_margin="30dp"
         android:text="完 成"/>
 </RelativeLayout>
