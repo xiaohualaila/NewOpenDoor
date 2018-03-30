@@ -34,8 +34,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
 import ug.newopendoor.activity.bean.WhiteList;
-import ug.newopendoor.activity.camera6.CameraContract6;
-import ug.newopendoor.activity.camera6.CameraPresenter6;
 import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.service.Service2;
 import ug.newopendoor.usbtest.ConvertUtils;
@@ -120,17 +118,17 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                     xinCode = myMessage.getNum().trim();
                     Log.i("sss" , "xinCode>>>  " + xinCode );
                     if(!TextUtils.isEmpty(xinCode)){
-                    //    WhiteList whiteList = GetDataUtil.getXinDataBooean(xinCode);
-//                        if(whiteList != null){
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    ll_company.setVisibility(View.VISIBLE);
-//                                    ll_audience.setVisibility(View.GONE);
-//                                    tv_name.setText(whiteList.getName());
-//                                    tv_company.setText(whiteList.getCompany());
-//                                }
-//                            });
+                        WhiteList whiteList = GetDataUtil.getXinDataBooean(xinCode);
+                        if(whiteList != null){
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ll_company.setVisibility(View.VISIBLE);
+                                    ll_audience.setVisibility(View.GONE);
+                                    tv_name.setText(whiteList.getName());
+                                    tv_company.setText(whiteList.getCompany());
+                                }
+                            });
                             ticketNum = xinCode;
                             isReading = true;
                             isCompany = true;

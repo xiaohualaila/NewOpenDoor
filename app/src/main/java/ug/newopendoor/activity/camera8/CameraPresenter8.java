@@ -11,7 +11,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import ug.newopendoor.activity.base.BasePresenter;
-import ug.newopendoor.activity.camera6.CameraContract6;
 import ug.newopendoor.retrofit.Api;
 import ug.newopendoor.retrofit.ConnectUrl;
 
