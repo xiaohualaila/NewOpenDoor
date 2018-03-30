@@ -99,7 +99,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_camera5);
+        setContentView(R.layout.activity_camera);
         ButterKnife.bind(this);
         new CameraPresenter8(this);
         holder = camera_sf.getHolder();
@@ -117,6 +117,17 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 if(type == 1){//芯片
                     xinCode = myMessage.getNum().trim();
                     if(!TextUtils.isEmpty(xinCode)){
+                        if (xinCode.equals("0001|操作失败")||xinCode.equals("FFFF|操作失败")||xinCode.equals("1001|设备未打开")) {
+                            stopService(new Intent(this,Service2.class));
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    startService(new Intent(CameraActivity8.this, Service2.class));
+                                }
+                            },8000);
+                            return;
+                        }
+
                         WhiteList whiteList = GetDataUtil.getXinDataBooean(xinCode);
                         if(whiteList != null){
                             runOnUiThread(new Runnable() {

@@ -55,7 +55,7 @@ public class GetDataUtil {
                 company = sheet.getCell(2, i).getContents().trim();
 
 
-              //  Log.i("xxx", xin_id +" " + name + " " + company);
+            //   Log.i("xxx", xin_id +" " + name + " " + company);
                 if(TextUtils.isEmpty(name) && TextUtils.isEmpty(xin_id)&& TextUtils.isEmpty(company)){
                     break;
                 }

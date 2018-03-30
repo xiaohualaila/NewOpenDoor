@@ -168,13 +168,9 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     @Override
     public void getUltralightCardResult(String cmd, String result) {
         if (!result.equals("1003|无卡或无法寻到卡片")) {
-            if (!result.equals("0001|操作失败")) {
-                if (!result.equals("FFFF|操作失败")) {
-                    if (!result.equals("1001|设备未打开")) {
-                        Ticket ticket = new Ticket(1, result);
-                        RxBus.getDefault().post(ticket);
-                    }
-                }
+            if (!result.equals("0001|操作失败")||!result.equals("FFFF|操作失败")||!result.equals("1001|设备未打开")) {
+                Ticket ticket = new Ticket(1, result);
+                RxBus.getDefault().post(ticket);
             }
         }
     }
