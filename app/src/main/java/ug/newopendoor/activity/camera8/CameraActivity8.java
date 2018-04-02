@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.hardware.Camera;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,6 +26,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
 import com.decard.entitys.IDCard;
+import com.zyao89.view.zloading.ZLoadingDialog;
+import com.zyao89.view.zloading.Z_TYPE;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,19 +61,11 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
 
     @BindView(R.id.state_tip)
     TextView flag_tag;
-    @BindView(R.id.ll_company)
-    LinearLayout ll_company;
-    @BindView(R.id.tv_name)
-    TextView tv_name;
-    @BindView(R.id.tv_company)
-    TextView tv_company;
+    @BindView(R.id.ll_info)
+    LinearLayout ll_info;
+    @BindView(R.id.tv_ticket)
+    TextView tv_ticket;
 
-    @BindView(R.id.ll_audience)
-    LinearLayout ll_audience;
-    @BindView(R.id.tv_ticket_no)
-    TextView tv_ticket_no;
-    @BindView(R.id.tv_seat_info)
-    TextView tv_seat_info;
     private Camera camera;
     private String filePath;
     private SurfaceHolder holder;
@@ -89,7 +86,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     private int type;
     private String ticketNum ="";
 
-
+    private ZLoadingDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,12 +98,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        int screenWidth = dm.widthPixels;
-        int screenHeight = dm.heightPixels;
-        int densityDpi = dm.densityDpi;
-        Log.i("sss","width " + screenWidth + "  height " + screenHeight + "dpi>>" + densityDpi);
-
+        intDialog();
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
             if (!isReading) {
                 type = myMessage.getType();
@@ -116,10 +108,25 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
 
                 ticketNum = myMessage.getNum().trim();
                 if(!TextUtils.isEmpty(ticketNum)){
+                    if (ticketNum.equals("0001|操作失败") || ticketNum.equals("FFFF|操作失败") || ticketNum.equals("1001|设备未打开")) {
+                        stopService(new Intent(this,Service2.class));
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                startService(new Intent(CameraActivity8.this, Service2.class));
+                            }
+                        },8000);
+                        return;
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_ticket.setText(ticketNum);
+                        }
+                    });
                     isReading = true;
                     takePhoto();
                 }
-
             }
         });
         RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
@@ -131,7 +138,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            tv_name.setText(idCard.getName());
+                           // tv_name.setText(idCard.getName());
                             //   tv_idcard.setText(idCard.getId());
                             img_server.setImageBitmap(ConvertUtils.bytes2Bitmap(ConvertUtils.hexString2Bytes(idCard.getPhotoDataHexStr())));
                         }
@@ -186,6 +193,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
      * 上传信息
      */
     private void upload() {
+        dialog.show();
         File file = new File(filePath);
         if (!file.exists()) {
             uploadFinish();
@@ -407,9 +415,11 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                dialog.cancel();
                 startCameraPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
+                tv_ticket.setText("");
                 File file = new File(filePath);
                 if (file.exists()) {
                     file.delete();
@@ -433,5 +443,14 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         }
     };
 
+    private void intDialog() {
+        dialog = new ZLoadingDialog(this);
+        dialog.setLoadingBuilder(Z_TYPE.SINGLE_CIRCLE)
+                .setLoadingColor(Color.BLACK)
+                .setHintText("Loading...")
+//              .setHintTextSize(16) // 设置字体大小
+                .setHintTextColor(Color.WHITE); // 设置字体颜色
+//                .show();
+    }
 
 }

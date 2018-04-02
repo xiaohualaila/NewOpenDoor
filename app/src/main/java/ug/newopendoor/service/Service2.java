@@ -54,7 +54,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private String USB = "";
 
     private boolean uitralight = true;//设置为false m1读卡
-    private boolean idcard = false;
+    private boolean idcard = true;
     private boolean scan = true;
     private boolean startReadCard = false;
     //串口
@@ -69,9 +69,9 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
         rkGpioControlNative.init();
         onOpenConnectPort();
-//        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
-//        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
-//        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", false);
+        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
+        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
+        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", true);
 
         if(scan){
             //串口
@@ -168,10 +168,8 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     @Override
     public void getUltralightCardResult(String cmd, String result) {
         if (!result.equals("1003|无卡或无法寻到卡片")) {
-            if (!result.equals("0001|操作失败")||!result.equals("FFFF|操作失败")||!result.equals("1001|设备未打开")) {
-                Ticket ticket = new Ticket(1, result);
-                RxBus.getDefault().post(ticket);
-            }
+            Ticket ticket = new Ticket(1, result);
+            RxBus.getDefault().post(ticket);
         }
     }
 
