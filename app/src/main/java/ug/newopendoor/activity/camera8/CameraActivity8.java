@@ -10,11 +10,11 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,12 +33,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ug.newopendoor.R;
-import ug.newopendoor.activity.bean.WhiteList;
 import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.service.Service2;
 import ug.newopendoor.usbtest.ConvertUtils;
 import ug.newopendoor.util.FileUtil;
-import ug.newopendoor.util.GetDataUtil;
 import ug.newopendoor.util.MyUtil;
 import ug.newopendoor.util.RoundImageView;
 import ug.newopendoor.util.SoundPoolUtil;
@@ -85,15 +83,12 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     private boolean isReading = false;
     private String device_id;
 
-    private boolean isM1Right = false;//M1是否验证过
-    private String xinCode = "";//芯片票号
-    private boolean isCompany = false;
     /**
      * 3 身份证,1 Ultralight,4 M1,2串口
      */
     private int type;
     private String ticketNum ="";
-    private int isWorker = 1;//工作人员是1，观众是2
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +101,11 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int screenWidth = dm.widthPixels;
+        int screenHeight = dm.heightPixels;
+        int densityDpi = dm.densityDpi;
+        Log.i("sss","width " + screenWidth + "  height " + screenHeight + "dpi>>" + densityDpi);
 
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
             if (!isReading) {
@@ -114,89 +114,12 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                     BasicOper.dc_beep(5);
                 }
 
-                if(type == 1){//芯片
-                    xinCode = myMessage.getNum().trim();
-                    Log.i("sss","xinCode" + xinCode);
-                    if(!TextUtils.isEmpty(xinCode)){
-                        if (xinCode.equals("0001|操作失败")||xinCode.equals("FFFF|操作失败")||xinCode.equals("1001|设备未打开")) {
-                            stopService(new Intent(this,Service2.class));
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    startService(new Intent(CameraActivity8.this, Service2.class));
-                                }
-                            },8000);
-                            return;
-                        }
+                ticketNum = myMessage.getNum().trim();
+                if(!TextUtils.isEmpty(ticketNum)){
+                    isReading = true;
+                    takePhoto();
+                }
 
-                        WhiteList whiteList = GetDataUtil.getXinDataBooean(xinCode);
-                        if(whiteList != null){
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ll_company.setVisibility(View.VISIBLE);
-                                    ll_audience.setVisibility(View.GONE);
-                                    tv_name.setText(whiteList.getName());
-                                    tv_company.setText(whiteList.getCompany());
-                                }
-                            });
-                            ticketNum = xinCode;
-                            isReading = true;
-                            isCompany = true;
-                            isWorker = 1;
-                            takePhoto();
-                        }else {
-                            if(!TextUtils.isEmpty(ticketNum)){
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        flag_tag.setText("");
-                                    }
-                                });
-                                isReading = true;
-                                isCompany = false;
-                                isWorker = 2;
-                                takePhoto();
-                            }else {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        isM1Right = true;
-                                        flag_tag.setText("请扫描二维码");
-                                        SoundPoolUtil.play(10);
-                                        flag_tag.setTextColor(getResources().getColor(R.color.red));
-                                    }
-                                });
-                            }
-                        }
-                    }
-                }
-                if(type == 2){//二维码
-                    ticketNum = myMessage.getNum().trim();
-                    if(!TextUtils.isEmpty(ticketNum)){
-                        if(isM1Right){
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    flag_tag.setText("");
-                                }
-                            });
-                            isReading = true;
-                            isCompany = false;
-                            isWorker = 2;
-                            takePhoto();
-                        }else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    flag_tag.setText("请刷芯片");
-                                    SoundPoolUtil.play(9);
-                                    flag_tag.setTextColor(getResources().getColor(R.color.red));
-                                }
-                            });
-                        }
-                    }
-                }
             }
         });
         RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
@@ -268,7 +191,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-        Log.i("sss","ticketNum>>>票号：  " + ticketNum +"    isWorker  >>>" + isWorker);
+        Log.i("sss","ticketNum>>>票号：  " + ticketNum +"    type  >>>" + type);
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
             Toast.makeText(this, getResources().getText(R.string.error_net), Toast.LENGTH_LONG).show();
@@ -276,7 +199,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(device_id, isWorker, ticketNum, file);
+        presenter.load(device_id, type, ticketNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
@@ -466,17 +389,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             }
         }
 
-        if(!isCompany){
-            ll_company.setVisibility(View.GONE);
-            ll_audience.setVisibility(View.VISIBLE);
-            if (!TextUtils.isEmpty(ticket_no)){
-                tv_ticket_no.setText(ticket_no);
-            }
-            if (!TextUtils.isEmpty(seat_info)){
-                tv_seat_info.setText(seat_info);
-            }
-        }
-
         isOpenDoor = true;
         rkGpioControlNative.ControlGpio(1, 0);//开门
         SoundPoolUtil.play(4);
@@ -498,11 +410,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 startCameraPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
-                if(isCompany){
-                    ll_company.setVisibility(View.GONE);
-                }else {
-                    ll_audience.setVisibility(View.GONE);
-                }
                 File file = new File(filePath);
                 if (file.exists()) {
                     file.delete();
@@ -513,9 +420,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                     isLight = false;
                 }
                 isReading = false;
-                isM1Right = false;
                 ticketNum = "";
-                xinCode = "";
             }
         }, 2500);
 
