@@ -86,7 +86,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     private int type;
     private String ticketNum ="";
 
-    private ZLoadingDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +97,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
-        intDialog();
+
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
             if (!isReading) {
                 type = myMessage.getType();
@@ -122,6 +121,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                         @Override
                         public void run() {
                             tv_ticket.setText(ticketNum);
+                            flag_tag.setText("正在验证");
                         }
                     });
                     isReading = true;
@@ -193,7 +193,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
      * 上传信息
      */
     private void upload() {
-        dialog.show();
         File file = new File(filePath);
         if (!file.exists()) {
             uploadFinish();
@@ -406,7 +405,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     }
 
     private void uploadFinish() {
-
         if (isOpenDoor) {
             isOpenDoor = false;
             handler.postDelayed(runnable, 500);
@@ -415,7 +413,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                dialog.cancel();
                 startCameraPreview();
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
@@ -442,15 +439,5 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             rkGpioControlNative.ControlGpio(1, 1);//关门
         }
     };
-
-    private void intDialog() {
-        dialog = new ZLoadingDialog(this);
-        dialog.setLoadingBuilder(Z_TYPE.SINGLE_CIRCLE)
-                .setLoadingColor(Color.BLACK)
-                .setHintText("Loading...")
-//              .setHintTextSize(16) // 设置字体大小
-                .setHintTextColor(Color.WHITE); // 设置字体颜色
-//                .show();
-    }
 
 }
