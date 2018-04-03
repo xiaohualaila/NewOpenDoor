@@ -117,6 +117,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                         public void run() {
                             tv_ticket.setText(ticketNum);
                             flag_tag.setText("正在验证");
+                            flag_tag.setTextColor(getResources().getColor(R.color.white));
                         }
                     });
                     isReading = true;
