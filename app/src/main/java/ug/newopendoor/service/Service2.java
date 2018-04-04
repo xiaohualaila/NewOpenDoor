@@ -119,9 +119,10 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                 try {
                     //UltralightCard
                     if (uitralight) {
+                        Thread.sleep(TIME);
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
                         Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
-                        Thread.sleep(TIME);
+
                     } else {
                         //M1
                         model2.bt_download(ConstUtils.BT_DOWNLOAD,"All",0,newPasswordKey,0);

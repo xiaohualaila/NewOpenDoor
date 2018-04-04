@@ -107,6 +107,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                         },8000);
                         return;
                     }
+                    ticketNum = ticketNum + "00";
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
