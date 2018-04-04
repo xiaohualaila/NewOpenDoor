@@ -57,12 +57,12 @@
         android:layout_above="@+id/iv_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin = "30dp"
+        android:layout_margin = "25dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="30sp"
+            android:textSize="34sp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:text="票   号："/>
@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="28sp"/>
+            android:textSize="34sp"/>
     </LinearLayout>
 
     <ImageView
