@@ -26,7 +26,7 @@ import ug.newopendoor.util.SharedPreferencesUtil;
  * Created by Administrator on 2017/12/11.
  */
 
-public class SetupActivity2 extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener  {
+public class SetupActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener  {
     @BindView(R.id.idcard_switch)
     Switch idcard_switch;
     @BindView(R.id.scan_switch)
