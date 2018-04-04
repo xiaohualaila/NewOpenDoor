@@ -107,7 +107,13 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                         },8000);
                         return;
                     }
-                    ticketNum = ticketNum + "00";
+                    int n;
+                    if(ticketNum.length()<16){
+                       n= 16-ticketNum.length();
+                       for (int i = 0;i<n;i++){
+                           ticketNum = ticketNum + "0";
+                       }
+                    }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
