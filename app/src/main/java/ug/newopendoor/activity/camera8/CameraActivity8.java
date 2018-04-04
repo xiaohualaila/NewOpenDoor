@@ -78,7 +78,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     /**
      * 3 身份证,1 Ultralight,4 M1,2串口
      */
-    private int type;
     private String ticketNum ="";
 
     @Override
@@ -95,11 +94,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
 
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
             if (!isReading) {
-                type = myMessage.getType();
-                if (type != 2) {
-                    BasicOper.dc_beep(5);
-                }
-
+                 BasicOper.dc_beep(5);
                 ticketNum = myMessage.getNum().trim();
                 if(!TextUtils.isEmpty(ticketNum)){
                     if (ticketNum.equals("0001|操作失败") || ticketNum.equals("FFFF|操作失败") || ticketNum.equals("1001|设备未打开")) {
@@ -123,25 +118,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                     isReading = true;
                     takePhoto();
                 }
-            }
-        });
-        RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
-            BasicOper.dc_beep(5);
-            if (!isReading) {
-                isReading = true;
-                type = 3;
-                if(idCard != null){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                           // tv_name.setText(idCard.getName());
-                            //   tv_idcard.setText(idCard.getId());
-                            img_server.setImageBitmap(ConvertUtils.bytes2Bitmap(ConvertUtils.hexString2Bytes(idCard.getPhotoDataHexStr())));
-                        }
-                    });
-                }
-                ticketNum = idCard.getId().trim();
-                takePhoto();
             }
         });
     }
@@ -194,7 +170,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-        Log.i("sss","ticketNum>>>票号：  " + ticketNum +"    type  >>>" + type);
+        Log.i("sss","ticketNum>>>票号：  " + ticketNum );
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
             Toast.makeText(this, getResources().getText(R.string.error_net), Toast.LENGTH_LONG).show();
@@ -202,7 +178,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(device_id, type, ticketNum, file);
+        presenter.load(device_id, ticketNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {

@@ -33,12 +33,12 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
     }
 
     @Override
-    public void load(String device_id, int type, String ticketNum, File newFile) {
+    public void load(String device_id, String ticketNum, File newFile) {
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), newFile);
         builder.addFormDataPart("photoImgFiles", newFile.getName(), requestBody);
         Api.getBaseApiWithOutFormat(ConnectUrl.URL)
-                .uploadPhotoBase(device_id, ticketNum, type, builder.build().parts())
+                .uploadPhotoBase(device_id, ticketNum, builder.build().parts())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<JSONObject>() {
@@ -73,7 +73,7 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
                 } else if(result.equals("7")){
                     view.doCommonError("入场时间错误",5,imageStr);
                 }  else if(result.equals("2")){
-                    view.doCommonError("已入场不可重复入场",2,imageStr);
+                    view.doCommonError("不可重复入场",2,imageStr);
                 } else if(result.equals("3")){
                     view.doCommonError("入场口错误",8,imageStr);
                 }else if(result.equals("4")){
