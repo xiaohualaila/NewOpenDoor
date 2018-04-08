@@ -1,6 +1,7 @@
 package ug.newopendoor.activity.camera8;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,8 +29,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import ug.newopendoor.R;
 import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.service.Service2;
@@ -91,7 +97,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
 
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
             if (!isReading) {
-                 BasicOper.dc_beep(5);
+                // BasicOper.dc_beep(5);
                 ticketNum = myMessage.getNum().trim();
                 if(!TextUtils.isEmpty(ticketNum)){
                     if (ticketNum.equals("0001|操作失败") || ticketNum.equals("FFFF|操作失败") || ticketNum.equals("1001|设备未打开")) {
@@ -101,7 +107,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                             public void run() {
                                 startService(new Intent(CameraActivity8.this, Service2.class));
                             }
-                        },8000);
+                        },5000);
                         return;
                     }
                     int n;
@@ -144,7 +150,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             BufferedOutputStream bos = null;
             try {
                 bos = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
-                bm1.compress(Bitmap.CompressFormat.JPEG, 30, bos);
+                bm1.compress(Bitmap.CompressFormat.JPEG, 0, bos);
                 bos.flush();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -349,16 +355,22 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     @Override
     public void doCommonError(String text,int num,String Face_path) {
         flag_tag.setText(text);//没有检测到人脸
-        SoundPoolUtil.play(num);
+        flag_tag.setTextColor(getResources().getColor(R.color.red));
         if (!TextUtils.isEmpty(Face_path)) {
             RequestOptions options = new RequestOptions().error(R.drawable.left_img);
             if (!TextUtils.isEmpty(Face_path)) {
                 Glide.with(CameraActivity8.this).load(Face_path).apply(options).into(img_server);
             }
         }
-        flag_tag.setTextColor(getResources().getColor(R.color.red));
-        rkGpioControlNative.ControlGpio(20, 0);//亮灯
-        isLight = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SoundPoolUtil.play(num);
+                rkGpioControlNative.ControlGpio(20, 0);//亮灯
+                isLight = true;
+            }
+        }).start();
+
         uploadFinish();
     }
 
@@ -371,12 +383,16 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 Glide.with(CameraActivity8.this).load(Face_path).apply(options).into(img_server);
             }
         }
-
-        isOpenDoor = true;
-        rkGpioControlNative.ControlGpio(1, 0);//开门
-        SoundPoolUtil.play(4);
         flag_tag.setText(getResources().getText(R.string.right_ticket));
         flag_tag.setTextColor(getResources().getColor(R.color.green));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                isOpenDoor = true;
+                rkGpioControlNative.ControlGpio(1, 0);//开门
+                SoundPoolUtil.play(4);
+            }
+        }).start();
         uploadFinish();
     }
 
@@ -393,20 +409,72 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 img_server.setImageResource(R.drawable.left_img);
                 flag_tag.setText("");
                 tv_ticket.setText("");
-                File file = new File(filePath);
-                if (file.exists()) {
-                    file.delete();
-                }
-                //变灯
-                if (isLight) {
-                    rkGpioControlNative.ControlGpio(20, 1);
-                    isLight = false;
-                }
-                isReading = false;
-                ticketNum = "";
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        File file = new File(filePath);
+                        if (file.exists()) {
+                            file.delete();
+                        }
+                        //变灯
+                        if (isLight) {
+                            rkGpioControlNative.ControlGpio(20, 1);
+                            isLight = false;
+                        }
+                        isReading = false;
+                        ticketNum = "";
+                    }
+                }).start();
+                Log.i("sss","isReading = false>>>>>>>>>>>>>>");
             }
         }, 2500);
+//        if (isOpenDoor) {
+//            isOpenDoor = false;
+//            Observable.timer(500, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
+//                @Override
+//                public void call(Long aLong) {
+//                    rkGpioControlNative.ControlGpio(1, 1);//关门
+//                }
+//            });
+//        }
 
+//        Observable.timer(2500, TimeUnit.MILLISECONDS)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Action1<Long>() {
+//                @Override
+//                public void call(Long aLong) {
+//                    startCameraPreview();
+//                    img_server.setImageResource(R.drawable.left_img);
+//                    flag_tag.setText("");
+//                    tv_ticket.setText("");
+//                    File file = new File(filePath);
+//                    if (file.exists()) {
+//                        file.delete();
+//                    }
+//                    //变灯
+//                    if (isLight) {
+//                        rkGpioControlNative.ControlGpio(20, 1);
+//                        isLight = false;
+//                    }
+//                    isReading = false;
+//                    ticketNum = "";
+//                    Log.i("sss","isReading = false>>>>>>>>>>>>>>");
+//
+//                    ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+//                    //最大分配内存
+//                    int memory = activityManager.getMemoryClass();
+//                    System.out.println("memory: "+memory);
+//                    //最大分配内存获取方法2
+//                    float maxMemory = (float) (Runtime.getRuntime().maxMemory() * 1.0/ (1024 * 1024));
+//                    //当前分配的总内存
+//                    float totalMemory = (float) (Runtime.getRuntime().totalMemory() * 1.0/ (1024 * 1024));
+//                    //剩余内存
+//                    float freeMemory = (float) (Runtime.getRuntime().freeMemory() * 1.0/ (1024 * 1024));
+//                    Log.i("sss","maxMemory: "+maxMemory +"totalMemory: "+totalMemory +"freeMemory: "+freeMemory);
+//
+//                }
+//        });
     }
 
     Runnable runnable = new Runnable() {
