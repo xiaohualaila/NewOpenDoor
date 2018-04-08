@@ -17,10 +17,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ug.newopendoor.R;
-import ug.newopendoor.activity.camera2.CameraActivity2;
 import ug.newopendoor.activity.camera5.CameraActivity5;
-import ug.newopendoor.activity.camera6.CameraActivity6;
-import ug.newopendoor.activity.camera7.CameraActivity7;
 import ug.newopendoor.util.ClearEditTextWhite;
 import ug.newopendoor.util.SharedPreferencesUtil;
 
@@ -172,7 +169,7 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
         SharedPreferencesUtil.putBoolean(this,"uitralight", isUitralight);
         SharedPreferencesUtil.putBoolean(this,"scan", isScan);
         SharedPreferencesUtil.putBoolean(this,"idcard", isIdcard);
-        Intent intent = new Intent(this, CameraActivity6.class);
+        Intent intent = new Intent(this, CameraActivity5.class);
         startActivity(intent);
         finish();
     }

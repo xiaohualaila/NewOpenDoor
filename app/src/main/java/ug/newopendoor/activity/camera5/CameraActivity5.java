@@ -117,7 +117,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
             myService.setOnProgressListener(new CommonService.OnDataListener() {
                 @Override
                 public void onIDCardMsg(IDCard idCardData) {//身份证
-                    BasicOper.dc_beep(5);
+                   // BasicOper.dc_beep(5);
                     if (!isReading) {
                         isReading = true;
                         type = 3;
@@ -138,7 +138,7 @@ public class CameraActivity5 extends Activity implements SurfaceHolder.Callback,
 
                 @Override
                 public void onBackMsg(int mType, String result) {
-                    BasicOper.dc_beep(5);
+                   // BasicOper.dc_beep(5);
                     if (!TextUtils.isEmpty(result.trim())) {
                         if (!isReading) {
                             isReading = true;
