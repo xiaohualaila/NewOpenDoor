@@ -430,52 +430,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 Log.i("sss","isReading = false>>>>>>>>>>>>>>");
             }
         }, 2500);
-//        if (isOpenDoor) {
-//            isOpenDoor = false;
-//            Observable.timer(500, TimeUnit.MILLISECONDS).subscribe(new Action1<Long>() {
-//                @Override
-//                public void call(Long aLong) {
-//                    rkGpioControlNative.ControlGpio(1, 1);//关门
-//                }
-//            });
-//        }
 
-//        Observable.timer(2500, TimeUnit.MILLISECONDS)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Action1<Long>() {
-//                @Override
-//                public void call(Long aLong) {
-//                    startCameraPreview();
-//                    img_server.setImageResource(R.drawable.left_img);
-//                    flag_tag.setText("");
-//                    tv_ticket.setText("");
-//                    File file = new File(filePath);
-//                    if (file.exists()) {
-//                        file.delete();
-//                    }
-//                    //变灯
-//                    if (isLight) {
-//                        rkGpioControlNative.ControlGpio(20, 1);
-//                        isLight = false;
-//                    }
-//                    isReading = false;
-//                    ticketNum = "";
-//                    Log.i("sss","isReading = false>>>>>>>>>>>>>>");
-//
-//                    ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-//                    //最大分配内存
-//                    int memory = activityManager.getMemoryClass();
-//                    System.out.println("memory: "+memory);
-//                    //最大分配内存获取方法2
-//                    float maxMemory = (float) (Runtime.getRuntime().maxMemory() * 1.0/ (1024 * 1024));
-//                    //当前分配的总内存
-//                    float totalMemory = (float) (Runtime.getRuntime().totalMemory() * 1.0/ (1024 * 1024));
-//                    //剩余内存
-//                    float freeMemory = (float) (Runtime.getRuntime().freeMemory() * 1.0/ (1024 * 1024));
-//                    Log.i("sss","maxMemory: "+maxMemory +"totalMemory: "+totalMemory +"freeMemory: "+freeMemory);
-//
-//                }
-//        });
     }
 
     Runnable runnable = new Runnable() {
