@@ -150,7 +150,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             BufferedOutputStream bos = null;
             try {
                 bos = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
-                bm1.compress(Bitmap.CompressFormat.JPEG, 0, bos);
+                bm1.compress(Bitmap.CompressFormat.JPEG, 30, bos);
                 bos.flush();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -166,6 +166,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 }
                 bm.recycle();
                 bm1.recycle();
+                stopPreview();
                 upload();
             }
         }
