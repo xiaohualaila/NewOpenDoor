@@ -82,6 +82,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
      * 3 身份证,1 Ultralight,4 M1,2串口
      */
     private String ticketNum ="";
+    private int type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,27 +97,37 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         device_id = MyUtil.getDeviceID(this);//获取设备号
 
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
+
             if (!isReading) {
-               //  BasicOper.dc_beep(5);
+                type = myMessage.getType();
                 ticketNum = myMessage.getNum().trim();
+                if(type != 2){
+                     BasicOper.dc_beep(5);
+                }
+
                 if(!TextUtils.isEmpty(ticketNum)){
-                    if (ticketNum.equals("0001|操作失败") || ticketNum.equals("FFFF|操作失败") || ticketNum.equals("1001|设备未打开")) {
-                        stopService(new Intent(this,Service2.class));
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                startService(new Intent(CameraActivity8.this, Service2.class));
+                    if(type ==1){
+                        if (ticketNum.equals("0001|操作失败") || ticketNum.equals("FFFF|操作失败") || ticketNum.equals("1001|设备未打开")) {
+                            stopService(new Intent(this,Service2.class));
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    startService(new Intent(CameraActivity8.this, Service2.class));
+                                }
+                            },5000);
+                            return;
+                        }
+                        //根据项目情况票号是否凑够16位
+                        int n;
+                        if(ticketNum.length()<16){
+                            n= 16-ticketNum.length();
+                            for (int i = 0;i<n;i++){
+                                ticketNum = ticketNum + "0";
                             }
-                        },5000);
-                        return;
+                        }
                     }
-                    int n;
-                    if(ticketNum.length()<16){
-                       n= 16-ticketNum.length();
-                       for (int i = 0;i<n;i++){
-                           ticketNum = ticketNum + "0";
-                       }
-                    }
+
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -181,7 +192,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-        Log.i("sss","ticketNum>>>票号：  " + ticketNum );
+        Log.i("sss","ticketNum>>>票号：  " + ticketNum +"  type " + type);
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
             Toast.makeText(this, getResources().getText(R.string.error_net), Toast.LENGTH_LONG).show();
