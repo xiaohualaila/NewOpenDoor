@@ -97,64 +97,19 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 type = myMessage.getType();
                 ticketNum = myMessage.getNum().trim();
                 if(type != 2){
-                  //   BasicOper.dc_beep(5);
+                     BasicOper.dc_beep(5);
                 }
 
                 if(!TextUtils.isEmpty(ticketNum)){
-                    if(type ==1){
-                        if (ticketNum.equals("0001|操作失败") || ticketNum.equals("FFFF|操作失败") || ticketNum.equals("1001|设备未打开")) {
-                            stopService(new Intent(this,Service2.class));
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    startService(new Intent(CameraActivity8.this, Service2.class));
-                                }
-                            },5000);
-                            return;
-                        }
-                        //根据项目情况票号是否凑够16位
-                        int n;
-                        if(ticketNum.length()<16){
-                            n= 16-ticketNum.length();
-                            for (int i = 0;i<n;i++){
-                                ticketNum = ticketNum + "0";
-                            }
-                        }
-                    }
-
-
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             tv_ticket.setText(ticketNum);
-                            flag_tag.setText("正在验证");
-                            flag_tag.setTextColor(getResources().getColor(R.color.white));
                         }
                     });
                     isReading = true;
                     takePhoto();
                 }
-            }
-        });
-
-        //读取到的身份证
-        RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
-            BasicOper.dc_beep(5);
-            if (!isReading) {
-                isReading = true;
-                type = 3;
-                if(idCard != null){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                         //   tv_name.setText(idCard.getName());
-                            //   tv_idcard.setText(idCard.getId());
-                         //   img_server.setImageBitmap(ConvertUtils.bytes2Bitmap(ConvertUtils.hexString2Bytes(idCard.getPhotoDataHexStr())));
-                        }
-                    });
-                }
-                ticketNum = idCard.getId().trim();
-                takePhoto();
             }
         });
     }
