@@ -39,7 +39,7 @@ import ug.newopendoor.util.Ticket;
 
 
 public class Service2 extends Service implements UltralightCardListener, M1CardListener {
-    private final int TIME = 1000;
+    private final int TIME = 800;
     //身份证
     private Thread thread;
     private boolean isAuto = true;
@@ -53,9 +53,9 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private SPUtils settingSp;
     private String USB = "";
 
-    private boolean uitralight = true;//设置为false m1读卡
-    private boolean idcard = true;
-    private boolean scan = true;
+    private boolean uitralight = false;//设置为false m1读卡
+    private boolean idcard = false;
+    private boolean scan = false;
     private boolean startReadCard = false;
     //串口
     SerialControl ComA;
@@ -69,9 +69,9 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
         rkGpioControlNative.init();
         onOpenConnectPort();
-        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
-        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
-        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", true);
+//        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
+//        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
+//        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", true);
 
         if(scan){
             //串口
@@ -90,7 +90,8 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             model = new UltralightCardModel(this);
         }else {
             //M1
-            String secret = SharedPreferencesUtil.getStringByKey("secret",this);
+           // String secret = SharedPreferencesUtil.getStringByKey("secret",this);
+            String secret = "123456";
             Log.i("sss","secret>> " + secret);
             model2 = new M1CardModel(this);
             //以下是后来添加读取M1秘钥部分代码
