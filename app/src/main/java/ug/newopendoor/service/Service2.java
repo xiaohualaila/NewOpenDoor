@@ -124,6 +124,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                         Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
 
                     } else {
+                        Thread.sleep(TIME);
                         //M1
                         model2.bt_download(ConstUtils.BT_DOWNLOAD,"All",0,newPasswordKey,0);
                         if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
@@ -132,7 +133,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                             model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 0);
                         }
                        Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
-                        Thread.sleep(TIME);
+
                     }
 
                     //身份证
