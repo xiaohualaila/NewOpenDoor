@@ -97,7 +97,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
 
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
             if (!isReading) {
-                // BasicOper.dc_beep(5);
+               //  BasicOper.dc_beep(5);
                 ticketNum = myMessage.getNum().trim();
                 if(!TextUtils.isEmpty(ticketNum)){
                     if (ticketNum.equals("0001|操作失败") || ticketNum.equals("FFFF|操作失败") || ticketNum.equals("1001|设备未打开")) {
