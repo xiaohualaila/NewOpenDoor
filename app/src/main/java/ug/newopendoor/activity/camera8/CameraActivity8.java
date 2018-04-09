@@ -23,6 +23,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
+import com.decard.entitys.IDCard;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -139,6 +141,27 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                     isReading = true;
                     takePhoto();
                 }
+            }
+        });
+
+        //读取到的身份证
+        RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
+            BasicOper.dc_beep(5);
+            if (!isReading) {
+                isReading = true;
+                type = 3;
+                if(idCard != null){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                         //   tv_name.setText(idCard.getName());
+                            //   tv_idcard.setText(idCard.getId());
+                         //   img_server.setImageBitmap(ConvertUtils.bytes2Bitmap(ConvertUtils.hexString2Bytes(idCard.getPhotoDataHexStr())));
+                        }
+                    });
+                }
+                ticketNum = idCard.getId().trim();
+                takePhoto();
             }
         });
     }
