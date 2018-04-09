@@ -117,7 +117,6 @@ public class CameraFragment2 extends BaseFragment implements SurfaceHolder.Callb
     private Camera.PictureCallback jpeg = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            stopPreview();
             filePath = FileUtil.getPath() + File.separator + FileUtil.getTime() + ".jpeg";
             Matrix matrix = new Matrix();
             matrix.reset();
@@ -145,6 +144,7 @@ public class CameraFragment2 extends BaseFragment implements SurfaceHolder.Callb
                 }
                 bm.recycle();
                 bm1.recycle();
+                stopPreview();
                 startPreview();
                 RequestOptions options = new RequestOptions()
                         .error(R.drawable.left_img);
