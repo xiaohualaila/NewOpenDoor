@@ -51,7 +51,7 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
                                @Override
                                public void call(Throwable throwable) {
                                    Log.i("sss",throwable.toString());
-                                   view.doCommonError("网络异常",8,"");
+                                   view.doCommonError("网络异常",6,"");
                                }
                            }
                 );
