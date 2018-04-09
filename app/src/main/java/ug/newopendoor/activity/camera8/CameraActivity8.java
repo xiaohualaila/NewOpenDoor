@@ -97,7 +97,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 type = myMessage.getType();
                 ticketNum = myMessage.getNum().trim();
                 if(type != 2){
-                     BasicOper.dc_beep(5);
+                  //   BasicOper.dc_beep(5);
                 }
 
                 if(!TextUtils.isEmpty(ticketNum)){
