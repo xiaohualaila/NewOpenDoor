@@ -54,8 +54,8 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private String USB = "";
 
     private boolean uitralight = true;//设置为false m1读卡
-    private boolean idcard = false;
-    private boolean scan = false;
+    private boolean idcard = true;
+    private boolean scan = true;
     private boolean startReadCard = false;
     //串口
     SerialControl ComA;
@@ -69,9 +69,9 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
         rkGpioControlNative.init();
         onOpenConnectPort();
-//        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
-//        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
-//        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", true);
+        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
+        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
+        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", true);
 
         if(scan){
             //串口
@@ -119,12 +119,10 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                 try {
                     //UltralightCard
                     if (uitralight) {
-                        Thread.sleep(TIME);
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
                         Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
-
-                    } else {
                         Thread.sleep(TIME);
+                    } else {
                         //M1
                         model2.bt_download(ConstUtils.BT_DOWNLOAD,"All",0,newPasswordKey,0);
                         if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
@@ -132,24 +130,20 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                             isHaveOne = true;
                             model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 0);
                         }
-                       Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
-
+                           Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
+                        Thread.sleep(TIME);
                     }
 
                     //身份证
                     if (idcard) {
-                        Thread.sleep(TIME);
-                        if(!startReadCard){
-                            startReadCard = true;
                             Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>身份证");
                             com.decard.entitys.IDCard idCardData;
                             //标准协议
                             idCardData = BasicOper.dc_get_i_d_raw_info();
                             if (idCardData != null) {
                                 RxBus.getDefault().post(idCardData);
-                                startReadCard = false;
                             }
-                        }
+                             Thread.sleep(500);
                     }
 
                 } catch (Exception e) {
