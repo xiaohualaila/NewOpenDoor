@@ -206,7 +206,6 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
     private Camera.PictureCallback jpeg = new Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
-            stopPreview();
             filePath = FileUtil.getPath() + File.separator + FileUtil.getTime() + ".jpeg";
             Matrix matrix = new Matrix();
             matrix.reset();
@@ -234,6 +233,7 @@ public class CameraActivity2 extends Activity implements SurfaceHolder.Callback,
                 }
                 bm.recycle();
                 bm1.recycle();
+                stopPreview();
                 upload();
             }
         }
