@@ -15,6 +15,7 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +52,8 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     SurfaceView camera_sf;
     @BindView(R.id.img_server)
     RoundImageView img_server;
-
+    @BindView(R.id.ad)
+    ImageView ad;
     @BindView(R.id.state_tip)
     TextView flag_tag;
     @BindView(R.id.ll_info)
@@ -91,6 +93,17 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
 
+        /**
+         * 从存储文件door中获取广告图片。图片名必须是background.jpg
+         */
+//        String backgroundImg = FileUtil.getPath() + File.separator +"background.jpg";
+//        if (!TextUtils.isEmpty(backgroundImg)) {
+//            RequestOptions options = new RequestOptions()
+//                    .error(R.drawable.ad);
+//            if (!TextUtils.isEmpty(backgroundImg)) {
+//                Glide.with(CameraActivity8.this).load(backgroundImg).apply(options).into(ad);
+//            }
+//        }
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
 
             if (!isReading) {
