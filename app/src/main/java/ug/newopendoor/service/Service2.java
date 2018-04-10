@@ -53,10 +53,10 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private SPUtils settingSp;
     private String USB = "";
 
-    private boolean uitralight = true;//设置为false m1读卡
-    private boolean idcard = true;
-    private boolean scan = true;
-
+    private boolean uitralight = false;//设置为false m1读卡,ture 为uitralight 卡，两个只能使用一个
+    private boolean idcard = true;//设置身份证读卡true为读卡，false 不读身份证
+    private boolean scan = true;//打开二维码，false 关闭二维码
+    String secret = "111111"; //设置m1读卡密码，当使用m1读卡是一定要设置加密秘钥
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
@@ -69,9 +69,6 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
         rkGpioControlNative.init();
         onOpenConnectPort();
-        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
-        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
-        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", true);
 
         if(scan){
             //串口
@@ -90,8 +87,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             model = new UltralightCardModel(this);
         }else {
             //M1
-            String secret = SharedPreferencesUtil.getStringByKey("secret",this);
-            Log.i("sss","secret>> " + secret);
+
             model2 = new M1CardModel(this);
             //以下是后来添加读取M1秘钥部分代码
             newPasswordKey =  ByteUtil.convertStringToHex(secret);//设置秘钥12位  安卓是16进制 电脑是ascii码

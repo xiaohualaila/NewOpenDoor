@@ -94,9 +94,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
-        ip_address = getIntent().getStringExtra("ip");
 
-        Log.i("sss","ip_address   " + ip_address);
         /**
          * 从存储文件door中获取广告图片。图片名必须是background.jpg 如需要把注释取消
          */
@@ -131,7 +129,9 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                             },5000);
                             return;
                         }
-                        //根据项目情况票号是否凑够16位
+                        /**
+                         * 根据项目情况uitralight读卡票号是否凑够16位，如不需要讲以下代码注释
+                         */
                         int n;
                         if(ticketNum.length()<16){
                             n= 16-ticketNum.length();
@@ -140,12 +140,11 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                             }
                         }
                     }
-
-
+///////////////////////////////////////////////////////////////////////注释到此处
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            tv_ticket.setText(ticketNum);
+                            tv_ticket.setText(ticketNum);//显示读到的票号
                         }
                     });
                     isReading = true;
@@ -236,7 +235,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(device_id, ticketNum, file,ip_address);
+        presenter.load(device_id, ticketNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
