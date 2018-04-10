@@ -77,7 +77,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
      * 3 身份证,1 Ultralight,4 M1,2串口
      */
     private String ticketNum ="";
-    private int type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,12 +93,8 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
 
             if (!isReading) {
-                type = myMessage.getType();
                 ticketNum = myMessage.getNum().trim();
-                if(type != 2){
-                     BasicOper.dc_beep(5);
-                }
-
+                BasicOper.dc_beep(5);
                 if(!TextUtils.isEmpty(ticketNum)){
                     runOnUiThread(new Runnable() {
                         @Override
@@ -163,7 +158,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-        Log.i("sss","ticketNum>>>票号：  " + ticketNum +"  type " + type);
+        Log.i("sss","ticketNum>>>票号：  " + ticketNum );
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
             Toast.makeText(this, getResources().getText(R.string.error_net), Toast.LENGTH_LONG).show();
