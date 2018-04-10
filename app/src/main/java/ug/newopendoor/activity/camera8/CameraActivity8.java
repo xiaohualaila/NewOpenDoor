@@ -119,6 +119,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                                 // TODO: 2018/4/10 添加界面要显示的内容和操作
                             }
                         });
+                        // TODO: 2018/4/10 如果数据库查到进行以下操作
                     }else {
                         runOnUiThread(new Runnable() {
                             @Override
