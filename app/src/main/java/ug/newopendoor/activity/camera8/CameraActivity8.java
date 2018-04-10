@@ -71,7 +71,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     private Handler handler = new Handler();
 
     private boolean isReading = false;
-    private String device_id;
+
 
     /**
      * 3 身份证,1 Ultralight,4 M1,2串口
@@ -89,7 +89,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         holder = camera_sf.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        device_id = MyUtil.getDeviceID(this);//获取设备号
+
 
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
 
@@ -171,7 +171,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(device_id, ticketNum, file);
+        presenter.load(ticketNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
