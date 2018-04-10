@@ -155,11 +155,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
      * 上传信息
      */
     private void upload() {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            uploadFinish();
-            return;
-        }
         Log.i("sss","ticketNum>>>票号：  " + ticketNum +"  ticketType " + ticketType );
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
@@ -393,10 +388,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        File file = new File(filePath);
-                        if (file.exists()) {
-                            file.delete();
-                        }
                         //变灯
                         if (isLight) {
                             rkGpioControlNative.ControlGpio(20, 1);
