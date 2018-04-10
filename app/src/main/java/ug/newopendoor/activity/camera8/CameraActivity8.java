@@ -88,7 +88,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
      */
     private int type;
     private String ticketNum ="";
-    private String ip_address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +100,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
-         ip_address = getIntent().getStringExtra("ip");
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
             if (!isReading) {
                 type = myMessage.getType();
@@ -203,7 +201,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-        Log.i("sss","ticketNum>>>票号：  " + ticketNum +" type == " + type +" ip_address== " + ip_address);
+        Log.i("sss","ticketNum>>>票号：  " + ticketNum +" type == " + type );
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
             Toast.makeText(this, getResources().getText(R.string.error_net), Toast.LENGTH_LONG).show();
@@ -211,7 +209,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(device_id,type,ticketNum, file,ip_address);
+        presenter.load(device_id,type,ticketNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {

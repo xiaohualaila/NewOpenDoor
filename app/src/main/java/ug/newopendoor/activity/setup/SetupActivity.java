@@ -167,12 +167,12 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
 
 
     private void toActivity() {
-        ip_context.getText().toString().trim();
-        String  address = ip_context.getText().toString().trim();
-        if(TextUtils.isEmpty(address)){
-            Toast.makeText(this,"请设置IP",Toast.LENGTH_LONG).show();
-            return;
-        }
+//        ip_context.getText().toString().trim();
+//        String  address = ip_context.getText().toString().trim();
+//        if(TextUtils.isEmpty(address)){
+//            Toast.makeText(this,"请设置IP",Toast.LENGTH_LONG).show();
+//            return;
+//        }
         String secret = ct_secret.getText().toString().trim();
         if(!isUitralight){
             if(TextUtils.isEmpty(secret)){
@@ -185,7 +185,7 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
         SharedPreferencesUtil.putBoolean(this,"scan", isScan);
         SharedPreferencesUtil.putBoolean(this,"idcard", isIdcard);
         Intent intent = new Intent(this, CameraActivity8.class);
-        intent.putExtra("ip",address);
+        //intent.putExtra("ip",address);
         startActivity(intent);
         finish();
     }
