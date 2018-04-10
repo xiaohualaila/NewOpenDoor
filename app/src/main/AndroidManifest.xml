@@ -30,21 +30,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.camera.CameraActivity">
 
-        </activity>
-        <activity android:name=".activity.camera2.CameraActivity2">
-
-        </activity>
-        <activity android:name=".activity.camera5.CameraActivity5">
-
-        </activity>
 
         <activity android:name=".activity.camera8.CameraActivity8">
-
-        </activity>
-        <activity android:name=".activity.MainActivity" android:launchMode="singleTask">
-
 
         </activity>
         <activity android:name=".activity.setup.SetupActivity">
@@ -55,18 +43,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.camera3.FragmentActivity">
 
-        </activity>
 
-        <activity android:name=".activity.camera4.FragmentActivity2" >
-
-        </activity>
-        <service android:name=".service.CommonService"/>
-        <service android:name=".service.ScreenService"/>
-        <service android:name=".service.CommonThreeService"/>
         <service android:name=".service.Service2"/>
-        <service android:name=".service.ServiceCeShi"/>
+
         <receiver android:name=".broadcastReceiver.BootBroadcastReceiver"
             android:enabled="true"
             android:exported="true"

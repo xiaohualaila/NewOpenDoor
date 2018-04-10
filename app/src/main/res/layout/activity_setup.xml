@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="5dp"
-            android:visibility="gone"
+
             android:orientation="horizontal">
             <TextView
                 android:layout_width="100dp"
@@ -44,7 +44,6 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
-            android:visibility="gone"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="100dp"
@@ -68,7 +67,6 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
-            android:visibility="gone"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="100dp"
@@ -141,7 +139,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:visibility="gone"
             android:background="@color/gray">
             <TextView
                 android:id="@+id/scan_text"
@@ -166,7 +163,6 @@
             android:id="@+id/m1_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginTop="20dp"
             android:background="@color/gray">
             <TextView
@@ -208,7 +204,6 @@
             android:layout_marginBottom="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:background="@color/gray">
             <TextView
                 android:id="@+id/read_idcard_text"
