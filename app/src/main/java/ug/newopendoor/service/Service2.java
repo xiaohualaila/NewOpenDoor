@@ -47,7 +47,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private SPUtils settingSp;
     private String USB = "";
 
-    private boolean uitralight = false;//设置为false m1读卡,ture 为uitralight 卡，两个只能使用一个
+    private boolean uitralight = true;//设置为false m1读卡,ture 为uitralight 卡，两个只能使用一个
     private boolean idcard = true;//设置身份证读卡true为读卡，false 不读身份证
     private boolean scan = true;//打开二维码，false 关闭二维码
     String secret = "111111"; //设置m1读卡密码，当使用m1读卡是一定要设置加密秘钥，默认测试写成六个1
