@@ -38,6 +38,7 @@ import ug.newopendoor.service.Service2;
 import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.MyUtil;
 import ug.newopendoor.util.RoundImageView;
+import ug.newopendoor.util.SharedPreferencesUtil;
 import ug.newopendoor.util.SoundPoolUtil;
 import ug.newopendoor.util.Ticket;
 
@@ -80,6 +81,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
      */
     private String ticketNum ="";
     private int type;
+    private String ip_address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,9 +94,11 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         device_id = MyUtil.getDeviceID(this);//获取设备号
+        ip_address = getIntent().getStringExtra("ip");
 
+        Log.i("sss","ip_address   " + ip_address);
         /**
-         * 从存储文件door中获取广告图片。图片名必须是background.jpg
+         * 从存储文件door中获取广告图片。图片名必须是background.jpg 如需要把注释取消
          */
 //        String backgroundImg = FileUtil.getPath() + File.separator +"background.jpg";
 //        if (!TextUtils.isEmpty(backgroundImg)) {
@@ -104,13 +108,15 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
 //                Glide.with(CameraActivity8.this).load(backgroundImg).apply(options).into(ad);
 //            }
 //        }
+
+
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
 
             if (!isReading) {
                 type = myMessage.getType();
                 ticketNum = myMessage.getNum().trim();
                 if(type != 2){
-                  //   BasicOper.dc_beep(5);
+                     BasicOper.dc_beep(5);
                 }
 
                 if(!TextUtils.isEmpty(ticketNum)){
@@ -148,12 +154,13 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             }
         });
 
-        //读取到的身份证
+        /**
+         *    读取到的身份证信息返回
+         */
+
         RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
             BasicOper.dc_beep(5);
             if (!isReading) {
-                isReading = true;
-                type = 3;
                 if(idCard != null){
                     runOnUiThread(new Runnable() {
                         @Override
@@ -164,7 +171,9 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                         }
                     });
                 }
+                type = 3;
                 ticketNum = idCard.getId().trim();
+                isReading = true;
                 takePhoto();
             }
         });
@@ -227,7 +236,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(device_id, ticketNum, file);
+        presenter.load(device_id, ticketNum, file,ip_address);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {

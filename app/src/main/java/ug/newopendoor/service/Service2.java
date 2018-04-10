@@ -56,7 +56,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private boolean uitralight = true;//设置为false m1读卡
     private boolean idcard = true;
     private boolean scan = true;
-    private boolean startReadCard = false;
+
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;

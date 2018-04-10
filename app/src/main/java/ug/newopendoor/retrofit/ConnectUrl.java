@@ -5,9 +5,10 @@ package ug.newopendoor.retrofit;
  */
 public class ConnectUrl {
 
-  // public static final String URL = "http://192.168.0.62:8081/ticket_checking/Api/api39/";//本地
+    /**
+     * 请求服务器的接口，端口在此处修改
+     */
    public static final String URL = "http://116.62.57.42/ticket_checking/Api/api39/";
- //   public static final String URL = "http://47.98.49.11:8081/Api/api30/";
-    public static final String URL_IMG = "";
+
 
 }
