@@ -56,7 +56,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private boolean uitralight = false;//设置为false m1读卡,ture 为uitralight 卡，两个只能使用一个
     private boolean idcard = true;//设置身份证读卡true为读卡，false 不读身份证
     private boolean scan = true;//打开二维码，false 关闭二维码
-    String secret = "111111"; //设置m1读卡密码，当使用m1读卡是一定要设置加密秘钥
+    String secret = "111111"; //设置m1读卡密码，当使用m1读卡是一定要设置加密秘钥，默认测试写成六个1
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
@@ -117,7 +117,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                     if (uitralight) {
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
                         Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
-                        Thread.sleep(TIME);
+                        Thread.sleep(TIME);//修改循环读卡时间
                     } else {
                         //M1
                         model2.bt_download(ConstUtils.BT_DOWNLOAD,"All",0,newPasswordKey,0);
@@ -127,7 +127,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                             model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 0);
                         }
                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
-                        Thread.sleep(TIME);
+                        Thread.sleep(TIME);//修改循环读卡时间
                     }
 
                     //身份证
@@ -139,7 +139,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                             if (idCardData != null) {
                                 RxBus.getDefault().post(idCardData);
                             }
-                             Thread.sleep(500);
+                             Thread.sleep(500);//修改循环读卡时间
                     }
 
                 } catch (Exception e) {
@@ -200,7 +200,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
 
     }
 
-    //打开串口
+    //打开串口（二维码）
     public void openErWeiMa() {
         ComA.setPort("/dev/ttyS4");
         ComA.setBaudRate("115200");
@@ -218,7 +218,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             Log.i("xxx", "InvalidParameterException" + e.toString());
         }
     }
-
+    //关闭二维码
     public void closeErWeiMa() {
         CloseComPort(ComA);
     }
@@ -244,6 +244,8 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         BasicOper.dc_exit();
     }
 
+
+    //以下是二维码部门代码
     private class SerialControl extends SerialHelper {
 
         public SerialControl() {
