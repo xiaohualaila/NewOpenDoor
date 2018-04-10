@@ -18,7 +18,6 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(ACTION)) {
             Intent in = new Intent(context, CameraActivity8.class);
-            // Intent in = new Intent(context, FragmentActivity.class);
             in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(in);
         }
