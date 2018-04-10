@@ -42,7 +42,7 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), newFile);
         builder.addFormDataPart("photoImgFiles", newFile.getName(), requestBody);
-        Api.getBaseApiWithOutFormat(ConnectUrl.URL)
+        Api.getBaseApiWithOutFormat(ip_address)
                 .uploadPhotoBase(device_id, ticketNum, type, builder.build().parts())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

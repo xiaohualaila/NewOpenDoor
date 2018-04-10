@@ -109,33 +109,25 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 if (type != 2) {
                     BasicOper.dc_beep(5);
                 }
-                if(type == 1){//芯片
-                    if(!TextUtils.isEmpty(ticketNum)){
-                        WhiteList whiteList = GetDataUtil.getXinDataBooean(ticketNum);
-                        if(whiteList != null){
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    // TODO: 2018/4/10 添加界面要显示的内容和操作
-                                }
-                            });
-                        }else {
-                                isReading = true;
-                                takePhoto();
-                        }
-                    }
-                }
-                if(type == 2){//二维码
-                    if(!TextUtils.isEmpty(ticketNum)){
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    // TODO: 2018/4/10 添加要显示的内容 例如票号
-                                }
-                            });
-                            isReading = true;
-                            takePhoto();
 
+                if(!TextUtils.isEmpty(ticketNum)){
+                    WhiteList whiteList = GetDataUtil.getXinDataBooean(ticketNum);
+                    if(whiteList != null){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // TODO: 2018/4/10 添加界面要显示的内容和操作
+                            }
+                        });
+                    }else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // TODO: 2018/4/10 添加要显示的内容 例如票号
+                            }
+                        });
+                        isReading = true;
+                        takePhoto();
                     }
                 }
             }
