@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -50,13 +51,15 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
     ClearEditTextWhite ct_duankou;
     @BindView(R.id.jieko)
     ClearEditTextWhite ct_jieko;
+    @BindView(R.id.m1_secret)
+    LinearLayout m1_secret;
     @BindView(R.id.ct_secret)
     ClearEditTextWhite ct_secret;
     @BindView(R.id.ip_context)
     TextView ip_context;
-    private boolean isUitralight = false;
+    private boolean isUitralight = true;
     private boolean isScan = true;
-    private boolean isIdcard = false;
+    private boolean isIdcard = true;
     private String ip_address = "";
     private String duankou = "";
     private String jieko = "";
@@ -69,7 +72,7 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
         ButterKnife.bind(this);
-
+        m1_secret.setVisibility(View.GONE);
         // 添加监听
         idcard_switch.setOnCheckedChangeListener(this);
         scan_switch.setOnCheckedChangeListener(this);
@@ -130,16 +133,18 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
         switch (v.getId()) {
             case R.id.rb_uitralight:
                 isUitralight = true;
+                m1_secret.setVisibility(View.GONE);
                 break;
             case R.id.rb_m1:
                 isUitralight = false;
+                m1_secret.setVisibility(View.VISIBLE);
                 break;
             case R.id.finish:
-                if(isExcelSuccess){
+               // if(isExcelSuccess){
                     toActivity();
-                }else {
-                    Toast.makeText(this,"请先点击加载Excel！",Toast.LENGTH_LONG).show();
-                }
+//                }else {
+//                    Toast.makeText(this,"请先点击加载Excel！",Toast.LENGTH_LONG).show();
+//                }
                 break;
             case R.id.add_excel:
                 isExcelSuccess = false;
