@@ -164,23 +164,23 @@ public class SetupActivity extends AppCompatActivity implements CompoundButton.O
     private void toActivity() {
         ip_context.getText().toString().trim();
         String  address = ip_context.getText().toString().trim();
-//        if(TextUtils.isEmpty(address)){
-//            Toast.makeText(this,"请设置IP",Toast.LENGTH_LONG).show();
-//            return;
-//        }
-//        String secret = ct_secret.getText().toString().trim();
-//        if(!isUitralight){
-//            if(TextUtils.isEmpty(secret)){
-//                Toast.makeText(this,"M1秘钥不能为空！",Toast.LENGTH_LONG).show();
-//                return;
-//            }
-//        }
-        SharedPreferencesUtil.save("ip_address",address,this);
-       // SharedPreferencesUtil.save("secret",secret,this);
+        if(TextUtils.isEmpty(address)){
+            Toast.makeText(this,"请设置IP",Toast.LENGTH_LONG).show();
+            return;
+        }
+        String secret = ct_secret.getText().toString().trim();
+        if(!isUitralight){
+            if(TextUtils.isEmpty(secret)){
+                Toast.makeText(this,"M1秘钥不能为空！",Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+        SharedPreferencesUtil.save("secret",secret,this);
         SharedPreferencesUtil.putBoolean(this,"uitralight", isUitralight);
         SharedPreferencesUtil.putBoolean(this,"scan", isScan);
         SharedPreferencesUtil.putBoolean(this,"idcard", isIdcard);
         Intent intent = new Intent(this, CameraActivity8.class);
+        intent.putExtra("ip",address);
         startActivity(intent);
         finish();
     }
