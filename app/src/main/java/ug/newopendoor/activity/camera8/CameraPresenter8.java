@@ -56,7 +56,7 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
                                @Override
                                public void call(Throwable throwable) {
                                    Log.i("sss",throwable.toString());
-                                   view.doCommonError("网络异常",8,"");
+                                   view.doCommonError("网络异常",6,"");
                                }
                            }
                 );
@@ -74,11 +74,11 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
                 } else if (result.equals("5")) {
                     view.doCommonError("人脸验证失败",1,imageStr);
                 }  else if (result.equals("6")) {
-                    view.doCommonError("人脸检测失败",7,imageStr);
+                    view.doCommonError("人脸检测失败",1,imageStr);
                 } else if(result.equals("7")){
-                    view.doCommonError("入场时间错误",6,imageStr);
+                    view.doCommonError("入场时间错误",5,imageStr);
                 } else if(result.equals("4")){
-                    view.doCommonError("入场次数频繁",5,imageStr);
+                    view.doCommonError("入场次数频繁",7,imageStr);
                 } else {
                     view.doCommonError("无效票卡请重试",3,imageStr);
                 }
