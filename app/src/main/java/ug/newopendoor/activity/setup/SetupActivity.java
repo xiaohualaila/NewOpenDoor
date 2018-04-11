@@ -45,10 +45,16 @@ public class SetupActivity extends AppCompatActivity{
             Toast.makeText(this,"入场口编号不能为空！",Toast.LENGTH_LONG).show();
             return;
         }
-        SharedPreferencesUtil.save("no",no,this);
-        Intent intent = new Intent(this, CameraActivity8.class);
-        startActivity(intent);
-        finish();
+        if(no.equals("1")||no.equals("0")||no.equals("2")){
+            SharedPreferencesUtil.save("no",no,this);
+            Intent intent = new Intent(this, CameraActivity8.class);
+            startActivity(intent);
+            finish();
+        }else {
+            Toast.makeText(this,"请输入正确的入场口编号0,1,2",Toast.LENGTH_LONG).show();
+            return;
+        }
+
     }
 
 }
