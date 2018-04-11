@@ -3,15 +3,8 @@ package ug.newopendoor.activity.setup;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,13 +14,11 @@ import ug.newopendoor.activity.camera8.CameraActivity8;
 import ug.newopendoor.util.ClearEditTextWhite;
 import ug.newopendoor.util.SharedPreferencesUtil;
 
-
 /**
  * Created by Administrator on 2017/12/11.
  */
 
 public class SetupActivity extends AppCompatActivity{
-
     @BindView(R.id.ct_no)
     ClearEditTextWhite ct_no;
 
@@ -49,14 +40,13 @@ public class SetupActivity extends AppCompatActivity{
     }
 
     private void toActivity() {
-
         String  no = ct_no.getText().toString().trim();
         if(TextUtils.isEmpty(no)){
             Toast.makeText(this,"入场口编号不能为空！",Toast.LENGTH_LONG).show();
             return;
         }
+        SharedPreferencesUtil.save("no",no,this);
         Intent intent = new Intent(this, CameraActivity8.class);
-        intent.putExtra("no",no);
         startActivity(intent);
         finish();
     }

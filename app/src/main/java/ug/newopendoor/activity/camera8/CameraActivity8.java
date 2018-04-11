@@ -37,6 +37,7 @@ import ug.newopendoor.service.Service2;
 import ug.newopendoor.util.FileUtil;
 import ug.newopendoor.util.MyUtil;
 import ug.newopendoor.util.RoundImageView;
+import ug.newopendoor.util.SharedPreferencesUtil;
 import ug.newopendoor.util.SoundPoolUtil;
 import ug.newopendoor.util.Ticket;
 
@@ -87,8 +88,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         holder = camera_sf.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        no = getIntent().getStringExtra("no");
-
+        no = SharedPreferencesUtil.getStringByKey("no",this);
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
 
             if (!isReading) {
