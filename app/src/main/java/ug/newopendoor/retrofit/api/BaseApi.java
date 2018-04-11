@@ -18,7 +18,7 @@ public interface BaseApi {
 
     @POST("Api.php")
     Observable<JSONObject> uploadPhotoBase(
-            @Query("deviceid") int deviceid,
+            @Query("deviceid") String deviceid,
             @Query("qrCodeId") String ticketid
     );
 

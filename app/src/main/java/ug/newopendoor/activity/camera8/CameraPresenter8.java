@@ -33,7 +33,7 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
     }
 
     @Override
-    public void load(int ticket,String ticketNum) {
+    public void load(String ticket,String ticketNum) {
         Api.getBaseApiWithOutFormat(ConnectUrl.URL)
                 .uploadPhotoBase(ticket,ticketNum)
                 .subscribeOn(Schedulers.io())
