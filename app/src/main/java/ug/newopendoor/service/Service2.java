@@ -33,7 +33,7 @@ import ug.newopendoor.util.Ticket;
 
 
 public class Service2 extends Service implements UltralightCardListener, M1CardListener {
-    private final int TIME = 1000;
+    private final int TIME = 800;
     //身份证
     private Thread thread;
     private boolean isAuto = true;
@@ -48,9 +48,9 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private String USB = "";
 
     private boolean uitralight = false;//设置为false m1读卡,ture 为uitralight 卡，两个只能使用一个
-    private boolean idcard = true;//设置身份证读卡true为读卡，false 不读身份证
+    private boolean idcard = false;//设置身份证读卡true为读卡，false 不读身份证
     private boolean scan = true;//打开二维码，false 关闭二维码
-    String secret = "111111"; //设置m1读卡密码，当使用m1读卡是一定要设置加密秘钥，默认测试写成六个1
+    String secret = "111111"; //设置m1读卡密码
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;

@@ -60,20 +60,16 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     LinearLayout ll_info;
     @BindView(R.id.tv_ticket)
     TextView tv_ticket;
-
     private Camera camera;
     private String filePath;
     private SurfaceHolder holder;
     private boolean isFrontCamera = true;
     private int width = 640;
     private int height = 480;
-
     private boolean isOpenDoor = false;
     private boolean isLight = false;
     private Handler handler = new Handler();
-
     private boolean isReading = false;
-    private String device_id;
 
     /**
      * 3 身份证,1 Ultralight,4 M1,2串口
@@ -92,7 +88,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         holder = camera_sf.getHolder();
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        device_id = MyUtil.getDeviceID(this);//获取设备号
 
         /**
          * 从存储文件door中获取广告图片。图片名必须是background.jpg 如需要把注释取消
@@ -117,28 +112,29 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 }
 
                 if(!TextUtils.isEmpty(ticketNum)){
-                    if(type ==1){
-                        if (ticketNum.equals("0001|操作失败") || ticketNum.equals("FFFF|操作失败") || ticketNum.equals("1001|设备未打开")) {
-                            stopService(new Intent(this,Service2.class));
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    startService(new Intent(CameraActivity8.this, Service2.class));
-                                }
-                            },5000);
-                            return;
-                        }
-                        /**
-                         * 根据项目情况uitralight读卡票号是否凑够16位，如不需要讲以下代码注释
-                         */
-                        int n;
-                        if(ticketNum.length()<16){
-                            n= 16-ticketNum.length();
-                            for (int i = 0;i<n;i++){
-                                ticketNum = ticketNum + "0";
-                            }
-                        }
-                    }
+//                    if(type ==1){
+//                        if (ticketNum.equals("0001|操作失败") || ticketNum.equals("FFFF|操作失败") || ticketNum.equals("1001|设备未打开")) {
+//                            stopService(new Intent(this,Service2.class));
+//                            handler.postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    startService(new Intent(CameraActivity8.this, Service2.class));
+//                                }
+//                            },5000);
+//                            return;
+//                        }
+//                        /**
+//                         * 根据项目情况uitralight读卡票号是否凑够16位，如不需要讲以下代码注释
+//                         */
+//                        int n;
+//                        if(ticketNum.length()<16){
+//                            n= 16-ticketNum.length();
+//                            for (int i = 0;i<n;i++){
+//                                ticketNum = ticketNum + "0";
+//                            }
+//                        }
+//                    }
+
 ///////////////////////////////////////////////////////////////////////注释到此处
                     runOnUiThread(new Runnable() {
                         @Override
@@ -156,25 +152,25 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
          *    读取到的身份证信息返回
          */
 
-        RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
-            BasicOper.dc_beep(5);
-            if (!isReading) {
-                if(idCard != null){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                         //   tv_name.setText(idCard.getName());
-                            //   tv_idcard.setText(idCard.getId());
-                         //   img_server.setImageBitmap(ConvertUtils.bytes2Bitmap(ConvertUtils.hexString2Bytes(idCard.getPhotoDataHexStr())));
-                        }
-                    });
-                }
-                type = 3;
-                ticketNum = idCard.getId().trim();
-                isReading = true;
-                takePhoto();
-            }
-        });
+//        RxBus.getDefault().toObserverable(IDCard.class).subscribe(idCard -> {
+//            BasicOper.dc_beep(5);
+//            if (!isReading) {
+//                if(idCard != null){
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                         //   tv_name.setText(idCard.getName());
+//                            //   tv_idcard.setText(idCard.getId());
+//                         //   img_server.setImageBitmap(ConvertUtils.bytes2Bitmap(ConvertUtils.hexString2Bytes(idCard.getPhotoDataHexStr())));
+//                        }
+//                    });
+//                }
+//                type = 3;
+//                ticketNum = idCard.getId().trim();
+//                isReading = true;
+//                takePhoto();
+//            }
+//        });
     }
 
     private void takePhoto() {
@@ -234,7 +230,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(device_id, ticketNum, file);
+        presenter.load(ticketNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
