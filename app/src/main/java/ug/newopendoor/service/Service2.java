@@ -69,9 +69,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         USB = settingSp.getString(getString(R.string.usbKey), getString(R.string.androidUsb));
         rkGpioControlNative.init();
         onOpenConnectPort();
-//        uitralight = SharedPreferencesUtil.getBoolean(this,"uitralight", true);
-//        scan = SharedPreferencesUtil.getBoolean(this,"scan", true);
-//        idcard =  SharedPreferencesUtil.getBoolean(this,"idcard", true);
+
 
         if(scan){
             //串口
@@ -91,7 +89,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         }else {
             //M1
            // String secret = SharedPreferencesUtil.getStringByKey("secret",this);
-            String secret = "111111";
+            String secret = "IGS420";//数字娱乐加密秘钥
             Log.i("sss","secret>> " + secret);
             model2 = new M1CardModel(this);
             //以下是后来添加读取M1秘钥部分代码
