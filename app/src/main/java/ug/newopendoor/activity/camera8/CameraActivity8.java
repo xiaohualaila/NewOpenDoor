@@ -81,7 +81,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     private String ticketNum ="";
     private int type;
     private String ip_address;
-
+    private int count = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -226,7 +226,8 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-        Log.i("sss","ticketNum>>>票号：  " + ticketNum +"  type " + type);
+         count ++;
+        Log.i("sss","ticketNum>>>票号：  " + ticketNum +"  type " + type + " 第" + count +"次");
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
             Toast.makeText(this, getResources().getText(R.string.error_net), Toast.LENGTH_LONG).show();
@@ -472,7 +473,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                         ticketNum = "";
                     }
                 }).start();
-                Log.i("sss","isReading = false>>>>>>>>>>>>>>");
             }
         }, 2500);
 
