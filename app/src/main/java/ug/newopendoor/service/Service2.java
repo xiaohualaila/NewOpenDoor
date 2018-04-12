@@ -90,7 +90,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             model = new UltralightCardModel(this);
         }else {
             //M1
-            String secret = "111111";
+            String secret = "IGS420";
             Log.i("sss","secret>> " + secret);
             model2 = new M1CardModel(this);
             //以下是后来添加读取M1秘钥部分代码
