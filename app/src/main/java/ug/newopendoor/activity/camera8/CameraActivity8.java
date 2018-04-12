@@ -122,51 +122,11 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
 
     }
 
-    private void takePhoto() {
-        camera.takePicture(null, null, jpeg);
-    }
-
-    private Camera.PictureCallback jpeg = new Camera.PictureCallback() {
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-            filePath = FileUtil.getPath() + File.separator + FileUtil.getTime() + ".jpeg";
-            Matrix matrix = new Matrix();
-            matrix.reset();
-            matrix.postRotate(0);
-            BitmapFactory.Options factory = new BitmapFactory.Options();
-            factory = setOptions(factory);
-            Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length, factory);
-            Bitmap bm1 = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
-            BufferedOutputStream bos = null;
-            try {
-                bos = new BufferedOutputStream(new FileOutputStream(new File(filePath)));
-                bm1.compress(Bitmap.CompressFormat.JPEG, 30, bos);
-                bos.flush();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (bos != null) {
-                    try {
-                        bos.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                bm.recycle();
-                bm1.recycle();
-                stopPreview();
-               // upload();
-            }
-        }
-    };
-
     /**
      * 上传信息
      */
     private void upload() {
-        Log.i("sss", "  ticketType " + no +"  ticketNum>>>票号：  " +ticketNum );
+        Log.i("sss", "  projectId " + projectId +"  readNum>>：  " +readNum + "闸机入口类型 " + no );
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
             Toast.makeText(this, getResources().getText(R.string.error_net), Toast.LENGTH_LONG).show();
@@ -174,7 +134,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(no,ticketNum);
+        presenter.load(projectId,"",readNum,no);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
@@ -408,7 +368,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                         ticketNum = "";
                     }
                 }).start();
-                Log.i("sss","isReading = false>>>>>>>>>>>>>>");
             }
         }, 2500);
 

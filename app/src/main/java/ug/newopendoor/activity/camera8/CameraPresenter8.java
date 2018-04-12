@@ -33,9 +33,9 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
     }
 
     @Override
-    public void load(String ticket,String ticketNum) {
+    public void load(int projectId, String chipId, String qrCodeId, String doorType) {
         Api.getBaseApiWithOutFormat(ConnectUrl.URL)
-                .uploadPhotoBase(ticket,ticketNum)
+                .uploadPhotoBase(projectId,chipId,qrCodeId,doorType)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<JSONObject>() {
@@ -85,4 +85,8 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
             view.doCommonError("无效票卡请重试",3,"");
         }
     }
+
+
+
+
 }
