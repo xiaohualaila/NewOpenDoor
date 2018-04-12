@@ -39,7 +39,7 @@ import ug.newopendoor.util.Ticket;
 
 
 public class Service2 extends Service implements UltralightCardListener, M1CardListener {
-    private final int TIME = 800;
+    private final int TIME = 300;
     //身份证
     private Thread thread;
     private boolean isAuto = true;
@@ -89,7 +89,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         }else {
             //M1
            // String secret = SharedPreferencesUtil.getStringByKey("secret",this);
-            String secret = "IGS420";//数字娱乐加密秘钥
+            String secret = "111111";//数字娱乐加密秘钥
             Log.i("sss","secret>> " + secret);
             model2 = new M1CardModel(this);
             //以下是后来添加读取M1秘钥部分代码
