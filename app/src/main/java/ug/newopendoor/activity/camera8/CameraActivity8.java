@@ -22,7 +22,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
-import com.decard.entitys.IDCard;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -404,7 +403,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                         ticketNum = "";
                     }
                 }).start();
-                Log.i("sss","isReading = false>>>>>>>>>>>>>>");
             }
         }, 2500);
 
