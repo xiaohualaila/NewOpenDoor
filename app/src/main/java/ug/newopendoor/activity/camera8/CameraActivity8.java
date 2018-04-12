@@ -77,7 +77,8 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     private String ticketNum ="";
 
     private String no;//进 1，出 0，能进能出 2
-
+    private String readNum;
+    private int projectId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,9 +93,20 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
 
             if (!isReading) {
-                ticketNum = myMessage.getNum().trim();
                 BasicOper.dc_beep(5);
-                if(!TextUtils.isEmpty(ticketNum)){
+                readNum = myMessage.getNum().trim();
+                if(!TextUtils.isEmpty(readNum)){
+//                   readNum = "123456789!451254";
+                    int b =  readNum.indexOf("@");
+                    if(b == -1){
+                        b =  readNum.indexOf("!");
+                    }
+                    if(b == -1){
+                        return;
+                    }
+                    String str_project = readNum.substring(0,b);
+                    projectId = Integer.parseInt(str_project);
+                    ticketNum = readNum.substring(b+1,readNum.length());
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -105,7 +117,9 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                     upload();
                 }
             }
+
         });
+
     }
 
     private void takePhoto() {
