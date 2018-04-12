@@ -165,7 +165,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(ticketNum, file);
+        presenter.load(1,ticketNum,"", file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
