@@ -191,7 +191,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             Ticket ticket = new Ticket(4, num);
             RxBus.getDefault().post(ticket);
             count ++;
-            Log.i("sss","ticketNum>>>票号：  " + ticketNum + "第" + count +"次");
+            Log.i("sss","ticketNum>>>票号：  " + num + "第" + count +"次");
             b = false;
         }
 
