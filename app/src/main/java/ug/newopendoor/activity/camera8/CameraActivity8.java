@@ -100,14 +100,14 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         /**
          * 从存储文件door中获取广告图片。图片名必须是background.jpg 如需要把注释取消
          */
-//        String backgroundImg = FileUtil.getPath() + File.separator +"background.jpg";
-//        if (!TextUtils.isEmpty(backgroundImg)) {
-//            RequestOptions options = new RequestOptions()
-//                    .error(R.drawable.ad);
-//            if (!TextUtils.isEmpty(backgroundImg)) {
-//                Glide.with(CameraActivity8.this).load(backgroundImg).apply(options).into(ad);
-//            }
-//        }
+        String backgroundImg = FileUtil.getPath() + File.separator +"background.jpg";
+        if (!TextUtils.isEmpty(backgroundImg)) {
+            RequestOptions options = new RequestOptions()
+                    .error(R.drawable.ad);
+            if (!TextUtils.isEmpty(backgroundImg)) {
+                Glide.with(CameraActivity8.this).load(backgroundImg).apply(options).into(ad);
+            }
+        }
 
 
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
