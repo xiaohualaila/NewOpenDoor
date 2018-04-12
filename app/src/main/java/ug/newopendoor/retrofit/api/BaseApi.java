@@ -19,7 +19,9 @@ public interface BaseApi {
     @POST("index.php")
     @Multipart
     Observable<JSONObject> uploadPhotoBase(
-            @Query("qrCodeId") String ticketid,
+            @Query("projectId") int projectId,//项目ID
+            @Query("chipId") String ticketid,//芯片号码
+            @Query("qrCodeId") String qrCodeId,// 二维码号
             @Part List<MultipartBody.Part> file
     );
 

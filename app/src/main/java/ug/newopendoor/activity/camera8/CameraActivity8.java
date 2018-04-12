@@ -70,12 +70,10 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     private Handler handler = new Handler();
 
     private boolean isReading = false;
-
-
-    /**
-     * 3 身份证,1 Ultralight,4 M1,2串口
-     */
+    private int projectId;
     private String ticketNum ="";
+    private String readNum;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,9 +90,20 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
 
             if (!isReading) {
-                ticketNum = myMessage.getNum().trim();
                 BasicOper.dc_beep(5);
-                if(!TextUtils.isEmpty(ticketNum)){
+                readNum = myMessage.getNum().trim();
+                if(!TextUtils.isEmpty(readNum)){
+//                   readNum = "123456789!451254";
+                     int b =  readNum.indexOf("@");
+                     if(b == -1){
+                        b =  readNum.indexOf("!");
+                     }
+                     if(b == -1){
+                        return;
+                     }
+                     String str_project = readNum.substring(0,b);
+                     projectId = Integer.parseInt(str_project);
+                     ticketNum = readNum.substring(b+1,readNum.length());
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -157,7 +166,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-        Log.i("sss","ticketNum>>>票号：  " + ticketNum );
+        Log.i("sss","项目projectId >>" + projectId + "  ticketNum>>>票号：" + ticketNum + "  readNum>>：" + readNum );
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
             Toast.makeText(this, getResources().getText(R.string.error_net), Toast.LENGTH_LONG).show();
@@ -165,7 +174,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(1,ticketNum,"", file);
+        presenter.load(projectId,"",readNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
