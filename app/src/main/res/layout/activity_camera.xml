@@ -84,8 +84,8 @@
         android:text="2018成都数字娱乐博览会欢迎您"
         android:textSize="38sp"
         android:textStyle="bold"
-
+        android:textColor="@color/ziti"
         android:layout_marginBottom="10dp"
         />
-    <!--android:textColor="@color/ziti"-->
+
 </RelativeLayout>

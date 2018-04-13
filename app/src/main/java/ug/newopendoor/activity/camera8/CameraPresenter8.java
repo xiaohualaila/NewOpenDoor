@@ -29,9 +29,9 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
     }
 
     @Override
-    public void load(int projectId, String chipId, String qrCodeId, String doorType) {
+    public void load(int projectId, String ticketType, String ticketId, String doorType) {
         Api.getBaseApiWithOutFormat(ConnectUrl.URL)
-                .uploadPhotoBase(projectId,chipId,qrCodeId,doorType)
+                .uploadPhotoBase(projectId,ticketType,ticketId,doorType)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<JSONObject>() {

@@ -17,6 +17,6 @@ public interface CameraContract8 {
     }
 
     interface Presenter extends IBasePresenter {
-        void load(int projectId,String chipId,String qrCodeId,String doorType);
+        void load(int projectId,String ticketType,String ticketId,String doorType);
     }
 }
