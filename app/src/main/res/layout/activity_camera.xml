@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="五粮液中心欢迎您"
+        android:text="五 粮 液 中 心 欢 迎 您"
         android:textSize="38sp"
         android:textStyle="bold"
         android:textColor="@color/ziti"
