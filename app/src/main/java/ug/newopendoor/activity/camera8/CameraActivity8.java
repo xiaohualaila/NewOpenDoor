@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,7 +53,10 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     LinearLayout ll_info;
     @BindView(R.id.tv_ticket)
     TextView tv_ticket;
-
+    @BindView(R.id.ticket_name)
+    TextView ticket_name;
+    @BindView(R.id.iv_bottom)
+    TextView iv_bottom;
     private Camera camera;
     private String filePath;
     private SurfaceHolder holder;
@@ -83,6 +87,10 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         holder.addCallback(this);
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         no = SharedPreferencesUtil.getStringByKey("no",this);
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "simkai.ttf");
+        ticket_name.setTypeface(typeface);
+        iv_bottom.setTypeface(typeface);
+
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
 
             if (!isReading) {
