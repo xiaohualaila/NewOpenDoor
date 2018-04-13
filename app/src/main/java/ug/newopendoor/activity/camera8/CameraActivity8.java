@@ -86,7 +86,8 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     private String ticketNum ="";
     private int type;
     private String ip_address;
-
+    private String chipId;//芯片
+    private String qrCodeId;//二维码
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,33 +120,40 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             if (!isReading) {
                 type = myMessage.getType();
                 ticketNum = myMessage.getNum().trim();
-                if(type != 2){
-                     BasicOper.dc_beep(5);
+                if(!TextUtils.isEmpty(ticketNum)) {
+                    if (type != 2) {
+                        BasicOper.dc_beep(5);
+                    }
+                    if(type == 2){//2是二维码，4是M1芯片
+                        qrCodeId = ticketNum;
+                        chipId = "";
                 }
 
-                if(!TextUtils.isEmpty(ticketNum)){
-                    if(type ==1){
-                        if (ticketNum.equals("0001|操作失败") || ticketNum.equals("FFFF|操作失败") || ticketNum.equals("1001|设备未打开")) {
-                            stopService(new Intent(this,Service2.class));
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    startService(new Intent(CameraActivity8.this, Service2.class));
-                                }
-                            },5000);
-                            return;
-                        }
-                        /**
-                         * 根据项目情况uitralight读卡票号是否凑够16位，如不需要讲以下代码注释
-                         */
-                        int n;
-                        if(ticketNum.length()<16){
-                            n= 16-ticketNum.length();
-                            for (int i = 0;i<n;i++){
-                                ticketNum = ticketNum + "0";
-                            }
-                        }
-                    }
+//                if(!TextUtils.isEmpty(ticketNum)){
+//                    if(type ==1){
+//                        if (ticketNum.equals("0001|操作失败") || ticketNum.equals("FFFF|操作失败") || ticketNum.equals("1001|设备未打开")) {
+//                            stopService(new Intent(this,Service2.class));
+//                            handler.postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    startService(new Intent(CameraActivity8.this, Service2.class));
+//                                }
+//                            },5000);
+//                            return;
+//                        }
+//                        /**
+//                         * 根据项目情况uitralight读卡票号是否凑够16位，如不需要讲以下代码注释
+//                         */
+//                        int n;
+//                        if(ticketNum.length()<16){
+//                            n= 16-ticketNum.length();
+//                            for (int i = 0;i<n;i++){
+//                                ticketNum = ticketNum + "0";
+//                            }
+//                        }
+//                    }
+
+
 ///////////////////////////////////////////////////////////////////////注释到此处
                     runOnUiThread(new Runnable() {
                         @Override
@@ -240,7 +248,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(device_id, ticketNum, file);
+        presenter.load(device_id, ,ticketNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {

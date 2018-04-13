@@ -20,7 +20,8 @@ public interface BaseApi {
     @Multipart
     Observable<JSONObject> uploadPhotoBase(
             @Query("deviceid") String deviceid,
-            @Query("qrCodeId") String ticketid,
+            @Query("chipId") String chipId,
+            @Query("qrCodeId") String qrCodeId,
             @Part List<MultipartBody.Part> file
     );
 
