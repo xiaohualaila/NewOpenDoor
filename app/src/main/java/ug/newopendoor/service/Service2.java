@@ -196,7 +196,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
 
         if (b) {
             String string = sectorDataBean.pieceZero.substring(0, 24);
-            String num =  ByteUtil. decode(string);
+            String num =  ByteUtil.decode(string);
             Ticket ticket = new Ticket(4, num);
             RxBus.getDefault().post(ticket);
             b = false;

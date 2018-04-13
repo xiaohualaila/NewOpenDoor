@@ -21,7 +21,7 @@ public interface BaseApi {
     Observable<JSONObject> uploadPhotoBase(
             @Query("projectId") int projectId,//项目ID
             @Query("ticketType") String type,//票类型
-            @Query("ticketId ") String ticketid,//票号
+            @Query("ticketId") String ticketid,//票号
             @Part List<MultipartBody.Part> file
     );
 

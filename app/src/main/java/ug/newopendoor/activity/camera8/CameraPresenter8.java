@@ -34,6 +34,7 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
 
     @Override
     public void load(int projectId,String ticketType,String ticketId, File newFile) {
+        Log.i("sss","项目projectId >>" + projectId + "  readNum>>：" + ticketId );
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), newFile);
         builder.addFormDataPart("photoImgFiles", newFile.getName(), requestBody);

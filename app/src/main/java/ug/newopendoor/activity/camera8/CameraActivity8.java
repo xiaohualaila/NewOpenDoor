@@ -97,6 +97,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             if (!isReading) {
                 BasicOper.dc_beep(5);
                 readNum = myMessage.getNum().trim();
+                Log.i("SSS","readNum >>" + readNum);
                 if(!TextUtils.isEmpty(readNum)){
 //                   readNum = "123456789!451254";
                      int b =  readNum.indexOf("@");
@@ -178,7 +179,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-        Log.i("sss","项目projectId >>" + projectId + "  readNum>>：" + readNum );
+
         presenter.load(projectId,"1",readNum, file);
     }
 
