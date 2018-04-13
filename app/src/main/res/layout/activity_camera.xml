@@ -75,13 +75,6 @@
             android:textSize="34sp"/>
     </LinearLayout>
 
-    <!--<ImageView-->
-        <!--android:id="@+id/iv_bottom"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="70dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:background="@drawable/welcome1" />-->
     <TextView
         android:id="@+id/iv_bottom"
         android:layout_width="wrap_content"
