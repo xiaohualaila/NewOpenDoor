@@ -1,8 +1,5 @@
 package ug.newopendoor.activity.camera8;
 
-
-import java.io.File;
-
 import ug.newopendoor.activity.base.IBasePresenter;
 import ug.newopendoor.activity.base.IBaseView;
 
