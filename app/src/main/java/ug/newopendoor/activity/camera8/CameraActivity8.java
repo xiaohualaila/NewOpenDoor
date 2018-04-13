@@ -171,14 +171,14 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-        Log.i("sss","项目projectId >>" + projectId + "  ticketNum>>>票号：" + ticketNum + "  readNum>>：" + readNum );
+
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
             Toast.makeText(this, getResources().getText(R.string.error_net), Toast.LENGTH_LONG).show();
             uploadFinish();
             return;
         }
-
+        Log.i("sss","项目projectId >>" + projectId + "  readNum>>：" + readNum );
         presenter.load(projectId,"1",readNum, file);
     }
 
