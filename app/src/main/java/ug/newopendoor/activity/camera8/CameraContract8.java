@@ -15,7 +15,7 @@ public interface CameraContract8 {
 
         void doCommonError(String text, int num, String Face_path);
 
-        void doSuccess(String Face_path, String ticket_no, String seat_info);
+        void doSuccess(String Face_path);
 
     }
 

@@ -366,7 +366,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     }
 
     @Override
-    public void doSuccess(String Face_path, String ticket_no,String seat_info) {
+    public void doSuccess(String Face_path) {
         if (!TextUtils.isEmpty(Face_path)) {
             RequestOptions options = new RequestOptions()
                     .error(R.drawable.left_img);
