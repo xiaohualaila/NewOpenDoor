@@ -84,8 +84,8 @@
         android:text="五 粮 液 中 心 欢 迎 您"
         android:textSize="38sp"
         android:textStyle="bold"
-
+        android:textColor="@color/ziti"
         android:layout_marginBottom="10dp"
         />
-    <!--android:textColor="@color/ziti"-->
+
 </RelativeLayout>
