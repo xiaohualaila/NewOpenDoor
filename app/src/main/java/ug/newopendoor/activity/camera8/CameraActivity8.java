@@ -60,7 +60,8 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     TextView tv_ticket;
     @BindView(R.id.ticket_name)
     TextView ticket_name;
-
+    @BindView(R.id.iv_bottom)
+    TextView iv_bottom;
     private Camera camera;
     private String filePath;
     private SurfaceHolder holder;
@@ -90,7 +91,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         Typeface typeface = Typeface.createFromAsset(getAssets(), "simkai.ttf");
         ticket_name.setTypeface(typeface);
-
+        iv_bottom.setTypeface(typeface);
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
 
             if (!isReading) {
@@ -178,7 +179,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(projectId,"",readNum, file);
+        presenter.load(projectId,"1",readNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
