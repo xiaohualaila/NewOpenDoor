@@ -51,7 +51,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private boolean uitralight = false;//设置为false m1读卡,ture 为uitralight 卡，两个只能使用一个
     private boolean idcard = false;//设置身份证读卡true为读卡，false 不读身份证
     private boolean scan = true;//打开二维码，false 关闭二维码
-    String secret = "br0421"; //设置m1读卡密码，当使用m1读卡是一定要设置加密秘钥，默认测试写成六个1
+    String secret = ""; //设置m1读卡密码，当使用m1读卡是一定要设置加密秘钥，默认测试写成六个1
 
     //串口
     SerialControl ComA;
@@ -83,7 +83,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             model = new UltralightCardModel(this);
         }else {
             //M1
-          //  secret = SharedPreferencesUtil.getStringByKey("m1",this);
+            secret = SharedPreferencesUtil.getStringByKey("m1",this);
             Log.i("sss","secret" + secret);
             model2 = new M1CardModel(this);
             //以下是后来添加读取M1秘钥部分代码
