@@ -8,7 +8,7 @@ public class ConnectUrl {
     /**
      * 请求服务器的接口，端口在此处修改
      */
-   public static final String URL = "http://116.62.57.42/ticket_checking/Api/api39/";
+   public static final String URL = "http://116.62.57.42/ticket_checking/Api/";
 
 
 }
