@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Surface;
@@ -75,7 +76,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
 
     private boolean isOpenDoor = false;
     private boolean isLight = false;
-    private Handler handler = new Handler();
+
 
     private boolean isReading = false;
     private String device_id;
@@ -91,6 +92,14 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
 
     private boolean isHaveChipId = false;//芯片
     private boolean isHaveQrCodeId = false;//二维码
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            flag_tag.setText("");
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +126,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             }
         }
 
-
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
 
             if (!isReading) {
@@ -135,13 +143,14 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                                  handler.removeCallbacks(runnable2);
                                  takePhoto();
                              }else {
-                               runOnUiThread(new Runnable() {
-                                   @Override
-                                   public void run() {
-                                       flag_tag.setText("请刷芯片");
-                                   }
-                               });
-                                 handler.postDelayed(runnable2,5000);
+                                   runOnUiThread(new Runnable() {
+                                       @Override
+                                       public void run() {
+                                           flag_tag.setText("请刷芯片");
+                                           flag_tag.setTextColor(getResources().getColor(R.color.white));
+                                       }
+                                   });
+                                 handler.postDelayed(runnable2,10000);
                              }
                          }
                         if(type == 4){//2是二维码，4是芯片
@@ -156,9 +165,10 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                                     @Override
                                     public void run() {
                                         flag_tag.setText("请扫描二维码");
+                                        flag_tag.setTextColor(getResources().getColor(R.color.white));
                                     }
                                 });
-                                handler.postDelayed(runnable2,5000);
+                                handler.postDelayed(runnable2,10000);
                             }
                         }
                 }
@@ -196,13 +206,10 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     Runnable runnable2 = new Runnable() {
         @Override
         public void run() {
-            if(isHaveQrCodeId = false){
+            if(!isHaveQrCodeId || !isHaveChipId){
                 isHaveQrCodeId = false;
-                flag_tag.setText("");
-            }
-            if(isHaveChipId = false){
                 isHaveChipId = false;
-                flag_tag.setText("");
+                handler.sendEmptyMessage(0);
             }
         }
     };
@@ -262,7 +269,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-
+        Log.i("sss","device_id " + device_id + "chipId " + chipId + "qrCodeId " + qrCodeId);
         presenter.load(device_id,chipId ,qrCodeId, file);
     }
 
