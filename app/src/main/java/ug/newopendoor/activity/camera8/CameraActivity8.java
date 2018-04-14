@@ -87,19 +87,8 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     private String ticketNum ="";
     private int type;
 
-    private String chipId;//芯片
-    private String qrCodeId;//二维码
 
-    private boolean isHaveChipId = false;//芯片
-    private boolean isHaveQrCodeId = false;//二维码
-
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            flag_tag.setText("");
-        }
-    };
+    private Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,41 +124,9 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                         if (type != 2) {
                             BasicOper.dc_beep(5);
                         }
-                         if(type == 2){//2是二维码，4是芯片
-                             qrCodeId = ticketNum;
-                             isHaveQrCodeId = true;
-                             if(isHaveChipId){
-                                 isReading = true;
-                                 handler.removeCallbacks(runnable2);
-                                 takePhoto();
-                             }else {
-                                   runOnUiThread(new Runnable() {
-                                       @Override
-                                       public void run() {
-                                           flag_tag.setText("请刷芯片");
-                                           flag_tag.setTextColor(getResources().getColor(R.color.white));
-                                       }
-                                   });
-                                 handler.postDelayed(runnable2,10000);
-                             }
-                         }
                         if(type == 4){//2是二维码，4是芯片
-                            chipId = ticketNum;
-                            isHaveChipId = true;
-                            if(isHaveQrCodeId){
                                 isReading = true;
-                                handler.removeCallbacks(runnable2);
                                 takePhoto();
-                            }else {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        flag_tag.setText("请扫描二维码");
-                                        flag_tag.setTextColor(getResources().getColor(R.color.white));
-                                    }
-                                });
-                                handler.postDelayed(runnable2,10000);
-                            }
                         }
                 }
 
@@ -203,16 +160,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
     }
 
 
-    Runnable runnable2 = new Runnable() {
-        @Override
-        public void run() {
-            if(!isHaveQrCodeId || !isHaveChipId){
-                isHaveQrCodeId = false;
-                isHaveChipId = false;
-                handler.sendEmptyMessage(0);
-            }
-        }
-    };
+
 
     private void takePhoto() {
         camera.takePicture(null, null, jpeg);
@@ -269,8 +217,8 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             uploadFinish();
             return;
         }
-        Log.i("sss","device_id " + device_id + "chipId " + chipId + "qrCodeId " + qrCodeId);
-        presenter.load(device_id,chipId ,qrCodeId, file);
+        Log.i("sss","device_id " + device_id + "ticketNum " + ticketNum );
+        presenter.load(device_id,ticketNum ,ticketNum, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
@@ -505,10 +453,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                             isLight = false;
                         }
                         ticketNum = "";
-                        isHaveQrCodeId = false;
-                        isHaveChipId = false;
-                        qrCodeId = "";
-                        chipId = "";
                         isReading = false;
                     }
                 }).start();
