@@ -16,7 +16,7 @@ import rx.Observable;
  */
 public interface BaseApi {
 
-    @POST("Api.php")
+    @POST("index2.php")
     @Multipart
     Observable<JSONObject> uploadPhotoBase(
             @Query("deviceid") String deviceid,
