@@ -76,9 +76,9 @@ public class CameraPresenter8 extends BasePresenter implements CameraContract8.P
                     view.doCommonError("不可重复入场",2,imageStr);
                 } else if(result.equals("3")){
                     view.doCommonError("入场口错误",8,imageStr);
-                }else if(result.equals("4")){
+                } else if(result.equals("4")){
                     view.doCommonError("入场次数频繁",7,imageStr);
-                }else {
+                } else {
                     view.doCommonError("无效票卡请重试",3,imageStr);
                 }
             } else {
