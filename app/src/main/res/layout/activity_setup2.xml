@@ -9,7 +9,7 @@
         android:id="@+id/tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="提示：进入场馆后内部闸机入场口，进口输入 1 ，出口输入 0 ，可进可出口输入 2 ;"
+        android:text="提示：15,16号场馆内部闸机入场口，进口输入 1 ，出口输入 0 ，可进可出口输入 2 ;"
         android:textSize="22sp"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
