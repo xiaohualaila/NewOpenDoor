@@ -51,8 +51,8 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private boolean uitralight = false;//设置为false m1读卡,ture 为uitralight 卡，两个只能使用一个
     private boolean idcard = false;//设置身份证读卡true为读卡，false 不读身份证
     private boolean scan = true;//打开二维码，false 关闭二维码
-    String secret = "br0421"; //设置m1读卡密码，当使用m1读卡是一定要设置加密秘钥，默认测试写成六个1
-    private int count = 0;
+    String secret = "IGS420"; //设置m1读卡密码，当使用m1读卡是一定要设置加密秘钥，默认测试写成六个1
+
     //串口
     SerialControl ComA;
     DispQueueThread DispQueue;
@@ -192,7 +192,6 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             String num =  ByteUtil. decode(string);
             Ticket ticket = new Ticket(4, num);
             RxBus.getDefault().post(ticket);
-            count ++;
             b = false;
         }
 
