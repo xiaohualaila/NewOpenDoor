@@ -121,10 +121,8 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 type = myMessage.getType();
                 ticketNum = myMessage.getNum().trim();
                 if(!TextUtils.isEmpty(ticketNum)){
-                        if (type != 2) {
-                            BasicOper.dc_beep(5);
-                        }
-                        if(type == 4){//2是二维码，4是芯片
+                        BasicOper.dc_beep(5);
+                        if(type == 4){//4是芯片
                                 isReading = true;
                                 takePhoto();
                         }
