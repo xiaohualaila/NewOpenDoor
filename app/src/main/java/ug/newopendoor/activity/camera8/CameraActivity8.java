@@ -85,9 +85,12 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
      */
     private String ticketNum ="";
     private int type;
-    private String ip_address;
+
     private String chipId;//芯片
     private String qrCodeId;//二维码
+
+    private boolean isHaveChipId = false;//芯片
+    private boolean isHaveQrCodeId = false;//二维码
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,14 +108,14 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         /**
          * 从存储文件door中获取广告图片。图片名必须是background.jpg 如需要把注释取消
          */
-//        String backgroundImg = FileUtil.getPath() + File.separator +"background.jpg";
-//        if (!TextUtils.isEmpty(backgroundImg)) {
-//            RequestOptions options = new RequestOptions()
-//                    .error(R.drawable.ad);
-//            if (!TextUtils.isEmpty(backgroundImg)) {
-//                Glide.with(CameraActivity8.this).load(backgroundImg).apply(options).into(ad);
-//            }
-//        }
+        String backgroundImg = FileUtil.getPath() + File.separator +"background.jpg";
+        if (!TextUtils.isEmpty(backgroundImg)) {
+            RequestOptions options = new RequestOptions()
+                    .error(R.drawable.ad);
+            if (!TextUtils.isEmpty(backgroundImg)) {
+                Glide.with(CameraActivity8.this).load(backgroundImg).apply(options).into(ad);
+            }
+        }
 
 
         RxBus.getDefault().toObserverable(Ticket.class).subscribe((Ticket myMessage) -> {
@@ -120,24 +123,49 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             if (!isReading) {
                 type = myMessage.getType();
                 ticketNum = myMessage.getNum().trim();
-                if (type != 2) {
-                    BasicOper.dc_beep(5);
+                if(!TextUtils.isEmpty(ticketNum)){
+                        if (type != 2) {
+                            BasicOper.dc_beep(5);
+                        }
+                         if(type == 2){//2是二维码，4是芯片
+                             qrCodeId = ticketNum;
+                             isHaveQrCodeId = true;
+                             if(isHaveChipId){
+                                 isReading = true;
+                                 handler.removeCallbacks(runnable2);
+                                 takePhoto();
+                             }else {
+                               runOnUiThread(new Runnable() {
+                                   @Override
+                                   public void run() {
+                                       flag_tag.setText("请刷芯片");
+                                   }
+                               });
+                                 handler.postDelayed(runnable2,5000);
+                             }
+                         }
+                        if(type == 4){//2是二维码，4是芯片
+                            chipId = ticketNum;
+                            isHaveChipId = true;
+                            if(isHaveQrCodeId){
+                                isReading = true;
+                                handler.removeCallbacks(runnable2);
+                                takePhoto();
+                            }else {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        flag_tag.setText("请扫描二维码");
+                                    }
+                                });
+                                handler.postDelayed(runnable2,5000);
+                            }
+                        }
                 }
-                 if(type == 2){//2是二维码，4是芯片
-                     qrCodeId = ticketNum;
-                     if(!TextUtils.isEmpty(chipId)){
-                         isReading = true;
-                         takePhoto();
-
-                     }else {
-
-                     }
-
-                 }
-
 
             }
         });
+
 
         /**
          *    读取到的身份证信息返回
@@ -163,6 +191,21 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             }
         });
     }
+
+
+    Runnable runnable2 = new Runnable() {
+        @Override
+        public void run() {
+            if(isHaveQrCodeId = false){
+                isHaveQrCodeId = false;
+                flag_tag.setText("");
+            }
+            if(isHaveChipId = false){
+                isHaveChipId = false;
+                flag_tag.setText("");
+            }
+        }
+    };
 
     private void takePhoto() {
         camera.takePicture(null, null, jpeg);
@@ -220,7 +263,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
 
-        presenter.load(device_id, ,ticketNum, file);
+        presenter.load(device_id,chipId ,qrCodeId, file);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
@@ -454,8 +497,12 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                             rkGpioControlNative.ControlGpio(20, 1);
                             isLight = false;
                         }
-                        isReading = false;
                         ticketNum = "";
+                        isHaveQrCodeId = false;
+                        isHaveChipId = false;
+                        qrCodeId = "";
+                        chipId = "";
+                        isReading = false;
                     }
                 }).start();
             }
