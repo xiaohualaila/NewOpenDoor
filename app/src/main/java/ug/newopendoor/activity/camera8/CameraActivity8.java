@@ -92,12 +92,13 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
 
     private boolean isHaveChipId = false;//芯片
     private boolean isHaveQrCodeId = false;//二维码
-
+    private boolean b = false;//该变量防止不停的刷芯片，或二维码
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             flag_tag.setText("");
+            b = false;
         }
     };
     @Override
@@ -141,6 +142,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                              if(isHaveChipId){
                                  isReading = true;
                                  handler.removeCallbacks(runnable2);
+                                 b = false;
                                  takePhoto();
                              }else {
                                    runOnUiThread(new Runnable() {
@@ -150,7 +152,11 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                                            flag_tag.setTextColor(getResources().getColor(R.color.white));
                                        }
                                    });
-                                 handler.postDelayed(runnable2,10000);
+                                   if(!b){
+                                       handler.postDelayed(runnable2,10000);
+                                       b = true;
+                                   }
+
                              }
                          }
                         if(type == 4){//2是二维码，4是芯片
@@ -159,6 +165,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                             if(isHaveQrCodeId){
                                 isReading = true;
                                 handler.removeCallbacks(runnable2);
+                                b = false;
                                 takePhoto();
                             }else {
                                 runOnUiThread(new Runnable() {
@@ -168,7 +175,11 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                                         flag_tag.setTextColor(getResources().getColor(R.color.white));
                                     }
                                 });
-                                handler.postDelayed(runnable2,10000);
+                                if(!b){
+                                    handler.postDelayed(runnable2,10000);
+                                    b = true;
+                                }
+
                             }
                         }
                 }
