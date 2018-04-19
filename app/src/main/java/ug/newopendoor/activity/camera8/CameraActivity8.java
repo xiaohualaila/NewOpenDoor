@@ -332,22 +332,16 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
         }
         flag_tag.setText(getResources().getText(R.string.right_ticket));
         flag_tag.setTextColor(getResources().getColor(R.color.green));
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                isOpenDoor = true;
-                rkGpioControlNative.ControlGpio(1, 0);//开门
-                SoundPoolUtil.play(4);
-            }
-        }).start();
+
+        isOpenDoor = true;
+        rkGpioControlNative.ControlGpio(1, 0);//开门
+        SoundPoolUtil.play(4);
+
         uploadFinish();
     }
 
     private void uploadFinish() {
-        if (isOpenDoor) {
-            isOpenDoor = false;
-            handler.postDelayed(runnable, 500);
-        }
+
 
         handler.postDelayed(new Runnable() {
             @Override
@@ -365,6 +359,10 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                             rkGpioControlNative.ControlGpio(20, 1);
                             isLight = false;
                         }
+                        if (isOpenDoor) {
+                            isOpenDoor = false;
+                            rkGpioControlNative.ControlGpio(1, 1);//关门
+                        }
                         isReading = false;
                         ticketNum = "";
                     }
@@ -374,11 +372,6 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
 
     }
 
-    Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            rkGpioControlNative.ControlGpio(1, 1);//关门
-        }
-    };
+
 
 }
