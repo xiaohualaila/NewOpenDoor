@@ -368,7 +368,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                     }
                 }).start();
             }
-        }, 2500);
+        }, 1500);
 
     }
 
