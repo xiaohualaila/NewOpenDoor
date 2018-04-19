@@ -57,6 +57,8 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     SerialControl ComA;
     DispQueueThread DispQueue;
     private String newPasswordKey;
+
+    private int number = 0;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -193,6 +195,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             Ticket ticket = new Ticket(4, num);
             RxBus.getDefault().post(ticket);
             count ++;
+            Log.i("sss","第 "+ count +" 次"+ "票号》》》 "+num);
             b = false;
         }
 
@@ -235,6 +238,10 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         if (portSate >= 0) {
             BasicOper.dc_beep(5);
         }
+//        int portSate = BasicOper.dc_open("COM", this, "/dev/ttyS4", 115200);
+//         if (portSate >= 0) {
+//            BasicOper.dc_beep(5);
+//        }
     }
 
     //关闭设备
