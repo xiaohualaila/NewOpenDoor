@@ -143,7 +143,8 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                                  isReading = true;
                                  handler.removeCallbacks(runnable2);
                                  b = false;
-                                 takePhoto();
+                               //  takePhoto();
+                                 upload();
                              }else {
                                    runOnUiThread(new Runnable() {
                                        @Override
@@ -166,7 +167,8 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                                 isReading = true;
                                 handler.removeCallbacks(runnable2);
                                 b = false;
-                                takePhoto();
+                               // takePhoto();
+                                upload();
                             }else {
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -208,7 +210,8 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 type = 3;
                 ticketNum = idCard.getId().trim();
                 isReading = true;
-                takePhoto();
+              //  takePhoto();
+                upload();
             }
         });
     }
@@ -269,11 +272,11 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
      * 上传信息
      */
     private void upload() {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            uploadFinish();
-            return;
-        }
+//        File file = new File(filePath);
+//        if (!file.exists()) {
+//            uploadFinish();
+//            return;
+//        }
         boolean isNetAble = MyUtil.isNetworkAvailable(this);
         if (!isNetAble) {
             Toast.makeText(this, getResources().getText(R.string.error_net), Toast.LENGTH_LONG).show();
@@ -281,7 +284,7 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
             return;
         }
         Log.i("sss","device_id " + device_id + "chipId " + chipId + "qrCodeId " + qrCodeId);
-        presenter.load(device_id,chipId ,qrCodeId, file);
+        presenter.load(device_id,chipId ,qrCodeId);
     }
 
     public static BitmapFactory.Options setOptions(BitmapFactory.Options opts) {
@@ -506,10 +509,10 @@ public class CameraActivity8 extends Activity implements SurfaceHolder.Callback,
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        File file = new File(filePath);
-                        if (file.exists()) {
-                            file.delete();
-                        }
+//                        File file = new File(filePath);
+//                        if (file.exists()) {
+//                            file.delete();
+//                        }
                         //变灯
                         if (isLight) {
                             rkGpioControlNative.ControlGpio(20, 1);

@@ -17,12 +17,11 @@ import rx.Observable;
 public interface BaseApi {
 
     @POST("index_two.php")
-    @Multipart
     Observable<JSONObject> uploadPhotoBase(
             @Query("deviceid") String deviceid,
             @Query("chipId") String chipId,
-            @Query("qrCodeId") String qrCodeId,
-            @Part List<MultipartBody.Part> file
+            @Query("qrCodeId") String qrCodeId
+           // @Part List<MultipartBody.Part> file
     );
 
 

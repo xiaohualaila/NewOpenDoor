@@ -4,10 +4,14 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
+
 import com.cmm.rkadcreader.adcNative;
 import com.cmm.rkgpiocontrol.rkGpioControlNative;
 import com.decard.NDKMethod.BasicOper;
+
+
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.LinkedList;
@@ -15,6 +19,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
 import ug.newopendoor.R;
 import ug.newopendoor.rx.RxBus;
 import ug.newopendoor.usbtest.ComBean;
@@ -48,10 +53,9 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
     private SPUtils settingSp;
     private String USB = "";
 
-    private boolean uitralight = false;//设置为false m1读卡,ture 为uitralight 卡，两个只能使用一个
-    private boolean idcard = false;//设置身份证读卡true为读卡，false 不读身份证
-    private boolean scan = true;//打开二维码，false 关闭二维码
-    String secret = ""; //设置m1读卡密码，当使用m1读卡是一定要设置加密秘钥，默认测试写成六个1
+    private boolean uitralight = false;//设置为false m1读卡
+    private boolean idcard = false;
+    private boolean scan = true;
 
     //串口
     SerialControl ComA;
@@ -66,6 +70,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         rkGpioControlNative.init();
         onOpenConnectPort();
 
+
         if(scan){
             //串口
             ComA = new SerialControl();
@@ -74,21 +79,24 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             DispQueue.start();
         }
 
-        //身份证
-        thread = new Thread(task);
-        thread.start();
+
 
         if(uitralight){
             //UltralightCard
             model = new UltralightCardModel(this);
         }else {
             //M1
-            secret = SharedPreferencesUtil.getStringByKey("m1",this);
-            Log.i("sss","secret" + secret);
+           String secret = SharedPreferencesUtil.getStringByKey("m1",this);
+            Log.i("sss","secret>> " + secret);
             model2 = new M1CardModel(this);
             //以下是后来添加读取M1秘钥部分代码
             newPasswordKey =  ByteUtil.convertStringToHex(secret);//设置秘钥12位  安卓是16进制 电脑是ascii码
+          //  newPasswordKey="IGS420";
         }
+
+        //身份证
+        thread = new Thread(task);
+        thread.start();
     }
 
     @Override
@@ -114,17 +122,29 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                     if (uitralight) {
                         model.bt_seek_card(ConstUtils.BT_SEEK_CARD);
                         Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>UltralightCard");
-                        Thread.sleep(TIME);//修改循环读卡时间
+                        Thread.sleep(TIME);
                     } else {
                         //M1
-                        model2.bt_download(ConstUtils.BT_DOWNLOAD,"All",0,newPasswordKey,0);
-                        if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
-                            final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
-                            isHaveOne = true;
-                            model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 0);
+//                        model2.bt_download(ConstUtils.BT_DOWNLOAD,"4",0,newPasswordKey,4);
+//                        if (MDSEUtils.isSucceed(BasicOper.dc_card_hex(1))) {
+//                            final int keyType = 0;// 0 : 4; 密钥套号 0(0套A密钥)  4(0套B密钥)
+//                            isHaveOne = true;
+//                            model2.bt_read_card(ConstUtils.BT_READ_CARD, keyType, 4);
+//                        }
+                        String isSucceed= model2.bt_read_ticket(newPasswordKey);
+                        if (MDSEUtils.isSucceed(isSucceed))
+                        {
+                            String Ticket_NO=MDSEUtils.returnResult(isSucceed);
+                            Ticket_NO = ByteUtil.decode(Ticket_NO).substring(0,12);
+                            Log.i("sss", ">>>>M1:Ticket_NO "+Ticket_NO);
+                            Ticket ticket = new Ticket(4, Ticket_NO);
+                            RxBus.getDefault().post(ticket);
+
                         }
-                           Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
-                        Thread.sleep(TIME);//修改循环读卡时间
+                        else {
+                            Log.i("sss", ">>>>>>>>>>>>>>>>>>>>>>M1");
+                        }
+                        Thread.sleep(50);
                     }
 
                     //身份证
@@ -136,7 +156,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
                             if (idCardData != null) {
                                 RxBus.getDefault().post(idCardData);
                             }
-                             Thread.sleep(500);//修改循环读卡时间
+                             Thread.sleep(500);
                     }
 
                 } catch (Exception e) {
@@ -197,7 +217,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
 
     }
 
-    //打开串口（二维码）
+    //打开串口
     public void openErWeiMa() {
         ComA.setPort("/dev/ttyS4");
         ComA.setBaudRate("115200");
@@ -215,7 +235,7 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
             Log.i("xxx", "InvalidParameterException" + e.toString());
         }
     }
-    //关闭二维码
+
     public void closeErWeiMa() {
         CloseComPort(ComA);
     }
@@ -241,8 +261,6 @@ public class Service2 extends Service implements UltralightCardListener, M1CardL
         BasicOper.dc_exit();
     }
 
-
-    //以下是二维码部门代码
     private class SerialControl extends SerialHelper {
 
         public SerialControl() {

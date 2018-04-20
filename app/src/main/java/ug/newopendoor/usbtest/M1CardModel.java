@@ -7,6 +7,10 @@ import com.decard.NDKMethod.BasicOper;
 import java.util.ArrayList;
 import java.util.List;
 
+import ug.newopendoor.rx.RxBus;
+import ug.newopendoor.util.ByteUtil;
+import ug.newopendoor.util.Ticket;
+
 /**
  * Created by hizha on 2017/7/31.
  */
@@ -17,6 +21,60 @@ public class M1CardModel {
     public M1CardModel(M1CardListener listener){
         mListener = listener;
     }
+
+    private void readSectorData(int currentSectors) {
+        boolean b = true;
+        int piece = (currentSectors + 1) * 4;
+        SectorDataBean sectorDataBean = new SectorDataBean();
+        String[] pieceDatas = new String[4];
+        for (int i = piece - 4, j = 0; i < piece; i++, j++) {
+            String pieceData = MDSEUtils.returnResult(BasicOper.dc_read_hex(i));
+            pieceDatas[j] = pieceData;
+        }
+        sectorDataBean.pieceZero = pieceDatas[0];
+
+        if (b) {
+            String string = sectorDataBean.pieceZero.substring(0, 24);
+            String num =  ByteUtil. decode(string);
+            Ticket ticket = new Ticket(4, num);
+            b = false;
+        }
+
+    }
+    public String bt_read_ticket(String newPasswordKey)
+    {
+        int keyType=0;
+        int spinnerPosition=4;
+       // int spinnerPosition=0;
+       // newPasswordKey="FFFFFFFFFFFF";
+        String[] pieceDatas = new String[4];
+        String isSucceed;
+        int i=0;
+        int j=0;
+
+        isSucceed=BasicOper.dc_card_hex(0);
+        if (!MDSEUtils.isSucceed(isSucceed))
+        {
+            return isSucceed;
+
+        }
+        isSucceed=BasicOper.dc_load_key_hex(keyType, spinnerPosition , newPasswordKey);
+        if (!MDSEUtils.isSucceed(isSucceed))
+        {
+            return isSucceed;
+        }
+        isSucceed=BasicOper.dc_authentication(keyType, spinnerPosition);
+        if (!MDSEUtils.isSucceed(isSucceed))
+        {
+            return isSucceed;
+        }
+        //for ( i = 0; i < 3; i++) {
+
+        isSucceed = BasicOper.dc_read_hex(spinnerPosition*4+0);
+        BasicOper.dc_halt();
+        return isSucceed;
+    }
+
 
     public void bt_download(String btDownload, String sectorsNum, int keyType, String newPasswordKey, int spinnerPosition) {
         if ("All".equals(sectorsNum)) {
